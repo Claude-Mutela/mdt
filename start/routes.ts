@@ -1,0 +1,151 @@
+/*
+|--------------------------------------------------------------------------
+| Routes file
+|--------------------------------------------------------------------------
+|
+| The routes file is used for defining the HTTP routes.
+|
+*/
+
+import { middleware } from '#start/kernel'
+import { controllers } from '#generated/controllers'
+import router from '@adonisjs/core/services/router'
+
+router.on('/').renderInertia('home', {}).as('home')
+router.on('/a-propos').renderInertia('a-propos', {}).as('apropos')
+router.on('/media').renderInertia('media', {}).as('media')
+router.on('/gallery').renderInertia('gallery', {}).as('gallery')
+router.on('/allContent').renderInertia('allContent', {}).as('allContent')
+router.get('/ministries', ({ inertia }) => {
+  return inertia.render('ministries', { ministries })
+}).as('ministries')
+
+const ministries = [
+  {
+    name: "Génération PHILA",
+    slug: "generation-phila",
+    tag: "Jeunesse",
+    desc: "Un espace dynamique pour les 15-30 ans. Rencontres, débats et sorties spirituelles.",
+    content: "Génération PHILA est le département des jeunes de la Maison de Témoignages. Notre mission est d'équiper une génération de jeunes leaders passionnés par le Christ et influents dans leur société. Nous organisons des cultes de jeunesse, des ateliers de formation, des sorties récréatives et des temps d'évangélisation.",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCIbFMjESOdJHHxt5ZZqh6b5UfaXUXTQi-r-Pn_dpK13bKHsrUOcOgYvL5hSwszN-fBAGYqMNvThd9j_qylXCXQl_gACFYQsemOmMb7BCtn9iXdu4S3tWQh1KKoi5G4VDjYcfQ4p41JF3l_vkr1ava2cJ3i5sIw-KGO6pb6945y6oe1XOTR8oZfVWvHwPe8ByoBP9gkFNYaScNJNV41Cvk2R9eYWs_pqeWKPnxkZ3zuT-ghwSIclLs04vAPudYCJkhbY07TqYYE",
+    color: "bg-blue-500"
+  },
+  {
+    name: "École du Dimanche",
+    slug: "ecole-du-dimanche",
+    tag: "Enfants",
+    desc: "Les enfants découvrent la Bible à travers des jeux, des chants et des leçons adaptées.",
+    content: "L'École du Dimanche est dédiée à l'édification spirituelle de nos enfants de 3 à 12 ans. À travers un programme pédagogique adapté, des chants, des jeux et des histoires bibliques, nous posons les fondements d'une foi solide dès le plus jeune âge.",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdFseA8Z3bGd5tsZ7_dXrL55PmKqiWEZ6EeZDgcKPEr2oOXznXDvBR6JhRnGIkRIi_juzYyEH95Fp_yu4g40qLDr7t8BDNPrGujov-eGn8s-2Cu72pEpTw_GVrajccOhNlJBqUtgInzjpW72Xvz1wU0QbT7FaObZmdgi244s4AMSmqKBBbRMUyiOINaD1SDONAHZy4iBpG9IwYd9cF1l1eXmgoPe9ZeC45Z2m9n_hJPU7tC7XQ3lJ5-2orpr4VwsF-Wib4ifGE",
+    color: "bg-green-500"
+  },
+  {
+    name: "Chorale & Louange",
+    slug: "chorale-louange",
+    tag: "Musique",
+    desc: "Conduire le peuple de Dieu dans l'adoration avec excellence et passion.",
+    content: "Le ministère de louange et d'adoration de la MDT aspire à créer une atmosphère propice à la rencontre avec Dieu. Par l'excellence musicale et la consécration spirituelle, nous conduisons la communauté dans la présence du Seigneur à chaque culte.",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB1C9BNA27ZjKiZfZDzrvFd_qZd_gVwL8Ua2Axxv44Ne4qDTy5mKUQpXd7hOEuVuvsiPf69kDSDMlCmvMn39QUTk_d7ku3c2T_JtNCMRiR0a24eAyWNK_yp5ccVQGdxp5r0-yV8NmQ2qXxlCVXrdrPYd7uXJ0vmf6ISAmuNcFwc9PV6LalhpnHWGXFCmAz9KUv5K6DQCpOkMo_ehPVZ-4ElseBB5sw-0r03dB9CJELpD0zQLQzrurib4izE87yVOiodsupo3mPI",
+    color: "bg-purple-500"
+  },
+  {
+    name: "Femmes de Valeur",
+    slug: "femmes-de-valeur",
+    tag: "Femmes",
+    desc: "Partage, prière et encouragement entre femmes pour s'édifier mutuellement.",
+    content: "Femmes de Valeur est un cadre d'épanouissement, de prière et d'impact pour toutes les femmes. Nous croyons que chaque femme a une mission divine et nous travaillons à les équiper pour briller dans leur foyer, l'église et la société.",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAnA16G33hSttxKgEVt1Nizt3G00UsdsezYwrYAYadKkra-n8rM12Dq298M-NXIpBV8I8iJvSqmi1be37eggD627xUPBp7HEpVBkC1q631l1Jh3_VjBfIgcPWVwXJcbMgYzL-lMKkCeki6syqv4akER3CR6R4l6T3O1zfy7kUy6_74TgZdBmjSoSD7F4HpQpFPU35P0jm9r6pJq2haJlOwzm_SAmXftvfWCjCvII7nzYxDg2YN25WzSvPSND0CxBy0fyqmMjry1",
+    color: "bg-pink-500"
+  }
+]
+
+router.get('/activites/:slug', ({ params, inertia }) => {
+  const activity = ministries.find((m) => m.slug === params.slug)
+  if (!activity) {
+    return inertia.render('errors/not_found', {})
+  }
+  return inertia.render('detail-activite', { activity })
+}).as('activites.detail')
+
+const events = [
+  {
+    title: "Séminaire - Épanouissement Spirituel",
+    slug: "seminaire-epanouissement",
+    status: "upcoming",
+    date: "15 Avril 2025 à 17h30",
+    location: "Temple PHILA MDT, Kinshasa",
+    description: "Une semaine d'immersion totale dans la Parole pour une transformation radicale.",
+    content: "Nous vous convions à une série d'enseignements exceptionnels portés sur la croissance spirituelle. Ce séminaire est une opportunité unique pour tout chrétien désireux d'approfondir sa relation avec Dieu et de découvrir les clés d'un épanouissement durable dans sa vie de foi.",
+    tag: "Séminaire",
+    image: "/aksanti-mungu-mdt.jpeg"
+  },
+  {
+    title: "Conférence de Jeunesse - Passion & Vision",
+    slug: "conference-jeunesse-passion",
+    status: "ongoing",
+    date: "En cours (Jusqu'au 5 Avril)",
+    location: "Salle des fêtes MDT",
+    description: "Le rendez-vous annuel de la jeunesse pour embrasser sa destinée prophetique.",
+    content: "Génération PHILA revient cette année avec une conférence dynamique. Des orateurs nationaux et internationaux se relaient pour équiper la jeunesse face aux défis du 21ème siècle, tout en gardant une passion inébranlable pour l'Évangile.",
+    tag: "Jeunesse",
+    image: "/dimanche-mdt.jpeg"
+  },
+  {
+    title: "Grande Soirée d'Intercession - RD Congo",
+    slug: "soiree-intercession-congo",
+    status: "past",
+    date: "28 Mars 2025",
+    location: "Parvis de l'Église",
+    description: "Un moment solennel de prière pour la paix et la restauration de notre nation.",
+    content: "Revivez les moments forts de cette soirée d'intercession. Plus de 3 heures de prière fervente pour le pays, les institutions et la paix en République Démocratique du Congo. Des témoignages de guérison et de restauration ont marqué cette rencontre inoubliable.",
+    tag: "Prière",
+    image: "/hospitalite-mdt.jpeg"
+  }
+]
+
+router.get('/evenements', ({ inertia }) => {
+  return inertia.render('evenements', { events })
+}).as('evenements')
+
+router.get('/evenements/:slug', ({ params, inertia }) => {
+  const event = events.find((e) => e.slug === params.slug)
+  if (!event) {
+    return inertia.render('errors/not_found', {})
+  }
+  return inertia.render('detail-evenement', { event })
+}).as('evenements.detail')
+
+router.on('/agenda').renderInertia('agenda', {}).as('agenda')
+
+router.on('/contact').renderInertia('contact', {}).as('contact')
+router.on('/donation').renderInertia('donation', {}).as('donation')
+
+router
+  .group(() => {
+    router.get('signup', [controllers.NewAccount, 'create'])
+    router.post('signup', [controllers.NewAccount, 'store'])
+
+    router.get('login', [controllers.Session, 'create'])
+    router.post('login', [controllers.Session, 'store'])
+  })
+  .use(middleware.guest())
+
+router
+  .group(() => {
+    router.post('logout', [controllers.Session, 'destroy'])
+  })
+  .use(middleware.auth())
+
+/* ── Admin routes ─────────────────────────────────────────────────── */
+router
+  .group(() => {
+    router.on('/').renderInertia('admin/dashboard', {}).as('admin.dashboard')
+    router.on('/membres').renderInertia('admin/membres', {}).as('admin.membres')
+    router.on('/agenda').renderInertia('admin/agenda', {}).as('admin.agenda')
+    router.on('/ministeres').renderInertia('admin/ministeres', {}).as('admin.ministeres')
+    router.on('/evenements').renderInertia('admin/evenements', {}).as('admin.evenements')
+    router.on('/medias').renderInertia('admin/medias', {}).as('admin.medias')
+    router.on('/galerie').renderInertia('admin/galerie', {}).as('admin.galerie')
+  })
+  .prefix('/admin')
+

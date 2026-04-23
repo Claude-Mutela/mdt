@@ -1,0 +1,238 @@
+import HeroAbout from '../components/HeroAbout'
+import { Head } from '@inertiajs/react'
+import { useState } from 'react'
+
+const team = [
+  {
+    nom: 'Blonsky MBALA',
+    role: 'Pasteur Principal',
+    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop',
+  },
+  {
+    nom: 'Dr. Jean Mukendi',
+    role: 'Doyen des Études',
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop',
+  },
+  {
+    nom: 'Rachel Kabeya',
+    role: 'Responsable Pédagogique',
+    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop',
+  },
+  {
+    nom: 'David Mulumba',
+    role: 'Coordinateur de la Vie Étudiante',
+    photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop',
+  },
+]
+
+const faqs = [
+  {
+    question: 'Qui peut rejoindre Phila Maison de Témoignages ?',
+    reponse:
+      'Tout le monde est le bienvenu ! Peu importe votre parcours, votre passé ou votre niveau de foi, nos portes sont ouvertes à toute personne sincèrement désireuse de rencontrer Dieu et de grandir spirituellement.',
+  },
+  {
+    question: 'À quelle fréquence ont lieu les cultes ?',
+    reponse:
+      'Nous tenons des cultes chaque dimanche matin à 9h30, ainsi que des réunions de prière le mercredi soir à 19h. Des groupes de maison se réunissent également en semaine dans différents quartiers.',
+  },
+  {
+    question: 'Y a-t-il des activités pour les enfants et les jeunes ?',
+    reponse:
+      'Oui ! Nous avons un département jeunesse actif avec des programmes adaptés pour les enfants, les adolescents et les jeunes adultes. Ces activités incluent des études bibliques, des camps et des événements sociaux.',
+  },
+  {
+    question: "Comment puis-je m'impliquer dans l'église ?",
+    reponse:
+      "Il existe de nombreuses façons de servir : la louange, l'accueil, les groupes de cellule, les actions sociales et bien plus encore. Parlez à l'un de nos responsables après un culte et nous vous orienterons vers le bon département.",
+  },
+  {
+    question: "L'église propose-t-elle un accompagnement pastoral ?",
+    reponse:
+      "Absolument. Notre équipe pastorale est disponible pour vous accompagner dans les moments difficiles, que ce soit pour un counseling, une prière personnelle ou un suivi spirituel. Contactez-nous pour prendre rendez-vous.",
+  },
+  {
+    question: "Comment faire un don à l'église ?",
+    reponse:
+      "Vous pouvez contribuer lors de nos cultes via les quêtes habituelles, ou nous contacter directement pour les dons en ligne ou par virement bancaire. Chaque contribution soutient notre mission et nos actions communautaires.",
+  },
+]
+
+export default function About() {
+  return (
+    <>
+      <Head title="À propos - Phila Maison de Témoignages" />
+      <main>
+        <HeroAbout />
+
+        <section className="py-12 lg:py-20 bg-white px-4">
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div className="space-y-6">
+              <h2 className="text-3xl md:text-4xl font-black font-serif">A propos de nous</h2>
+              <p className="text-slate-600">Depuis notre fondation en 2025, Phila Maison de Témoignages a pour vocation de voir des vies transformées. Nous sommes une communauté engagée qui met la Parole en action et qui cherche à impacter notre cité par des témoignages vivants.</p>
+              <p className="text-slate-600">Ici, vous trouverez des programmes pour tous les âges : cultes, groupes de maison, actions sociales et formations spirituelles.</p>
+            </div>
+
+            <div className="relative">
+              <img src="/aksanti-mungu-mdt.jpeg" alt="Aksanti Mungu" className="w-full h-80 object-cover rounded-2xl shadow-lg" />
+            </div>
+          </div>
+        </section>
+
+        {/* ── Équipe ────────────────────────────────────────────────── */}
+        <section className="py-24 bg-background-off px-4">
+          <div className="max-w-7xl mx-auto space-y-12">
+            <div className="text-center space-y-3">
+              <span className="text-primary font-black uppercase tracking-widest text-xs">Ceux qui servent</span>
+              <h2 className="text-slate-900 text-4xl font-black font-serif">Notre équipe pastorale</h2>
+              <p className="text-slate-500 max-w-xl mx-auto">
+                Des serviteurs dévoués qui accompagnent chaque membre avec amour, sagesse et humilité.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-4 gap-8">
+                {team.map((membre, i) => (
+                  <div key={i} className="group">
+                    {/* Carte avec infos sur l'image */}
+                    <div className="relative aspect-[4/5] overflow-hidden rounded-[20px] shadow-sm">
+                      <div className="absolute inset-0 bg-gray-200 animate-pulse -z-10" />
+                      <img
+                        src={membre.photo}
+                        alt={membre.nom}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                      {/* Gradient toujours visible pour la lisibilité */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none"></div>
+                      
+                      {/* Infos sur l'image */}
+                      <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col pointer-events-none">
+                        <span className="text-primary font-bold text-center text-xs uppercase tracking-widest mb-1">{membre.role}</span>
+                        <h3 className="text-xl md:text-2xl font-bold text-center text-white">{membre.nom}</h3>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </section>
+        
+        
+        {/* ── FAQ ────────────────────────────────────────────────────── */}
+        <FaqSection />
+
+        {/* ── CTA final ─────────────────────────────────────────────── */}
+        {/* <section className="py-24 bg-primary px-4">
+          <div className="max-w-3xl mx-auto text-center text-white space-y-6">
+            <h2 className="text-4xl md:text-5xl font-black font-serif leading-tight">
+              Prêt à nous rejoindre ?
+            </h2>
+            <p className="text-white/80 text-lg leading-relaxed">
+              Peu importe où vous en êtes dans votre parcours de foi, il y a une place pour vous à l'Église PHILA. Venez tel que vous êtes.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
+              <Link
+                href="/activities"
+                className="bg-white text-primary h-14 px-10 rounded-xl font-bold transition-all shadow-xl hover:bg-slate-100 transform hover:-translate-y-1 flex items-center justify-center"
+              >
+                Voir nos horaires
+              </Link>
+              <Link
+                href="/contact"
+                className="bg-white/10 hover:bg-white/20 border border-white/30 text-white h-14 px-10 rounded-xl font-bold transition-all flex items-center justify-center backdrop-blur-md"
+              >
+                Nous contacter
+              </Link>
+            </div>
+          </div>
+        </section> */}
+
+      </main>
+    </>
+  )
+}
+
+/* ── Composant accordéon FAQ ─────────────────────────────────────────── */
+function FaqSection() {
+  const [ouvert, setOuvert] = useState<number | null>(null)
+
+  return (
+    <section className="py-24 bg-background-off px-4">
+      <div className="max-w-3xl mx-auto space-y-12">
+        {/* En-tête */}
+        <div className="text-center space-y-3">
+          <span className="text-primary font-black uppercase tracking-widest text-xs">
+            Vos questions
+          </span>
+          <h2 className="text-slate-900 text-4xl font-black font-serif">
+            Foire aux questions
+          </h2>
+          <p className="text-slate-500 max-w-xl mx-auto">
+            Trouvez rapidement les réponses aux questions les plus fréquemment posées sur notre communauté.
+          </p>
+        </div>
+
+        {/* Accordéon */}
+        <div className="divide-y divide-slate-100 border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
+          {faqs.map((faq, i) => {
+            const estOuvert = ouvert === i
+            return (
+              <div key={i} className="bg-background-off">
+                <button
+                  onClick={() => setOuvert(estOuvert ? null : i)}
+                  className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left bg-background-off hover:bg-orange-50 transition-colors duration-200"
+                  aria-expanded={estOuvert}
+                >
+                  <span className="font-semibold text-slate-800 text-sm md:text-base">
+                    {faq.question}
+                  </span>
+                  <span
+                    className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                      estOuvert
+                        ? 'border-primary bg-primary text-white rotate-45'
+                        : 'border-slate-200 bg-white text-slate-400'
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                  </span>
+                </button>
+
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    estOuvert ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <p className="px-6 pb-6 text-slate-500 text-sm leading-relaxed">
+                    {faq.reponse}
+                  </p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Lien contact */}
+        <p className="text-center text-slate-500 text-sm">
+          Vous ne trouvez pas votre réponse ?{' '}
+          <a
+            href="/contact"
+            className="text-primary font-semibold hover:underline"
+          >
+            Contactez-nous →
+          </a>
+        </p>
+      </div>
+    </section>
+  )
+}

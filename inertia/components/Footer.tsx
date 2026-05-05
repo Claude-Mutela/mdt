@@ -89,6 +89,7 @@ export function Footer() {
               <li><Link href="/a-propos" className="text-[#968e89] text-sm hover:text-white transition-colors">Qui sommes-nous ?</Link></li>
               <li><Link href="/media" className="text-[#968e89] text-sm hover:text-white transition-colors">Médias</Link></li>
               <li><Link href="/ministries" className="text-[#968e89] text-sm hover:text-white transition-colors">Ministères</Link></li>
+              <li><Link href="/evenements" className="text-[#968e89] text-sm hover:text-white transition-colors">Events</Link></li>
               <li><Link href="/agenda" className="text-[#968e89] text-sm hover:text-white transition-colors">Agenda</Link></li>
               <li><Link href="/acadis" className="text-[#968e89] text-sm hover:text-white transition-colors">Acadis</Link></li>
               <li><Link href="/contact" className="text-[#968e89] text-sm hover:text-white transition-colors">Contact</Link></li>

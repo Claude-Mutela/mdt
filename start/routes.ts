@@ -56,6 +56,29 @@ const ministries = [
     content: "Femmes de Valeur est un cadre d'épanouissement, de prière et d'impact pour toutes les femmes. Nous croyons que chaque femme a une mission divine et nous travaillons à les équiper pour briller dans leur foyer, l'église et la société.",
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAnA16G33hSttxKgEVt1Nizt3G00UsdsezYwrYAYadKkra-n8rM12Dq298M-NXIpBV8I8iJvSqmi1be37eggD627xUPBp7HEpVBkC1q631l1Jh3_VjBfIgcPWVwXJcbMgYzL-lMKkCeki6syqv4akER3CR6R4l6T3O1zfy7kUy6_74TgZdBmjSoSD7F4HpQpFPU35P0jm9r6pJq2haJlOwzm_SAmXftvfWCjCvII7nzYxDg2YN25WzSvPSND0CxBy0fyqmMjry1",
     color: "bg-pink-500"
+  },
+  {
+    name: "Intercession & Prière MDT",
+    slug: "intercession-priere",
+    tag: "Prière",
+    desc: "Un programme de prières 24h/24, 7j/7 pour couvrir l'église, les familles et les nations dans la prière.",
+    content: `Le ministère d'Intercession & Prière MDT est le pilier spirituel de la Maison de Témoignages. Nous croyons que la prière est la clé de toute victoire et transformation.
+
+Notre programme Allô Prière MDT fonctionne 24 heures sur 24, 7 jours sur 7, avec des équipes de priants dédiés qui se relaient sans interruption pour intercéder pour :
+• Les membres et leurs familles
+• Les malades et personnes dans le besoin
+• Notre nation et ses dirigeants
+• L'Église universelle du Christ
+
+Que vous traversiez une épreuve, ayez besoin d'une percée spirituelle ou souhaitiez rejoindre notre équipe d'intercesseurs, nos lignes sont toujours ouvertes.
+
+Contactez-nous :
+📞 +243 97 000 0001
+📞 +243 82 000 0002
+
+Nous croyons que la prière change tout. Rejoignez le mouvement de prière continue de la MDT et vivez l'expérience de la puissance de Dieu dans votre vie.`,
+    img: "/temple-jeudi-etoko.jpeg",
+    color: "bg-[#2A9D8F]"
   }
 ]
 

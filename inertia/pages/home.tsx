@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Head, Link } from '@inertiajs/react'
-import { ArrowRight, Eye, Globe, Heart, Calendar, Clock, MapPin, Mail } from 'lucide-react'
+import { ArrowRight, Calendar, Clock, MapPin, Mail, Play } from 'lucide-react'
 
 const CulteCard = ({ day, title, description, time, location, highlight = false, tag = 'EN DIRECT' }: any) => {
   return (
@@ -187,88 +187,151 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Identity / Vision & Mission */}
-      <section className="py-12 lg:py-20 bg-background-off px-4">
-        <div className="max-w-6xl mx-auto space-y-12 lg:space-y-16">
-          <div className="text-center max-w-2xl mx-auto space-y-4">
-            <h2 className="text-slate-900 text-4xl font-black font-serif">Notre Identité</h2>
-            <p className="text-slate-500 text-lg">Ce qui nous anime et constitue le fondement de notre marche ensemble.</p>
+      {/* Latest Sermon Section */}
+      <section className="py-12 lg:py-20 bg-background-off px-4 border-y border-slate-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-10">
+            <div className="space-y-2">
+              <span className="text-primary font-black uppercase tracking-widest text-xs">Message récent</span>
+              <h2 className="text-slate-900 text-4xl font-black font-serif">Dernière prédication</h2>
+              <p className="text-slate-500">Revivez notre dernier moment d'enseignement et d'édification.</p>
+            </div>
+            <Link href="/allContent" className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all">
+              Voir tous les messages
+              <ArrowRight size={18} />
+            </Link>
           </div>
 
-          {/* Vision & Mission */}
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Vision — card primary */}
-            <div className="relative p-10 rounded-3xl bg-primary text-white overflow-hidden">
-              <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/10" />
-              <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mb-6">
-                  <Eye size={28} />
-                </div>
-                <h3 className="text-2xl font-black font-serif mb-4">Notre Vision</h3>
-                <p className="text-white/85 leading-relaxed">
-                  Voir des vies brisées transformées en témoignages vivants par la puissance de Dieu, et que ces témoignages deviennent une lumière pour Kinshasa, la RDC et les nations.
-                </p>
-              </div>
+          <div className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video max-w-5xl mx-auto">
+             <iframe 
+               className="w-full h-full"
+               src="https://www.youtube.com/embed/cxQjanw5br8" 
+               title="Dernière prédication"
+               frameBorder="0"
+               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+               allowFullScreen
+             ></iframe>
+          </div>
+          
+          <div className="mt-8 max-w-5xl mx-auto grid md:grid-cols-3 gap-8 items-start">
+            <div className="md:col-span-2 space-y-4">
+              <h3 className="text-2xl font-black font-serif text-slate-900">Titre du Message : La puissance de la foi</h3>
+              <p className="text-slate-600 leading-relaxed">
+                Un message puissant sur la manière dont notre foi peut transformer les obstacles en opportunités de témoignage. Découvrez comment activer les promesses de Dieu dans votre quotidien.
+              </p>
             </div>
-
-            {/* Mission — card outline */}
-            <div className="relative p-10 rounded-3xl border-2 border-primary/20 bg-white overflow-hidden hover:border-primary transition-colors">
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full bg-primary/5" />
-              <div className="relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
-                  <Globe size={28} className="text-primary" />
+            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+              <div className="flex items-center gap-3 text-slate-600">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Play size={18} className="text-primary" />
                 </div>
-                <h3 className="text-2xl font-black font-serif mb-4">Notre Mission</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  Prêcher l'évangile avec authenticité, faire des disciples engagés, et impacter notre génération en relevant des hommes et des femmes qui transforment leur environnement.
-                </p>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Orateur</p>
+                  <p className="font-bold text-slate-900">Pasteur Blonsky MBALA</p>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Nos Valeurs — grille 2×2 */}
-          <div>
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Heart size={20} className="text-primary" />
-              </div>
-              <h3 className="text-2xl font-black font-serif">Nos Valeurs</h3>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-5">
-              {[
-                {
-                  title: 'Vous êtes au cœur du plan de Dieu',
-                  desc: 'À PHILA Maison de Témoignages, nous croyons que vous n\'êtes pas ici par hasard. Vous êtes au centre du programme divin. Notre mission est de vous accompagner dans votre marche avec Dieu, vous aider à découvrir votre identité d\'enfant du Royaume, et à activer les dons et talents que le Seigneur a déposés en vous. Ici, vous êtes accueilli(e), reconnu(e) et propulsé(e).',
-                },
-                {
-                  title: 'Une croissance spirituelle guidée et profonde',
-                  desc: 'Nos programmes spirituels ont été conçus pour vous aider à approfondir votre relation avec Dieu, à grandir en grâce et à développer une foi solide, joyeuse et décomplexée. Notre objectif : que chaque membre devienne un témoin vivant de Christ, dans sa famille, dans son travail et dans sa génération.',
-                },
-                {
-                  title: 'Une église qui valorise la famille',
-                  desc: 'Nous croyons qu\'une famille forte est une bénédiction pour l\'Église et pour la société. C\'est pourquoi nous encourageons le service en couple, le soutien mutuel et l\'unité spirituelle dans les foyers. À travers des programmes adaptés, nous marchons aux côtés des familles pour bâtir des fondations solides, équilibrées et alignées sur la Parole.',
-                },
-                {
-                  title: 'Nous vous accueillons avec joie',
-                  desc: 'Envie d\'en savoir plus ou de faire un premier pas ? Nous serons ravis de vous rencontrer à PHILA Maison de Témoignages. Prenez contact avec notre équipe d\'accueil, visitez-nous en personne, ou fixez un rendez-vous pour une rencontre fraternelle et inspirante.',
-                },
-              ].map((v, i) => (
-                <div key={i} className="flex gap-4 p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
-                    <ArrowRight size={14} className="text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 mb-1">{v.title}</h4>
-                    <p className="text-sm text-slate-500 leading-relaxed">{v.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
       </section>
-      
+
+      {/* Allô Prière MDT Section */}
+      <section className="py-12 lg:py-20 bg-slate-900 px-4 overflow-hidden relative">
+        {/* Decorative glows */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          {/* Left – Description */}
+          <div className="space-y-8">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-3">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+              </span>
+              <span className="text-primary-light font-black uppercase tracking-widest text-xs">
+                Programme 24h/24 · 7j/7
+              </span>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-white text-4xl md:text-5xl font-black font-serif leading-tight">
+                Allô Prière <span className="text-primary-light">MDT</span>
+              </h2>
+              <p className="text-white/70 text-lg leading-relaxed">
+                La Maison de Témoignages vous offre un service de soutien dans la prière, disponible à toute heure du jour et de la nuit. Nos équipes d'intercesseurs se relaient sans interruption pour porter vos besoins devant le trône de la grâce.
+              </p>
+              <p className="text-white/60 text-base leading-relaxed">
+                Que vous traversiez une épreuve, cherchiez une percée spirituelle ou souhaitiez partager un sujet de prière, nos priants sont là pour vous. <span className="text-white font-semibold">Aucun besoin n'est trop grand ni trop petit pour Dieu.</span>
+              </p>
+            </div>
+
+            {/* Contact Numbers */}
+            <div className="space-y-4">
+              <p className="text-white/50 uppercase text-xs font-black tracking-widest">Nos numéros de contact</p>
+              <div className="grid sm:grid-cols-2 gap-3">
+                {[
+                  { label: "Ligne principale", number: "+243 97 000 0001" },
+                  { label: "Ligne secondaire", number: "+243 82 000 0002" },
+                ].map((contact) => (
+                  <a
+                    key={contact.number}
+                    href={`tel:${contact.number.replace(/\s/g, '')}`}
+                    className="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-primary/20 hover:border-primary/50 transition-all duration-300"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 group-hover:bg-primary/40 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-primary-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-white/40 text-[10px] uppercase tracking-wider font-bold">{contact.label}</p>
+                      <p className="text-white font-bold text-sm">{contact.number}</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <Link
+              href="/activites/intercession-priere"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-light transition-all shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5 transform duration-300"
+            >
+              En savoir plus
+              <ArrowRight size={18} />
+            </Link>
+          </div>
+
+          {/* Right – Image */}
+          <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group">
+            <img
+              src="/temple-jeudi-etoko.jpeg"
+              alt="Prière MDT - Intercession continue"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
+            {/* Badge overlay */}
+            <div className="absolute top-6 left-6 flex items-center gap-2 bg-black/50 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
+              </span>
+              <span className="text-white text-xs font-bold">En prière maintenant</span>
+            </div>
+            {/* Bottom card */}
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-2">
+                <p className="text-primary-light font-black uppercase text-xs tracking-widest">Programme de prières</p>
+                <p className="text-white font-bold text-xl font-serif">24 heures sur 24 · 7 jours sur 7</p>
+                <p className="text-white/60 text-sm">Des intercesseurs en veille permanente pour vous</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Ministries Slider Section */}
       <section className="py-12 lg:py-20 bg-background-off px-4 overflow-hidden border-t border-slate-100">
         <div className="max-w-6xl mx-auto mb-8 lg:mb-10">

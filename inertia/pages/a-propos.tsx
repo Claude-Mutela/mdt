@@ -1,29 +1,13 @@
 import HeroAbout from '../components/HeroAbout'
 import { Head } from '@inertiajs/react'
 import { useState } from 'react'
+import { Eye, Globe, Heart, ArrowRight } from 'lucide-react'
 
-const team = [
-  {
-    nom: 'Blonsky MBALA',
-    role: 'Pasteur Principal',
-    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop',
-  },
-  {
-    nom: 'Dr. Jean Mukendi',
-    role: 'Doyen des Études',
-    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop',
-  },
-  {
-    nom: 'Rachel Kabeya',
-    role: 'Responsable Pédagogique',
-    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop',
-  },
-  {
-    nom: 'David Mulumba',
-    role: 'Coordinateur de la Vie Étudiante',
-    photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop',
-  },
-]
+const pastoralCouple = {
+  nom: 'Pasteur Blonsky & Maman Lydia',
+  role: 'Couple Pastoral',
+  photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop',
+}
 
 const faqs = [
   {
@@ -79,38 +63,112 @@ export default function About() {
           </div>
         </section>
 
-        {/* ── Équipe ────────────────────────────────────────────────── */}
+        {/* Identity / Vision & Mission */}
+        <section className="py-12 lg:py-20 bg-background-off px-4">
+          <div className="max-w-6xl mx-auto space-y-12 lg:space-y-16">
+            <div className="text-center max-w-2xl mx-auto space-y-4">
+              <h2 className="text-slate-900 text-4xl font-black font-serif">Notre Identité</h2>
+              <p className="text-slate-500 text-lg">Ce qui nous anime et constitue le fondement de notre marche ensemble.</p>
+            </div>
+
+            {/* Vision & Mission */}
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Vision — card primary */}
+              <div className="relative p-10 rounded-3xl bg-primary text-white overflow-hidden">
+                <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/10" />
+                <div className="relative z-10">
+                  <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center mb-6">
+                    <Eye size={28} />
+                  </div>
+                  <h3 className="text-2xl font-black font-serif mb-4">Notre Vision</h3>
+                  <p className="text-white/85 leading-relaxed">
+                    Voir des vies brisées transformées en témoignages vivants par la puissance de Dieu, et que ces témoignages deviennent une lumière pour Kinshasa, la RDC et les nations.
+                  </p>
+                </div>
+              </div>
+
+              {/* Mission — card outline */}
+              <div className="relative p-10 rounded-3xl border-2 border-primary/20 bg-white overflow-hidden hover:border-primary transition-colors">
+                <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full bg-primary/5" />
+                <div className="relative z-10">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                    <Globe size={28} className="text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-black font-serif mb-4">Notre Mission</h3>
+                  <p className="text-slate-600 leading-relaxed">
+                    Prêcher l'évangile avec authenticité, faire des disciples engagés, et impacter notre génération en relevant des hommes et des femmes qui transforment leur environnement.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Nos Valeurs — grille 2×2 */}
+            <div>
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Heart size={20} className="text-primary" />
+                </div>
+                <h3 className="text-2xl font-black font-serif">Nos Valeurs</h3>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-5">
+                {[
+                  {
+                    title: 'Vous êtes au cœur du plan de Dieu',
+                    desc: 'À PHILA Maison de Témoignages, nous croyons que vous n\'êtes pas ici par hasard. Vous êtes au centre du programme divin. Notre mission est de vous accompagner dans votre marche avec Dieu, vous aider à découvrir votre identité d\'enfant du Royaume, et à activer les dons et talents que le Seigneur a déposés en vous. Ici, vous êtes accueilli(e), reconnu(e) et propulsé(e).',
+                  },
+                  {
+                    title: 'Une croissance spirituelle guidée et profonde',
+                    desc: 'Nos programmes spirituels ont été conçus pour vous aider à approfondir votre relation avec Dieu, à grandir en grâce et à développer une foi solide, joyeuse et décomplexée. Notre objectif : que chaque membre devienne un témoin vivant de Christ, dans sa famille, dans son travail et dans sa génération.',
+                  },
+                  {
+                    title: 'Une église qui valorise la famille',
+                    desc: 'Nous croyons qu\'une famille forte est une bénédiction pour l\'Église et pour la société. C\'est pourquoi nous encourageons le service en couple, le soutien mutuel et l\'unité spirituelle dans les foyers. À travers des programmes adaptés, nous marchons aux côtés des familles pour bâtir des fondations solides, équilibrées et alignées sur la Parole.',
+                  },
+                  {
+                    title: 'Nous vous accueillons avec joie',
+                    desc: 'Envie d\'en savoir plus ou de faire un premier pas ? Nous serons ravis de vous rencontrer à PHILA Maison de Témoignages. Prenez contact avec notre équipe d\'accueil, visitez-nous en personne, ou fixez un rendez-vous pour une rencontre fraternelle et inspirante.',
+                  },
+                ].map((v, i) => (
+                  <div key={i} className="flex gap-4 p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
+                      <ArrowRight size={14} className="text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900 mb-1">{v.title}</h4>
+                      <p className="text-sm text-slate-500 leading-relaxed">{v.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ── Couple Pastoral ────────────────────────────────────────── */}
         <section className="py-24 bg-background-off px-4">
-          <div className="max-w-7xl mx-auto space-y-12">
+          <div className="max-w-4xl mx-auto space-y-12">
             <div className="text-center space-y-3">
-              <span className="text-primary font-black uppercase tracking-widest text-xs">Ceux qui servent</span>
-              <h2 className="text-slate-900 text-4xl font-black font-serif">Notre équipe pastorale</h2>
+              <span className="text-primary font-black uppercase tracking-widest text-xs">Ceux qui nous dirigent</span>
+              <h2 className="text-slate-900 text-4xl font-black font-serif">Notre couple pastoral</h2>
               <p className="text-slate-500 max-w-xl mx-auto">
                 Des serviteurs dévoués qui accompagnent chaque membre avec amour, sagesse et humilité.
               </p>
             </div>
-            <div className="grid md:grid-cols-4 gap-8">
-                {team.map((membre, i) => (
-                  <div key={i} className="group">
-                    {/* Carte avec infos sur l'image */}
-                    <div className="relative aspect-[4/5] overflow-hidden rounded-[20px] shadow-sm">
-                      <div className="absolute inset-0 bg-gray-200 animate-pulse -z-10" />
-                      <img
-                        src={membre.photo}
-                        alt={membre.nom}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      {/* Gradient toujours visible pour la lisibilité */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none"></div>
-                      
-                      {/* Infos sur l'image */}
-                      <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col pointer-events-none">
-                        <span className="text-primary font-bold text-center text-xs uppercase tracking-widest mb-1">{membre.role}</span>
-                        <h3 className="text-xl md:text-2xl font-bold text-center text-white">{membre.nom}</h3>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+            
+            <div className="max-w-md mx-auto group">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[30px] shadow-2xl">
+                <img
+                  src={pastoralCouple.photo}
+                  alt={pastoralCouple.nom}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col text-center">
+                  <span className="text-primary font-bold text-xs uppercase tracking-widest mb-2">{pastoralCouple.role}</span>
+                  <h3 className="text-2xl md:text-3xl font-black text-white">{pastoralCouple.nom}</h3>
+                </div>
+              </div>
             </div>
           </div>
         </section>

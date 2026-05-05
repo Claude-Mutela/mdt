@@ -33,7 +33,7 @@ export default function DetailActivite({ activity }: Props) {
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
             <div className="max-w-4xl mx-auto space-y-4">
               <Link 
-                href="/activites" 
+                href="/ministries" 
                 className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm font-bold group"
               >
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -135,7 +135,7 @@ export default function DetailActivite({ activity }: Props) {
               Chaque membre de la Maison de Témoignages est appelé à servir selon ses dons.
             </p>
             <Link 
-              href="/activites" 
+              href="/ministries" 
               className="inline-flex items-center gap-2 bg-white text-slate-900 font-bold px-8 py-4 rounded-xl hover:bg-slate-100 transition-all"
             >
               Découvrir d'autres ministères

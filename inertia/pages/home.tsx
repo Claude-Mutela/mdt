@@ -352,7 +352,7 @@ export default function Home() {
                 <div className="p-6 flex flex-col flex-grow">
                   <h3 className="font-serif font-black text-xl text-slate-900 mb-2 group-hover:text-primary transition-colors">{min.title}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed mb-6 flex-grow">{min.desc}</p>
-                  <Link href="/activites" className="text-primary font-bold text-sm hover:text-primary-light transition-colors flex items-center gap-1 w-max group-hover:gap-2">
+                  <Link href="/ministries" className="text-primary font-bold text-sm hover:text-primary-light transition-colors flex items-center gap-1 w-max group-hover:gap-2">
                     En savoir plus
                     <ArrowRight size={16} />
                   </Link>

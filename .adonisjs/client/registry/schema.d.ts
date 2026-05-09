@@ -127,6 +127,18 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'cellules': {
+    methods: ["GET","HEAD"]
+    pattern: '/cellules'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
   'contact': {
     methods: ["GET","HEAD"]
     pattern: '/contact'

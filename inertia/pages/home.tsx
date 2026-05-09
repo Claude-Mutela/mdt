@@ -363,6 +363,56 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Cellules Section */}
+      <section className="py-12 lg:py-20 bg-primary/5 px-4 overflow-hidden relative">
+        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          
+          {/* Left – Image */}
+          <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group order-2 lg:order-1">
+            <img
+              src="/hospitalite-mdt.jpeg"
+              alt="Cellules de maison"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="bg-white/90 backdrop-blur-md border border-white/20 rounded-2xl p-5 space-y-2 shadow-lg">
+                <p className="text-primary font-black uppercase text-xs tracking-widest">Proximité</p>
+                <p className="text-slate-900 font-bold text-xl font-serif">Une famille spirituelle près de chez vous</p>
+                <p className="text-slate-600 text-sm">Des rencontres conviviales pour grandir ensemble</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right – Description */}
+          <div className="space-y-8 order-1 lg:order-2">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/10 text-primary rounded-full">
+              <span className="font-black uppercase tracking-widest text-xs">Communion Fraternelle</span>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-slate-900 text-4xl md:text-5xl font-black font-serif leading-tight">
+                Nos Cellules de <span className="text-primary">Maison</span>
+              </h2>
+              <p className="text-slate-600 text-lg leading-relaxed">
+                L'église, ce n'est pas seulement le dimanche au temple ! Rejoignez l'une de nos cellules réparties à travers la ville pour vivre la communion fraternelle, partager la Parole et prier ensemble dans un cadre plus intime.
+              </p>
+              <p className="text-slate-600 text-base leading-relaxed">
+                Les cellules de maison sont le lieu idéal pour grandir spirituellement, tisser des liens forts avec d'autres croyants et développer vos dons. Il y a forcément une cellule près de chez vous.
+              </p>
+            </div>
+
+            <Link
+              href="/cellules"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-300"
+            >
+              En savoir plus
+              <ArrowRight size={18} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Schedule Section */}
       <section id="cultes" className="py-12 lg:py-20 bg-white px-4">
         <div className="max-w-6xl mx-auto">

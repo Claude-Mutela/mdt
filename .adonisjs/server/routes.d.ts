@@ -14,6 +14,7 @@ export type ScannedRoutes = {
     'evenements': { paramsTuple?: []; params?: {} }
     'evenements.detail': { paramsTuple: [ParamValue]; params: {'slug': ParamValue} }
     'agenda': { paramsTuple?: []; params?: {} }
+    'cellules': { paramsTuple?: []; params?: {} }
     'contact': { paramsTuple?: []; params?: {} }
     'rendez-vous': { paramsTuple?: []; params?: {} }
     'donation': { paramsTuple?: []; params?: {} }
@@ -42,6 +43,7 @@ export type ScannedRoutes = {
     'evenements': { paramsTuple?: []; params?: {} }
     'evenements.detail': { paramsTuple: [ParamValue]; params: {'slug': ParamValue} }
     'agenda': { paramsTuple?: []; params?: {} }
+    'cellules': { paramsTuple?: []; params?: {} }
     'contact': { paramsTuple?: []; params?: {} }
     'rendez-vous': { paramsTuple?: []; params?: {} }
     'donation': { paramsTuple?: []; params?: {} }
@@ -67,6 +69,7 @@ export type ScannedRoutes = {
     'evenements': { paramsTuple?: []; params?: {} }
     'evenements.detail': { paramsTuple: [ParamValue]; params: {'slug': ParamValue} }
     'agenda': { paramsTuple?: []; params?: {} }
+    'cellules': { paramsTuple?: []; params?: {} }
     'contact': { paramsTuple?: []; params?: {} }
     'rendez-vous': { paramsTuple?: []; params?: {} }
     'donation': { paramsTuple?: []; params?: {} }

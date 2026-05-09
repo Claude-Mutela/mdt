@@ -66,6 +66,12 @@ const routes = {
     tokens: [{"old":"/agenda","type":0,"val":"agenda","end":""}],
     types: placeholder as Registry['agenda']['types'],
   },
+  'cellules': {
+    methods: ["GET","HEAD"],
+    pattern: '/cellules',
+    tokens: [{"old":"/cellules","type":0,"val":"cellules","end":""}],
+    types: placeholder as Registry['cellules']['types'],
+  },
   'contact': {
     methods: ["GET","HEAD"],
     pattern: '/contact',

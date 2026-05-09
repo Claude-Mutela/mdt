@@ -150,6 +150,12 @@ const routes = {
     tokens: [{"old":"/admin/galerie","type":0,"val":"admin","end":""},{"old":"/admin/galerie","type":0,"val":"galerie","end":""}],
     types: placeholder as Registry['admin.galerie']['types'],
   },
+  'admin.donations': {
+    methods: ["GET","HEAD"],
+    pattern: '/admin/donations',
+    tokens: [{"old":"/admin/donations","type":0,"val":"admin","end":""},{"old":"/admin/donations","type":0,"val":"donations","end":""}],
+    types: placeholder as Registry['admin.donations']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

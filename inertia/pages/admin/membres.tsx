@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
-import { Plus, Search, Filter, Pencil, Trash2, X, Check } from 'lucide-react'
+import { Plus, Search, Filter, Pencil, Trash2, X, Check, Printer } from 'lucide-react'
 
 type Statut = 'Actif' | 'Inactif'
 
@@ -65,9 +65,21 @@ export default function AdminMembres() {
     closeModal()
   }
 
+  function handlePrint() {
+    window.print()
+  }
+
   return (
     <>
       <Head title="Membres — Admin Phila MDT" />
+      <style>{`
+        @media print {
+          body * { visibility: hidden; }
+          .print-section, .print-section * { visibility: visible; }
+          .print-section { position: absolute; left: 0; top: 0; width: 100%; }
+          .no-print { display: none !important; }
+        }
+      `}</style>
       <AdminLayout title="Gestion des membres">
         {/* ── Toolbar ── */}
         <div className="flex flex-wrap gap-3 mb-6">
@@ -94,13 +106,16 @@ export default function AdminMembres() {
               <option>Tous</option><option>Actif</option><option>Inactif</option>
             </select>
           </div>
+          <button onClick={handlePrint} className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors border border-slate-700">
+            <Printer size={16} /> Imprimer
+          </button>
           <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
             <Plus size={16} /> Ajouter
           </button>
         </div>
 
         {/* ── Table ── */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden print-section">
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
             <h2 className="text-white font-bold">Membres <span className="text-slate-400 font-normal text-sm">({filtered.length})</span></h2>
           </div>
@@ -108,9 +123,10 @@ export default function AdminMembres() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-800">
-                  {['Membre', 'Téléphone', 'Email', 'Ministère', 'Date', 'Statut', 'Actions'].map((h) => (
+                  {['Membre', 'Téléphone', 'Email', 'Ministère', 'Date', 'Statut'].map((h) => (
                     <th key={h} className="text-left text-slate-400 font-medium px-6 py-3 text-xs uppercase tracking-wider whitespace-nowrap">{h}</th>
                   ))}
+                  <th className="text-left text-slate-400 font-medium px-6 py-3 text-xs uppercase tracking-wider whitespace-nowrap no-print">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -135,7 +151,7 @@ export default function AdminMembres() {
                           : 'bg-slate-700 text-slate-400 border border-slate-600'
                       }`}>{m.statut}</span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 no-print">
                       <div className="flex items-center gap-2">
                         <button onClick={() => openEdit(m)} className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
                           <Pencil size={14} />

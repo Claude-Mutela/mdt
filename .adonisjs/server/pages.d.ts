@@ -15,6 +15,7 @@ declare module '@adonisjs/inertia/types' {
     'a-propos': ExtractProps<(typeof import('../../inertia/pages/a-propos.tsx'))['default']>
     'admin/agenda': ExtractProps<(typeof import('../../inertia/pages/admin/agenda.tsx'))['default']>
     'admin/dashboard': ExtractProps<(typeof import('../../inertia/pages/admin/dashboard.tsx'))['default']>
+    'admin/donations': ExtractProps<(typeof import('../../inertia/pages/admin/donations.tsx'))['default']>
     'admin/evenements': ExtractProps<(typeof import('../../inertia/pages/admin/evenements.tsx'))['default']>
     'admin/galerie': ExtractProps<(typeof import('../../inertia/pages/admin/galerie.tsx'))['default']>
     'admin/medias': ExtractProps<(typeof import('../../inertia/pages/admin/medias.tsx'))['default']>

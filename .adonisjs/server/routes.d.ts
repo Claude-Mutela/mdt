@@ -28,6 +28,7 @@ export type ScannedRoutes = {
     'admin.evenements': { paramsTuple?: []; params?: {} }
     'admin.medias': { paramsTuple?: []; params?: {} }
     'admin.galerie': { paramsTuple?: []; params?: {} }
+    'admin.donations': { paramsTuple?: []; params?: {} }
   }
   GET: {
     'home': { paramsTuple?: []; params?: {} }
@@ -51,6 +52,7 @@ export type ScannedRoutes = {
     'admin.evenements': { paramsTuple?: []; params?: {} }
     'admin.medias': { paramsTuple?: []; params?: {} }
     'admin.galerie': { paramsTuple?: []; params?: {} }
+    'admin.donations': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
@@ -74,6 +76,7 @@ export type ScannedRoutes = {
     'admin.evenements': { paramsTuple?: []; params?: {} }
     'admin.medias': { paramsTuple?: []; params?: {} }
     'admin.galerie': { paramsTuple?: []; params?: {} }
+    'admin.donations': { paramsTuple?: []; params?: {} }
   }
   POST: {
     'new_account.store': { paramsTuple?: []; params?: {} }

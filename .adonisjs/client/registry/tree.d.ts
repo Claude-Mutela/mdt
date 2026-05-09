@@ -34,5 +34,6 @@ export interface ApiDefinition {
     evenements: typeof routes['admin.evenements']
     medias: typeof routes['admin.medias']
     galerie: typeof routes['admin.galerie']
+    donations: typeof routes['admin.donations']
   }
 }

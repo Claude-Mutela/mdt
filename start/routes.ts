@@ -169,6 +169,7 @@ router
     router.on('/evenements').renderInertia('admin/evenements', {}).as('admin.evenements')
     router.on('/medias').renderInertia('admin/medias', {}).as('admin.medias')
     router.on('/galerie').renderInertia('admin/galerie', {}).as('admin.galerie')
+    router.on('/donations').renderInertia('admin/donations', {}).as('admin.donations')
   })
   .prefix('/admin')
 

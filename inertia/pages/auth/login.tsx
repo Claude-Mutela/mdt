@@ -57,7 +57,7 @@ export default function Login() {
                 />
               </div>
               <h1 className="text-3xl font-serif text-white text-center tracking-tight">
-                Phila <span className="text-primary-light italic">MDT</span>
+                Phila <span className="text-primary-light">MDT</span>
               </h1>
               <p className="mt-2 text-white/70 text-sm font-light">Espace Membres & Administration</p>
             </Link>
@@ -67,7 +67,7 @@ export default function Login() {
           <div className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl border border-white/40 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-forwards">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Bon retour !</h2>
-              <p className="text-gray-500 text-sm">Veuillez entrer vos identifiants pour vous connecter.</p>
+              <p className="text-gray-500 text-sm">Entrez vos identifiants pour vous connecter.</p>
             </div>
 
             <Form route="session.store">
@@ -115,12 +115,12 @@ export default function Login() {
                       >
                         Mot de passe
                       </label>
-                      <Link 
+                      {/* <Link 
                         href="/auth/forgot-password" 
                         className="text-xs font-semibold text-primary hover:text-primary-dark transition-colors"
                       >
                         Oublié ?
-                      </Link>
+                      </Link> */}
                     </div>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
@@ -155,7 +155,7 @@ export default function Login() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between">
+                  {/* <div className="flex items-center justify-between">
                     <label className="flex items-center cursor-pointer group">
                       <div className="relative flex items-center">
                         <input
@@ -170,7 +170,7 @@ export default function Login() {
                         <span className="ml-2 text-sm text-gray-600 group-hover:text-gray-900 transition-colors">Se souvenir de moi</span>
                       </div>
                     </label>
-                  </div>
+                  </div> */}
 
                   {/* Submit Button */}
                   <button
@@ -185,7 +185,7 @@ export default function Login() {
                     <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </button>
 
-                  <div className="pt-4 text-center">
+                  {/* <div className="pt-4 text-center">
                     <p className="text-sm text-gray-500">
                       Pas encore de compte ?{" "}
                       <Link 
@@ -195,7 +195,7 @@ export default function Login() {
                         Créer un accès
                       </Link>
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </Form>

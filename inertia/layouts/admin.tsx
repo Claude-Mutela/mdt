@@ -13,6 +13,7 @@ import {
   X,
   Bell,
   ChevronRight,
+  HeartHandshake,
 } from 'lucide-react'
 
 const navItems = [
@@ -23,6 +24,7 @@ const navItems = [
   { label: 'Événements',  href: '/admin/evenements',  icon: Ticket },
   { label: 'Médias',      href: '/admin/medias',      icon: PlayCircle },
   { label: 'Galerie',     href: '/admin/galerie',     icon: Image },
+  { label: 'Dons',        href: '/admin/donations',   icon: HeartHandshake },
 ]
 
 interface AdminLayoutProps {
@@ -44,8 +46,8 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-5 border-b border-slate-800">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-            <span className="text-white font-black text-sm">P</span>
+          <div className="w-9 h-9 shrink-0 flex items-center justify-center bg-white/5 rounded-xl border border-white/10 p-1">
+            <img src="/MDT LOGO ORANGE.png" alt="Phila MDT" className="w-full h-full object-contain drop-shadow-md" />
           </div>
           {sidebarOpen && (
             <span className="font-black text-white tracking-tight leading-tight text-sm">

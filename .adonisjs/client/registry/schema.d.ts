@@ -295,4 +295,16 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'admin.donations': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/donations'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
 }

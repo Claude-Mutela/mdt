@@ -165,6 +165,7 @@ router
 router
   .group(() => {
     router.on('/').renderInertia('admin/dashboard', {}).as('admin.dashboard')
+    router.on('/users').renderInertia('admin/users', {}).as('admin.users')
     router.on('/membres').renderInertia('admin/membres', {}).as('admin.membres')
     router.on('/agenda').renderInertia('admin/agenda', {}).as('admin.agenda')
     router.on('/ministeres').renderInertia('admin/ministeres', {}).as('admin.ministeres')

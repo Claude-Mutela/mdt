@@ -25,6 +25,7 @@ declare module '@adonisjs/inertia/types' {
     'allContent': ExtractProps<(typeof import('../../inertia/pages/allContent.tsx'))['default']>
     'auth/login': ExtractProps<(typeof import('../../inertia/pages/auth/login.tsx'))['default']>
     'auth/signup': ExtractProps<(typeof import('../../inertia/pages/auth/signup.tsx'))['default']>
+    'cellules': ExtractProps<(typeof import('../../inertia/pages/cellules.tsx'))['default']>
     'contact': ExtractProps<(typeof import('../../inertia/pages/contact.tsx'))['default']>
     'detail-activite': ExtractProps<(typeof import('../../inertia/pages/detail-activite.tsx'))['default']>
     'detail-evenement': ExtractProps<(typeof import('../../inertia/pages/detail-evenement.tsx'))['default']>
@@ -37,6 +38,5 @@ declare module '@adonisjs/inertia/types' {
     'media': ExtractProps<(typeof import('../../inertia/pages/media.tsx'))['default']>
     'ministries': ExtractProps<(typeof import('../../inertia/pages/ministries.tsx'))['default']>
     'rendez-vous': ExtractProps<(typeof import('../../inertia/pages/rendez-vous.tsx'))['default']>
-    'cellules': ExtractProps<(typeof import('../../inertia/pages/cellules.tsx'))['default']>
   }
 }

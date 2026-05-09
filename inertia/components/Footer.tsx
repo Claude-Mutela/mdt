@@ -104,6 +104,7 @@ export function Footer() {
               <li><Link href="/ministries" className="text-[#968e89] text-sm hover:text-white transition-colors">Ministères</Link></li>
               <li><Link href="/media" className="text-[#968e89] text-sm hover:text-white transition-colors">Vie de la communauté</Link></li>
               <li><Link href="/donation" className="text-[#968e89] text-sm hover:text-white transition-colors">Faire un don</Link></li>
+              <li><Link href="/rendez-vous" className="text-[#968e89] text-sm hover:text-white transition-colors">Rendez-vous Pastoral</Link></li>
               <li><Link href="/a-propos/#faq" className="text-[#968e89] text-sm hover:text-white transition-colors">FAQ</Link></li>
             </ul>
           </div>

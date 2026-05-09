@@ -141,6 +141,7 @@ router.get('/evenements/:slug', ({ params, inertia }) => {
 router.on('/agenda').renderInertia('agenda', {}).as('agenda')
 
 router.on('/contact').renderInertia('contact', {}).as('contact')
+router.on('/rendez-vous').renderInertia('rendez-vous', {}).as('rendez-vous')
 router.on('/donation').renderInertia('donation', {}).as('donation')
 
 router

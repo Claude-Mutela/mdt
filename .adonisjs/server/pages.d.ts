@@ -36,5 +36,6 @@ declare module '@adonisjs/inertia/types' {
     'home': ExtractProps<(typeof import('../../inertia/pages/home.tsx'))['default']>
     'media': ExtractProps<(typeof import('../../inertia/pages/media.tsx'))['default']>
     'ministries': ExtractProps<(typeof import('../../inertia/pages/ministries.tsx'))['default']>
+    'rendez-vous': ExtractProps<(typeof import('../../inertia/pages/rendez-vous.tsx'))['default']>
   }
 }

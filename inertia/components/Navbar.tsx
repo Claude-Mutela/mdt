@@ -14,6 +14,7 @@ const Navbar: React.FC = () => {
     { name: 'Events', path: '/evenements' },
     { name: 'Agenda', path: '/agenda' },
     { name: 'Acadis', path: '/acadis' },
+    { name: 'Rendez-vous', path: '/rendez-vous' },
     { name: 'Contact', path: '/contact' },
   ];
 
@@ -21,7 +22,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#EAE5DF]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-12">
         <div className="flex justify-between items-center h-20">
           <Link href="/" className="flex items-center gap-3">
             <div className="h-10 w-10 overflow-hidden rounded-full shadow-sm border border-primary/10">
@@ -38,8 +39,8 @@ const Navbar: React.FC = () => {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-8">
-            <div className="flex items-center gap-6">
+          <div className="hidden xl:flex items-center gap-6">
+            <div className="flex items-center gap-4 xl:gap-5">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
@@ -62,7 +63,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Mobile toggle */}
-          <div className="lg:hidden flex items-center">
+          <div className="xl:hidden flex items-center">
             <button onClick={() => setIsOpen(!isOpen)} className="text-primary p-2">
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -72,7 +73,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Nav */}
       {isOpen && (
-        <div className="lg:hidden bg-white border-b border-[#EAE5DF] px-4 py-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="xl:hidden bg-white border-b border-[#EAE5DF] px-4 py-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
           {navLinks.map((link) => (
             <Link
               key={link.path}

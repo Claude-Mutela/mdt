@@ -16,6 +16,7 @@ export interface ApiDefinition {
   }
   agenda: typeof routes['agenda']
   contact: typeof routes['contact']
+  rendezVous: typeof routes['rendez-vous']
   donation: typeof routes['donation']
   newAccount: {
     create: typeof routes['new_account.create']

@@ -15,6 +15,7 @@ export type ScannedRoutes = {
     'evenements.detail': { paramsTuple: [ParamValue]; params: {'slug': ParamValue} }
     'agenda': { paramsTuple?: []; params?: {} }
     'contact': { paramsTuple?: []; params?: {} }
+    'rendez-vous': { paramsTuple?: []; params?: {} }
     'donation': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'new_account.store': { paramsTuple?: []; params?: {} }
@@ -42,6 +43,7 @@ export type ScannedRoutes = {
     'evenements.detail': { paramsTuple: [ParamValue]; params: {'slug': ParamValue} }
     'agenda': { paramsTuple?: []; params?: {} }
     'contact': { paramsTuple?: []; params?: {} }
+    'rendez-vous': { paramsTuple?: []; params?: {} }
     'donation': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
@@ -66,6 +68,7 @@ export type ScannedRoutes = {
     'evenements.detail': { paramsTuple: [ParamValue]; params: {'slug': ParamValue} }
     'agenda': { paramsTuple?: []; params?: {} }
     'contact': { paramsTuple?: []; params?: {} }
+    'rendez-vous': { paramsTuple?: []; params?: {} }
     'donation': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }

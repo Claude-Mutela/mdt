@@ -139,6 +139,18 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'rendez-vous': {
+    methods: ["GET","HEAD"]
+    pattern: '/rendez-vous'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
   'donation': {
     methods: ["GET","HEAD"]
     pattern: '/donation'

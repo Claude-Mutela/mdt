@@ -72,6 +72,12 @@ const routes = {
     tokens: [{"old":"/contact","type":0,"val":"contact","end":""}],
     types: placeholder as Registry['contact']['types'],
   },
+  'rendez-vous': {
+    methods: ["GET","HEAD"],
+    pattern: '/rendez-vous',
+    tokens: [{"old":"/rendez-vous","type":0,"val":"rendez-vous","end":""}],
+    types: placeholder as Registry['rendez-vous']['types'],
+  },
   'donation': {
     methods: ["GET","HEAD"],
     pattern: '/donation',

@@ -14,10 +14,12 @@ import {
   Bell,
   ChevronRight,
   HeartHandshake,
+  UserCog,
 } from 'lucide-react'
 
 const navItems = [
   { label: 'Dashboard',   href: '/admin',            icon: LayoutDashboard },
+  { label: 'Utilisateurs',href: '/admin/users',      icon: UserCog },
   { label: 'Membres',     href: '/admin/membres',     icon: Users },
   { label: 'Agenda',      href: '/admin/agenda',      icon: CalendarDays },
   { label: 'Ministères',  href: '/admin/ministeres',  icon: Church },

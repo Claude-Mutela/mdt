@@ -30,6 +30,7 @@ export interface ApiDefinition {
   }
   admin: {
     dashboard: typeof routes['admin.dashboard']
+    users: typeof routes['admin.users']
     membres: typeof routes['admin.membres']
     agenda: typeof routes['admin.agenda']
     ministeres: typeof routes['admin.ministeres']

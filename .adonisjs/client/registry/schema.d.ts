@@ -247,6 +247,18 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'admin.users': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/users'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
   'admin.membres': {
     methods: ["GET","HEAD"]
     pattern: '/admin/membres'

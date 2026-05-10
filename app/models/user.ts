@@ -2,8 +2,16 @@ import { UserSchema } from '#database/schema'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
+import { beforeSave } from '@adonisjs/lucid/orm'
 
 export default class User extends compose(UserSchema, withAuthFinder(hash)) {
+  @beforeSave()
+  public static async concatenateFullName(user: User) {
+    if (user.$dirty.firstname || user.$dirty.lastname) {
+      user.fullName = `${user.firstname || ''} ${user.lastname || ''}`.trim()
+    }
+  }
+
   get initials() {
     const [first, last] = this.fullName ? this.fullName.split(' ') : this.email.split('@')
     if (first && last) {

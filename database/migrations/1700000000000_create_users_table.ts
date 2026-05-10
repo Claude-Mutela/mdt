@@ -16,7 +16,7 @@ export default class extends BaseSchema {
         .notNullable()
         .defaultTo('actif')
       table
-        .enu('role', ['admin', 'user', 'moderateur', 'pasteur'])
+        .enu('role', ['admin', 'user', 'pasteur', 'superadmin'])
         .notNullable()
         .defaultTo('user')
       table.timestamp('created_at').notNullable()

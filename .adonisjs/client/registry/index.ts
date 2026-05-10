@@ -126,11 +126,29 @@ const routes = {
     tokens: [{"old":"/admin","type":0,"val":"admin","end":""}],
     types: placeholder as Registry['admin.dashboard']['types'],
   },
-  'admin.users': {
+  'admin.users.index': {
     methods: ["GET","HEAD"],
     pattern: '/admin/users',
     tokens: [{"old":"/admin/users","type":0,"val":"admin","end":""},{"old":"/admin/users","type":0,"val":"users","end":""}],
-    types: placeholder as Registry['admin.users']['types'],
+    types: placeholder as Registry['admin.users.index']['types'],
+  },
+  'admin.users.store': {
+    methods: ["POST"],
+    pattern: '/admin/users',
+    tokens: [{"old":"/admin/users","type":0,"val":"admin","end":""},{"old":"/admin/users","type":0,"val":"users","end":""}],
+    types: placeholder as Registry['admin.users.store']['types'],
+  },
+  'admin.users.update': {
+    methods: ["PUT"],
+    pattern: '/admin/users/:id',
+    tokens: [{"old":"/admin/users/:id","type":0,"val":"admin","end":""},{"old":"/admin/users/:id","type":0,"val":"users","end":""},{"old":"/admin/users/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['admin.users.update']['types'],
+  },
+  'admin.users.destroy': {
+    methods: ["DELETE"],
+    pattern: '/admin/users/:id',
+    tokens: [{"old":"/admin/users/:id","type":0,"val":"admin","end":""},{"old":"/admin/users/:id","type":0,"val":"users","end":""},{"old":"/admin/users/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['admin.users.destroy']['types'],
   },
   'admin.membres': {
     methods: ["GET","HEAD"],

@@ -1,23 +1,25 @@
-/*
-|--------------------------------------------------------------------------
-| Validator file
-|--------------------------------------------------------------------------
-|
-| The validator file is used for configuring global transforms for VineJS.
-| The transform below converts all VineJS date outputs from JavaScript
-| Date objects to Luxon DateTime instances, so that validated dates are
-| ready to use with Lucid models and other parts of the app that expect
-| Luxon DateTime.
-|
-*/
+import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 
-import { DateTime } from 'luxon'
-import { VineDate } from '@vinejs/vine'
-
-declare module '@vinejs/vine/types' {
-  interface VineGlobalTransforms {
-    date: DateTime
-  }
-}
-
-VineDate.transform((value) => DateTime.fromJSDate(value))
+/**
+ * Configuration des messages d'erreur en français pour VineJS
+ */
+vine.messagesProvider = new SimpleMessagesProvider({
+  // Messages par défaut pour toutes les règles
+  'required': 'Le champ {{ field }} est obligatoire',
+  'email': 'L\'adresse email doit être une adresse valide',
+  'minLength': 'Le champ {{ field }} doit avoir au moins {{ min }} caractères',
+  'maxLength': 'Le champ {{ field }} ne doit pas dépasser {{ max }} caractères',
+  'unique': 'Cette valeur est déjà utilisée par un autre compte',
+  'enum': 'La valeur sélectionnée pour {{ field }} est invalide',
+  'confirmed': 'La confirmation du champ {{ field }} ne correspond pas',
+  'number': 'Le champ {{ field }} doit être un nombre',
+  'string': 'Le champ {{ field }} doit être une chaîne de caractères',
+  
+  // Vous pouvez aussi traduire les noms des champs
+  'firstname': 'Prénom',
+  'lastname': 'Nom',
+  'email_address': 'Adresse email',
+  'password': 'Mot de passe',
+  'role': 'Rôle',
+  'status': 'Statut'
+})

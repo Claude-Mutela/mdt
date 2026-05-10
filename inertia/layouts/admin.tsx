@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, usePage } from '@inertiajs/react'
+import toast, { Toaster } from 'react-hot-toast'
 import {
   LayoutDashboard,
   Users,
@@ -36,10 +37,30 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const { url } = usePage()
+  const { url, props } = usePage()
+  const flash = props.flash as { success?: string, error?: string }
+
+  useEffect(() => {
+    if (flash.success) {
+      toast.success(flash.success)
+    }
+    if (flash.error) {
+      toast.error(flash.error)
+    }
+  }, [flash])
 
   return (
     <div className="flex h-screen bg-slate-950 text-white overflow-hidden font-sans">
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#1e293b',
+            color: '#fff',
+            border: '1px solid #334155'
+          },
+        }}
+      />
       {/* ── Sidebar ──────────────────────────────────────────── */}
       <aside
         className={`flex flex-col shrink-0 bg-slate-900 border-r border-slate-800 transition-all duration-300 ${

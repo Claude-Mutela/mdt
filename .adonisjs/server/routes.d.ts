@@ -24,7 +24,10 @@ export type ScannedRoutes = {
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
     'admin.dashboard': { paramsTuple?: []; params?: {} }
-    'admin.users': { paramsTuple?: []; params?: {} }
+    'admin.users.index': { paramsTuple?: []; params?: {} }
+    'admin.users.store': { paramsTuple?: []; params?: {} }
+    'admin.users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'admin.users.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.membres': { paramsTuple?: []; params?: {} }
     'admin.agenda': { paramsTuple?: []; params?: {} }
     'admin.ministeres': { paramsTuple?: []; params?: {} }
@@ -51,7 +54,7 @@ export type ScannedRoutes = {
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
     'admin.dashboard': { paramsTuple?: []; params?: {} }
-    'admin.users': { paramsTuple?: []; params?: {} }
+    'admin.users.index': { paramsTuple?: []; params?: {} }
     'admin.membres': { paramsTuple?: []; params?: {} }
     'admin.agenda': { paramsTuple?: []; params?: {} }
     'admin.ministeres': { paramsTuple?: []; params?: {} }
@@ -78,7 +81,7 @@ export type ScannedRoutes = {
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
     'admin.dashboard': { paramsTuple?: []; params?: {} }
-    'admin.users': { paramsTuple?: []; params?: {} }
+    'admin.users.index': { paramsTuple?: []; params?: {} }
     'admin.membres': { paramsTuple?: []; params?: {} }
     'admin.agenda': { paramsTuple?: []; params?: {} }
     'admin.ministeres': { paramsTuple?: []; params?: {} }
@@ -91,6 +94,13 @@ export type ScannedRoutes = {
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'admin.users.store': { paramsTuple?: []; params?: {} }
+  }
+  PUT: {
+    'admin.users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+  }
+  DELETE: {
+    'admin.users.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

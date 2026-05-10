@@ -247,7 +247,7 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'admin.users': {
+  'admin.users.index': {
     methods: ["GET","HEAD"]
     pattern: '/admin/users'
     types: {
@@ -255,8 +255,44 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: unknown
-      errorResponse: unknown
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_users_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_users_controller').default['index']>>>
+    }
+  }
+  'admin.users.store': {
+    methods: ["POST"]
+    pattern: '/admin/users'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/admin_user').createUserValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/admin_user').createUserValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_users_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_users_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'admin.users.update': {
+    methods: ["PUT"]
+    pattern: '/admin/users/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/admin_user').updateUserValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/admin_user').updateUserValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_users_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_users_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'admin.users.destroy': {
+    methods: ["DELETE"]
+    pattern: '/admin/users/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_users_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_users_controller').default['destroy']>>>
     }
   }
   'admin.membres': {

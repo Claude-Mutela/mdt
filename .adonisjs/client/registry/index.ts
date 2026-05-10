@@ -126,6 +126,12 @@ const routes = {
     tokens: [{"old":"/admin","type":0,"val":"admin","end":""}],
     types: placeholder as Registry['admin.dashboard']['types'],
   },
+  'admin.users': {
+    methods: ["GET","HEAD"],
+    pattern: '/admin/users',
+    tokens: [{"old":"/admin/users","type":0,"val":"admin","end":""},{"old":"/admin/users","type":0,"val":"users","end":""}],
+    types: placeholder as Registry['admin.users']['types'],
+  },
   'admin.membres': {
     methods: ["GET","HEAD"],
     pattern: '/admin/membres',

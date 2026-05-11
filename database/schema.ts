@@ -30,6 +30,35 @@ export class AgendaSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class AppointmentSchema extends BaseModel {
+  static $columns = ['appointmentDate', 'appointmentTime', 'createdAt', 'email', 'firstName', 'format', 'id', 'lastName', 'phone', 'reason', 'status', 'updatedAt'] as const
+  $columns = AppointmentSchema.$columns
+  @column.date()
+  declare appointmentDate: DateTime
+  @column()
+  declare appointmentTime: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare email: string | null
+  @column()
+  declare firstName: string
+  @column()
+  declare format: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare lastName: string
+  @column()
+  declare phone: string
+  @column()
+  declare reason: string
+  @column()
+  declare status: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class CatActivitySchema extends BaseModel {
   static $columns = ['createdAt', 'id', 'name', 'updatedAt'] as const
   $columns = CatActivitySchema.$columns
@@ -196,6 +225,25 @@ export class GalerySchema extends BaseModel {
   declare updatedAt: DateTime | null
   @column()
   declare urlImg: string | null
+}
+
+export class HeroAssetSchema extends BaseModel {
+  static $columns = ['createdAt', 'filePath', 'id', 'name', 'status', 'type', 'updatedAt'] as const
+  $columns = HeroAssetSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare filePath: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare status: string | null
+  @column()
+  declare type: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
 }
 
 export class ImageSchema extends BaseModel {

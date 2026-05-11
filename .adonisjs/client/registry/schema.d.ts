@@ -319,6 +319,30 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'admin.rendez-vous': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/rendez-vous'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'admin.assets': {
+    methods: ["GET","HEAD"]
+    pattern: '/admin/assets'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
   'admin.ministeres': {
     methods: ["GET","HEAD"]
     pattern: '/admin/ministeres'

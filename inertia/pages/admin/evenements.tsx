@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
+import Pagination from '../../components/Pagination'
 import { Plus, Search, Pencil, Trash2, X, Check, CalendarDays, MapPin } from 'lucide-react'
 
 type Statut = 'upcoming' | 'ongoing' | 'past'
@@ -40,11 +41,26 @@ export default function AdminEvenements() {
   const [selected, setSelected]   = useState<Evenement | null>(null)
   const [form, setForm]           = useState<Omit<Evenement, 'id'>>(emptyForm)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const perPage = 15
+
   const filtered = events.filter((e) => {
     const matchSearch  = e.titre.toLowerCase().includes(search.toLowerCase())
     const matchStatut  = filtreStatut === 'all' || e.statut === filtreStatut
     return matchSearch && matchStatut
   })
+
+  const total = filtered.length
+  const lastPage = Math.ceil(total / perPage)
+  const paginatedData = filtered.slice((currentPage - 1) * perPage, currentPage * perPage)
+
+  const meta = {
+    total,
+    perPage,
+    currentPage,
+    lastPage,
+    firstPage: 1
+  }
 
   function openAdd()                { setForm(emptyForm); setModal('add') }
   function openEdit(e: Evenement)   { setSelected(e); setForm({ titre: e.titre, slug: e.slug, date: e.date, lieu: e.lieu, tag: e.tag, statut: e.statut, description: e.description }); setModal('edit') }
@@ -94,22 +110,24 @@ export default function AdminEvenements() {
         </div>
 
         {/* Table */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-800">
-            <h2 className="text-white font-bold">Événements <span className="text-slate-400 font-normal text-sm">({filtered.length})</span></h2>
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+            <h2 className="text-white font-bold flex items-center gap-2">
+              Événements <span className="text-slate-400 font-normal text-sm">({total})</span>
+            </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-800">
+                <tr className="bg-slate-900/50 border-b border-slate-800">
                   {['Titre', 'Date', 'Lieu', 'Tag', 'Statut', 'Actions'].map((h) => (
                     <th key={h} className="text-left text-slate-400 font-medium px-6 py-3 text-xs uppercase tracking-wider whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody>
-                {filtered.map((e) => (
-                  <tr key={e.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+              <tbody className="divide-y divide-slate-800/50">
+                {paginatedData.map((e) => (
+                  <tr key={e.id} className="hover:bg-slate-800/30 transition-colors">
                     <td className="px-6 py-4">
                       <div>
                         <p className="text-white font-medium">{e.titre}</p>
@@ -147,6 +165,7 @@ export default function AdminEvenements() {
               </tbody>
             </table>
           </div>
+          <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
         </div>
 
         {/* Modal Add/Edit */}

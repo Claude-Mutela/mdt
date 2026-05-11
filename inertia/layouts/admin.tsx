@@ -23,6 +23,8 @@ const navItems = [
   { label: 'Utilisateurs',href: '/admin/users',      icon: UserCog },
   { label: 'Membres',     href: '/admin/membres',     icon: Users },
   { label: 'Agenda',      href: '/admin/agenda',      icon: CalendarDays },
+  { label: 'Rendez-vous',  href: '/admin/rendez-vous', icon: CalendarDays },
+  { label: 'Assets',      href: '/admin/assets',      icon: Image },
   { label: 'Ministères',  href: '/admin/ministeres',  icon: Church },
   { label: 'Événements',  href: '/admin/evenements',  icon: Ticket },
   { label: 'Médias',      href: '/admin/medias',      icon: PlayCircle },

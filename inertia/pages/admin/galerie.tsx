@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react'
 import { useState, useRef } from 'react'
 import AdminLayout from '../../layouts/admin'
+import Pagination from '../../components/Pagination'
 import { Plus, Trash2, X, Check, Upload, Search, ImageIcon } from 'lucide-react'
 
 interface Photo {
@@ -37,11 +38,26 @@ export default function AdminGalerie() {
   const [previewUrl, setPreviewUrl] = useState<string>('')
   const fileRef                     = useRef<HTMLInputElement>(null)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const perPage = 15
+
   const filtered = photos.filter((p) => {
     const matchSearch = p.titre.toLowerCase().includes(search.toLowerCase())
     const matchCat    = filtreCategorie === 'Toutes' || p.categorie === filtreCategorie
     return matchSearch && matchCat
   })
+
+  const total = filtered.length
+  const lastPage = Math.ceil(total / perPage)
+  const paginatedData = filtered.slice((currentPage - 1) * perPage, currentPage * perPage)
+
+  const meta = {
+    total,
+    perPage,
+    currentPage,
+    lastPage,
+    firstPage: 1
+  }
 
   function openAdd()             { setForm(emptyForm); setPreviewUrl(''); setModal('add') }
   function openDelete(p: Photo)  { setSelected(p); setModal('delete') }
@@ -79,7 +95,7 @@ export default function AdminGalerie() {
           </div>
           <div className="flex gap-2 flex-wrap">
             {CATEGORIES.map((c) => (
-              <button key={c} onClick={() => setFiltreCategorie(c)}
+              <button key={c} onClick={() => { setFiltreCategorie(c); setCurrentPage(1); }}
                 className={`px-3 py-2 rounded-xl text-xs font-medium border transition-colors ${
                   filtreCategorie === c
                     ? 'bg-primary border-primary text-white'
@@ -87,24 +103,16 @@ export default function AdminGalerie() {
                 }`}>{c}</button>
             ))}
           </div>
-          <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+          <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-primary/20">
             <Plus size={16} /> Ajouter une photo
           </button>
         </div>
 
-        {/* Stats bar */}
-        <div className="flex items-center gap-4 mb-5 text-sm text-slate-400">
-          <span><span className="text-white font-bold">{filtered.length}</span> photo{filtered.length !== 1 ? 's' : ''}</span>
-          <span>·</span>
-          <span>Total : <span className="text-white font-bold">{photos.length}</span></span>
-        </div>
-
         {/* Photo Grid */}
-        <div className="columns-2 md:columns-3 xl:columns-4 gap-4 space-y-4">
-          {filtered.map((p) => (
-            <div key={p.id} className="break-inside-avoid group relative rounded-xl overflow-hidden border border-slate-800 hover:border-slate-600 transition-colors">
+        <div className="columns-2 md:columns-3 xl:columns-4 gap-4 space-y-4 mb-8">
+          {paginatedData.map((p) => (
+            <div key={p.id} className="break-inside-avoid group relative rounded-xl overflow-hidden border border-slate-800 hover:border-slate-600 transition-colors shadow-lg">
               <img src={p.src} alt={p.titre} className="w-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
                 <p className="text-white text-xs font-semibold leading-snug">{p.titre}</p>
                 <p className="text-slate-300 text-[10px] mt-0.5">{p.categorie} · {p.date}</p>
@@ -116,61 +124,61 @@ export default function AdminGalerie() {
           ))}
         </div>
 
-        {filtered.length === 0 && (
+        {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-slate-500">
             <ImageIcon size={40} className="mb-3 opacity-30" />
             <p>Aucune photo trouvée</p>
           </div>
+        ) : (
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+            <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
+          </div>
         )}
 
-        {/* Modal Add */}
+        {/* Modal Add (identique) */}
         {modal === 'add' && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-800/20">
                 <h3 className="text-white font-bold">Ajouter une photo</h3>
                 <button onClick={closeModal} className="text-slate-400 hover:text-white"><X size={18} /></button>
               </div>
               <div className="p-6 space-y-4">
-                {/* Upload zone */}
-                <div
-                  onClick={() => fileRef.current?.click()}
-                  className="relative border-2 border-dashed border-slate-700 hover:border-primary rounded-xl p-6 cursor-pointer transition-colors flex flex-col items-center gap-2 group"
-                >
+                <div onClick={() => fileRef.current?.click()} className="relative border-2 border-dashed border-slate-700 hover:border-primary rounded-xl p-6 cursor-pointer transition-colors flex flex-col items-center gap-2 group bg-slate-950/30">
                   {previewUrl ? (
-                    <img src={previewUrl} alt="preview" className="w-full h-40 object-cover rounded-lg" />
+                    <img src={previewUrl} alt="preview" className="w-full h-40 object-cover rounded-lg shadow-lg" />
                   ) : (
                     <>
                       <Upload size={24} className="text-slate-500 group-hover:text-primary transition-colors" />
                       <p className="text-slate-400 text-sm">Cliquer pour choisir une image</p>
-                      <p className="text-slate-600 text-xs">JPG, PNG, WebP</p>
+                      <p className="text-slate-600 text-xs tracking-tighter uppercase font-bold">JPG, PNG, WebP</p>
                     </>
                   )}
                   <input ref={fileRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 uppercase tracking-wider">Titre</label>
+                  <label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Titre</label>
                   <input value={form.titre} onChange={(e) => setForm({ ...form, titre: e.target.value })}
-                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary" />
+                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs text-slate-400 uppercase tracking-wider">Catégorie</label>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Catégorie</label>
                     <select value={form.categorie} onChange={(e) => setForm({ ...form, categorie: e.target.value })}
-                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-primary">
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-primary transition-colors">
                       {CATEGORIES.filter(c => c !== 'Toutes').map((c) => <option key={c}>{c}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 uppercase tracking-wider">Date</label>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Date</label>
                     <input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })}
-                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary" />
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors" />
                   </div>
                 </div>
               </div>
               <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-800">
                 <button onClick={closeModal} className="px-4 py-2 rounded-xl text-sm text-slate-400 hover:text-white border border-slate-700 hover:bg-slate-800 transition-colors">Annuler</button>
-                <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm bg-primary hover:bg-primary-dark text-white font-semibold transition-colors">
+                <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm bg-primary hover:bg-primary-dark text-white font-semibold transition-colors shadow-lg shadow-primary/20">
                   <Check size={15} /> Ajouter
                 </button>
               </div>
@@ -180,7 +188,7 @@ export default function AdminGalerie() {
 
         {modal === 'delete' && selected && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
               <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto">
                 <Trash2 size={20} className="text-red-400" />
               </div>
@@ -188,7 +196,7 @@ export default function AdminGalerie() {
                 <h3 className="text-white font-bold text-lg">Supprimer cette photo</h3>
                 <p className="text-slate-400 text-sm mt-1">Supprimer <strong className="text-white">{selected.titre}</strong> de la galerie ?</p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 mt-4">
                 <button onClick={closeModal} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm transition-colors">Annuler</button>
                 <button onClick={handleDelete} className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors">Supprimer</button>
               </div>

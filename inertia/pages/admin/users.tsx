@@ -1,6 +1,7 @@
 import { Head, useForm } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
+import Pagination from '../../components/Pagination'
 import { Plus, Search, Filter, Pencil, Trash2, X, Check, ShieldCheck } from 'lucide-react'
 
 type Role = 'admin' | 'superadmin' | 'user' | 'pasteur'
@@ -15,10 +16,18 @@ interface Utilisateur {
   status: Statut
 }
 
+interface UsersProps {
+  users: {
+    meta: any
+    links: any[]
+    data: Utilisateur[]
+  }
+}
+
 const ROLES = ['Tous', 'admin', 'user', 'pasteur', 'superadmin']
 const STATUTS = ['Tous', 'actif', 'inactif', 'suspendu']
 
-export default function AdminUsers({ users }: { users: Utilisateur[] }) {
+export default function AdminUsers({ users }: UsersProps) {
   const [search, setSearch]         = useState('')
   const [filtreRole, setFiltreRole] = useState('Tous')
   const [filtreStatut, setFiltreStatut] = useState('Tous')
@@ -34,8 +43,7 @@ export default function AdminUsers({ users }: { users: Utilisateur[] }) {
     status: 'actif' as Statut
   })
 
-  // S'assurer que c'est bien un tableau
-  const usersList = Array.isArray(users) ? users : []
+  const usersList = users.data || []
 
   const filtered = usersList.filter((u) => {
     const fullName = `${u.firstname || ''} ${u.lastname || ''}`.toLowerCase()
@@ -216,6 +224,7 @@ export default function AdminUsers({ users }: { users: Utilisateur[] }) {
               </tbody>
             </table>
           </div>
+          <Pagination meta={users.meta} links={users.links} />
         </div>
 
         {/* ── Modal Add/Edit ── */}

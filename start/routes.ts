@@ -171,6 +171,8 @@ router
     router.delete('/users/:id', [() => import('#controllers/admin_users_controller'), 'destroy']).as('admin.users.destroy')
     router.on('/membres').renderInertia('admin/membres', {}).as('admin.membres')
     router.on('/agenda').renderInertia('admin/agenda', {}).as('admin.agenda')
+    router.on('/rendez-vous').renderInertia('admin/rendez-vous', {}).as('admin.rendez-vous')
+    router.on('/assets').renderInertia('admin/assets', {}).as('admin.assets')
     router.on('/ministeres').renderInertia('admin/ministeres', {}).as('admin.ministeres')
     router.on('/evenements').renderInertia('admin/evenements', {}).as('admin.evenements')
     router.on('/medias').renderInertia('admin/medias', {}).as('admin.medias')

@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
+import Pagination from '../../components/Pagination'
 import { Plus, Pencil, Trash2, X, Check } from 'lucide-react'
 
 interface Ministere {
@@ -36,6 +37,21 @@ export default function AdminMinisteres() {
   const [selected, setSelected]     = useState<Ministere | null>(null)
   const [form, setForm]             = useState<Omit<Ministere, 'id'>>(emptyForm)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const perPage = 15
+
+  const total = ministeres.length
+  const lastPage = Math.ceil(total / perPage)
+  const paginatedData = ministeres.slice((currentPage - 1) * perPage, currentPage * perPage)
+
+  const meta = {
+    total,
+    perPage,
+    currentPage,
+    lastPage,
+    firstPage: 1
+  }
+
   function openAdd()             { setForm(emptyForm); setModal('add') }
   function openEdit(m: Ministere){ setSelected(m); setForm({ nom: m.nom, tag: m.tag, description: m.description, responsable: m.responsable, couleur: m.couleur }); setModal('edit') }
   function openDelete(m: Ministere){ setSelected(m); setModal('delete') }
@@ -59,16 +75,16 @@ export default function AdminMinisteres() {
     <>
       <Head title="Ministères — Admin Phila MDT" />
       <AdminLayout title="Gestion des ministères">
-        <div className="flex justify-end mb-6">
-          <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+        <div className="flex justify-between items-center mb-6">
+          <p className="text-slate-400 text-sm">Liste des ministères et départements de l'église.</p>
+          <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-primary/20">
             <Plus size={16} /> Ajouter un ministère
           </button>
         </div>
 
-        <div className="grid md:grid-cols-2 xl:grid-cols-2 gap-5">
-          {ministeres.map((m) => (
-            <div key={m.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-slate-600 transition-colors">
-              {/* Color bar */}
+        <div className="grid md:grid-cols-2 xl:grid-cols-2 gap-5 mb-8">
+          {paginatedData.map((m) => (
+            <div key={m.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-slate-600 transition-colors shadow-xl">
               <div className={`h-1.5 w-full ${m.couleur}`} />
               <div className="p-6">
                 <div className="flex items-start justify-between gap-3 mb-3">
@@ -100,6 +116,10 @@ export default function AdminMinisteres() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
         </div>
 
         {/* Modal Add/Edit */}

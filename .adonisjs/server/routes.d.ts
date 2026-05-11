@@ -30,6 +30,8 @@ export type ScannedRoutes = {
     'admin.users.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.membres': { paramsTuple?: []; params?: {} }
     'admin.agenda': { paramsTuple?: []; params?: {} }
+    'admin.rendez-vous': { paramsTuple?: []; params?: {} }
+    'admin.assets': { paramsTuple?: []; params?: {} }
     'admin.ministeres': { paramsTuple?: []; params?: {} }
     'admin.evenements': { paramsTuple?: []; params?: {} }
     'admin.medias': { paramsTuple?: []; params?: {} }
@@ -57,6 +59,8 @@ export type ScannedRoutes = {
     'admin.users.index': { paramsTuple?: []; params?: {} }
     'admin.membres': { paramsTuple?: []; params?: {} }
     'admin.agenda': { paramsTuple?: []; params?: {} }
+    'admin.rendez-vous': { paramsTuple?: []; params?: {} }
+    'admin.assets': { paramsTuple?: []; params?: {} }
     'admin.ministeres': { paramsTuple?: []; params?: {} }
     'admin.evenements': { paramsTuple?: []; params?: {} }
     'admin.medias': { paramsTuple?: []; params?: {} }
@@ -84,6 +88,8 @@ export type ScannedRoutes = {
     'admin.users.index': { paramsTuple?: []; params?: {} }
     'admin.membres': { paramsTuple?: []; params?: {} }
     'admin.agenda': { paramsTuple?: []; params?: {} }
+    'admin.rendez-vous': { paramsTuple?: []; params?: {} }
+    'admin.assets': { paramsTuple?: []; params?: {} }
     'admin.ministeres': { paramsTuple?: []; params?: {} }
     'admin.evenements': { paramsTuple?: []; params?: {} }
     'admin.medias': { paramsTuple?: []; params?: {} }

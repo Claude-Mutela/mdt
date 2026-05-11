@@ -38,6 +38,8 @@ export interface ApiDefinition {
     }
     membres: typeof routes['admin.membres']
     agenda: typeof routes['admin.agenda']
+    rendezVous: typeof routes['admin.rendez-vous']
+    assets: typeof routes['admin.assets']
     ministeres: typeof routes['admin.ministeres']
     evenements: typeof routes['admin.evenements']
     medias: typeof routes['admin.medias']

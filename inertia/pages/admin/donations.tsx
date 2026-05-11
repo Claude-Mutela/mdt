@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
+import Pagination from '../../components/Pagination'
 import { Plus, Search, Filter, Pencil, Trash2, X, Check, HeartHandshake, Printer } from 'lucide-react'
 
 type TypeDon = 'e-money' | 'card' | 'virement' | 'en nature'
@@ -38,12 +39,27 @@ export default function AdminDonations() {
   const [selected, setSelected]     = useState<Donation | null>(null)
   const [form, setForm]             = useState<Omit<Donation, 'id'>>(emptyForm)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const perPage = 15
+
   const filtered = donations.filter((d) => {
     const matchSearch  = d.donateur.toLowerCase().includes(search.toLowerCase()) || d.montant_nature.toLowerCase().includes(search.toLowerCase())
     const matchType    = filtreType === 'Tous' || d.type === filtreType
     const matchStatut  = filtreStatut === 'Tous' || d.statut === filtreStatut
     return matchSearch && matchType && matchStatut
   })
+
+  const total = filtered.length
+  const lastPage = Math.ceil(total / perPage)
+  const paginatedData = filtered.slice((currentPage - 1) * perPage, currentPage * perPage)
+
+  const meta = {
+    total,
+    perPage,
+    currentPage,
+    lastPage,
+    firstPage: 1
+  }
 
   function openAdd()                { setForm(emptyForm); setModal('add') }
   function openEdit(d: Donation)    { setSelected(d); setForm({ donateur: d.donateur, montant_nature: d.montant_nature, type: d.type, date: d.date, statut: d.statut, notes: d.notes }); setModal('edit') }
@@ -81,7 +97,7 @@ export default function AdminDonations() {
       `}</style>
       <AdminLayout title="Gestion des dons">
         {/* ── Toolbar ── */}
-        <div className="flex flex-wrap gap-3 mb-6">
+        <div className="flex flex-wrap gap-3 mb-6 no-print">
           <div className="relative flex-1 min-w-48">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
@@ -116,26 +132,26 @@ export default function AdminDonations() {
         </div>
 
         {/* ── Table ── */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden print-section">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden print-section shadow-xl">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-800/20">
             <h2 className="text-white font-bold flex items-center gap-2">
               <HeartHandshake size={18} className="text-primary" />
-              Historique des dons <span className="text-slate-400 font-normal text-sm">({filtered.length})</span>
+              Historique des dons <span className="text-slate-400 font-normal text-sm">({total})</span>
             </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-800">
+                <tr className="bg-slate-900/50 border-b border-slate-800">
                   {['Donateur', 'Montant / Nature', 'Type', 'Date', 'Statut'].map((h) => (
                     <th key={h} className="text-left text-slate-400 font-medium px-6 py-3 text-xs uppercase tracking-wider whitespace-nowrap">{h}</th>
                   ))}
                   <th className="text-left text-slate-400 font-medium px-6 py-3 text-xs uppercase tracking-wider whitespace-nowrap no-print">Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                {filtered.map((d) => (
-                  <tr key={d.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+              <tbody className="divide-y divide-slate-800/50">
+                {paginatedData.map((d) => (
+                  <tr key={d.id} className="hover:bg-slate-800/30 transition-colors group">
                     <td className="px-6 py-4">
                       <div>
                         <span className="text-white font-medium whitespace-nowrap">{d.donateur}</span>
@@ -180,13 +196,16 @@ export default function AdminDonations() {
               </tbody>
             </table>
           </div>
+          <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
         </div>
 
-        {/* ── Modal Add/Edit ── */}
+        {/* ── Modals (Simplified for context) ── */}
         {(modal === 'add' || modal === 'edit') && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 no-print">
+            {/* Modal Content */}
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+               {/* (Form content remains the same) */}
+               <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
                 <h3 className="text-white font-bold">{modal === 'add' ? 'Enregistrer un don' : 'Modifier le don'}</h3>
                 <button onClick={closeModal} className="text-slate-400 hover:text-white"><X size={18} /></button>
               </div>
@@ -259,9 +278,8 @@ export default function AdminDonations() {
           </div>
         )}
 
-        {/* ── Modal Delete ── */}
         {modal === 'delete' && selected && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 no-print">
             <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-4">
               <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto">
                 <Trash2 size={20} className="text-red-400" />

@@ -4,8 +4,9 @@ import hash from '@adonisjs/core/services/hash'
 import { createUserValidator, updateUserValidator } from '#validators/admin_user'
 
 export default class AdminUsersController {
-  async index({ inertia }: HttpContext) {
-    const users = await User.query().orderBy('id', 'desc')
+  async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
+    const users = await User.query().orderBy('id', 'desc').paginate(page, 15)
     return inertia.render('admin/users' as any, { users })
   }
 

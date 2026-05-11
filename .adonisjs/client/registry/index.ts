@@ -162,6 +162,18 @@ const routes = {
     tokens: [{"old":"/admin/agenda","type":0,"val":"admin","end":""},{"old":"/admin/agenda","type":0,"val":"agenda","end":""}],
     types: placeholder as Registry['admin.agenda']['types'],
   },
+  'admin.rendez-vous': {
+    methods: ["GET","HEAD"],
+    pattern: '/admin/rendez-vous',
+    tokens: [{"old":"/admin/rendez-vous","type":0,"val":"admin","end":""},{"old":"/admin/rendez-vous","type":0,"val":"rendez-vous","end":""}],
+    types: placeholder as Registry['admin.rendez-vous']['types'],
+  },
+  'admin.assets': {
+    methods: ["GET","HEAD"],
+    pattern: '/admin/assets',
+    tokens: [{"old":"/admin/assets","type":0,"val":"admin","end":""},{"old":"/admin/assets","type":0,"val":"assets","end":""}],
+    types: placeholder as Registry['admin.assets']['types'],
+  },
   'admin.ministeres': {
     methods: ["GET","HEAD"],
     pattern: '/admin/ministeres',

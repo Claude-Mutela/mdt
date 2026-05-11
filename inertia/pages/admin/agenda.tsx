@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
+import Pagination from '../../components/Pagination'
 import { Plus, Pencil, Trash2, X, Check, Clock } from 'lucide-react'
 
 const JOURS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
@@ -39,6 +40,21 @@ export default function AdminAgenda() {
   const [selected, setSelected] = useState<Creneau | null>(null)
   const [form, setForm]         = useState<Omit<Creneau, 'id'>>(emptyForm)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const perPage = 15
+
+  const total = creneaux.length
+  const lastPage = Math.ceil(total / perPage)
+  const paginatedData = creneaux.slice((currentPage - 1) * perPage, currentPage * perPage)
+
+  const meta = {
+    total,
+    perPage,
+    currentPage,
+    lastPage,
+    firstPage: 1
+  }
+
   function openAdd()             { setForm(emptyForm); setModal('add') }
   function openEdit(c: Creneau)  { setSelected(c); setForm({ jour: c.jour, heure: c.heure, titre: c.titre, responsable: c.responsable, lieu: c.lieu, type: c.type }); setModal('edit') }
   function openDelete(c: Creneau){ setSelected(c); setModal('delete') }
@@ -58,40 +74,42 @@ export default function AdminAgenda() {
     closeModal()
   }
 
+  // Grouper les données paginées par jour
   const byDay = JOURS.map((jour) => ({
     jour,
-    items: creneaux.filter((c) => c.jour === jour).sort((a, b) => a.heure.localeCompare(b.heure)),
+    items: paginatedData.filter((c) => c.jour === jour).sort((a, b) => a.heure.localeCompare(b.heure)),
   })).filter((g) => g.items.length > 0)
 
   return (
     <>
       <Head title="Agenda — Admin Phila MDT" />
       <AdminLayout title="Gestion de l'agenda">
-        <div className="flex justify-end mb-6">
-          <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+        <div className="flex justify-between items-center mb-6">
+          <p className="text-slate-400 text-sm">Gérez les créneaux hebdomadaires des cultes et activités.</p>
+          <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-primary/20">
             <Plus size={16} /> Ajouter un créneau
           </button>
         </div>
 
         {/* Grille par jour */}
-        <div className="space-y-6">
+        <div className="space-y-6 mb-8">
           {byDay.map(({ jour, items }) => (
-            <div key={jour} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+            <div key={jour} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
               <div className="px-6 py-3 border-b border-slate-800 bg-slate-800/40">
-                <h2 className="font-bold text-white">{jour}</h2>
+                <h2 className="font-bold text-white uppercase text-xs tracking-widest">{jour}</h2>
               </div>
               <div className="divide-y divide-slate-800/50">
                 {items.map((c) => (
-                  <div key={c.id} className="flex items-center gap-4 px-6 py-4 hover:bg-slate-800/30 transition-colors">
-                    <div className="flex items-center gap-1.5 text-slate-400 min-w-[60px]">
+                  <div key={c.id} className="flex items-center gap-4 px-6 py-4 hover:bg-slate-800/30 transition-colors group">
+                    <div className="flex items-center gap-1.5 text-slate-400 min-w-[70px]">
                       <Clock size={14} className="text-primary" />
-                      <span className="text-sm font-mono">{c.heure}</span>
+                      <span className="text-sm font-mono font-bold text-slate-300">{c.heure}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-white font-semibold">{c.titre}</p>
                       <p className="text-slate-400 text-xs mt-0.5">{c.responsable} · {c.lieu}</p>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium border ${typeColors[c.type]}`}>
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border ${typeColors[c.type]}`}>
                       {c.type}
                     </span>
                     <div className="flex items-center gap-2">
@@ -107,13 +125,23 @@ export default function AdminAgenda() {
               </div>
             </div>
           ))}
+          
+          {byDay.length === 0 && (
+            <div className="bg-slate-900 border border-slate-800 border-dashed rounded-2xl p-12 text-center text-slate-500">
+              Aucun créneau trouvé pour cette page.
+            </div>
+          )}
         </div>
 
-        {/* Modal Add/Edit */}
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
+        </div>
+
+        {/* Modal Add/Edit (form reste identique) */}
         {(modal === 'add' || modal === 'edit') && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-800/20">
                 <h3 className="text-white font-bold">{modal === 'add' ? 'Ajouter un créneau' : 'Modifier le créneau'}</h3>
                 <button onClick={closeModal} className="text-slate-400 hover:text-white"><X size={18} /></button>
               </div>
@@ -121,34 +149,34 @@ export default function AdminAgenda() {
                 <div>
                   <label className="text-xs text-slate-400 uppercase tracking-wider">Jour</label>
                   <select value={form.jour} onChange={(e) => setForm({ ...form, jour: e.target.value })}
-                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-primary">
+                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-primary transition-colors">
                     {JOURS.map((j) => <option key={j}>{j}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="text-xs text-slate-400 uppercase tracking-wider">Heure</label>
                   <input type="time" value={form.heure.replace('h', ':')} onChange={(e) => setForm({ ...form, heure: e.target.value.replace(':', 'h') })}
-                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary" />
+                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors" />
                 </div>
                 <div className="col-span-2">
                   <label className="text-xs text-slate-400 uppercase tracking-wider">Titre</label>
                   <input value={form.titre} onChange={(e) => setForm({ ...form, titre: e.target.value })}
-                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary" />
+                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors" />
                 </div>
                 <div>
                   <label className="text-xs text-slate-400 uppercase tracking-wider">Responsable</label>
                   <input value={form.responsable} onChange={(e) => setForm({ ...form, responsable: e.target.value })}
-                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary" />
+                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors" />
                 </div>
                 <div>
                   <label className="text-xs text-slate-400 uppercase tracking-wider">Lieu</label>
                   <input value={form.lieu} onChange={(e) => setForm({ ...form, lieu: e.target.value })}
-                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary" />
+                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors" />
                 </div>
                 <div className="col-span-2">
                   <label className="text-xs text-slate-400 uppercase tracking-wider">Type</label>
                   <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as Creneau['type'] })}
-                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-primary">
+                    className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-slate-300 focus:outline-none focus:border-primary transition-colors">
                     {(['Culte','Prière','Jeunesse','Étude','Autre'] as Creneau['type'][]).map((t) => <option key={t}>{t}</option>)}
                   </select>
                 </div>
@@ -164,8 +192,8 @@ export default function AdminAgenda() {
         )}
 
         {modal === 'delete' && selected && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 no-print">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
               <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto">
                 <Trash2 size={20} className="text-red-400" />
               </div>

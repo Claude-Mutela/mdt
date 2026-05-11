@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
+import Pagination from '../../components/Pagination'
 import { Plus, Search, Pencil, Trash2, X, Check, Play } from 'lucide-react'
 
 type TypeMedia = 'Sermon' | 'Louange' | 'Témoignage' | 'Enseignement'
@@ -49,13 +50,28 @@ export default function AdminMedias() {
   const [filtreType, setFiltreType] = useState<'Tous' | TypeMedia>('Tous')
   const [modal, setModal]         = useState<'add' | 'edit' | 'delete' | null>(null)
   const [selected, setSelected]   = useState<Media | null>(null)
-  const [form, setForm]           = useState<Omit<Media, 'id'>>(emptyForm)
+  const [form, setForm]             = useState<Omit<Media, 'id'>>(emptyForm)
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const perPage = 15
 
   const filtered = medias.filter((m) => {
     const matchSearch = m.titre.toLowerCase().includes(search.toLowerCase()) || m.orateur.toLowerCase().includes(search.toLowerCase())
     const matchType   = filtreType === 'Tous' || m.type === filtreType
     return matchSearch && matchType
   })
+
+  const total = filtered.length
+  const lastPage = Math.ceil(total / perPage)
+  const paginatedData = filtered.slice((currentPage - 1) * perPage, currentPage * perPage)
+
+  const meta = {
+    total,
+    perPage,
+    currentPage,
+    lastPage,
+    firstPage: 1
+  }
 
   function openAdd()             { setForm(emptyForm); setModal('add') }
   function openEdit(m: Media)    { setSelected(m); setForm({ titre: m.titre, orateur: m.orateur, date: m.date, duree: m.duree, type: m.type, url: m.url, thumbnail: m.thumbnail }); setModal('edit') }
@@ -97,15 +113,15 @@ export default function AdminMedias() {
                 }`}>{t}</button>
             ))}
           </div>
-          <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
+          <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-primary/20">
             <Plus size={16} /> Ajouter
           </button>
         </div>
 
         {/* Grid */}
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {filtered.map((m) => (
-            <div key={m.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-slate-600 transition-colors">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
+          {paginatedData.map((m) => (
+            <div key={m.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-slate-600 transition-colors shadow-xl">
               {/* Thumbnail */}
               <div className="relative aspect-video overflow-hidden">
                 <img src={m.thumbnail} alt={m.titre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -114,17 +130,17 @@ export default function AdminMedias() {
                     <Play size={20} className="text-white ml-0.5" fill="white" />
                   </div>
                 </div>
-                <span className={`absolute top-3 left-3 px-2 py-0.5 rounded-full text-xs font-medium border ${typeColors[m.type]}`}>
+                <span className={`absolute top-3 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border tracking-widest ${typeColors[m.type]}`}>
                   {m.type}
                 </span>
               </div>
               {/* Info */}
               <div className="p-4">
-                <h3 className="text-white font-semibold text-sm leading-snug">{m.titre}</h3>
+                <h3 className="text-white font-semibold text-sm leading-snug truncate">{m.titre}</h3>
                 <div className="flex items-center justify-between mt-2">
                   <div>
-                    <p className="text-slate-400 text-xs">{m.orateur}</p>
-                    <p className="text-slate-500 text-xs">{m.date} · {m.duree}</p>
+                    <p className="text-slate-400 text-[11px] font-medium">{m.orateur}</p>
+                    <p className="text-slate-500 text-[10px] uppercase tracking-tighter">{m.date} · {m.duree}</p>
                   </div>
                   <div className="flex items-center gap-1">
                     <button onClick={() => openEdit(m)} className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"><Pencil size={13} /></button>
@@ -136,11 +152,15 @@ export default function AdminMedias() {
           ))}
         </div>
 
-        {/* Modal Add/Edit */}
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
+        </div>
+
+        {/* Modal Add/Edit (identique au précédent) */}
         {(modal === 'add' || modal === 'edit') && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-800/20">
                 <h3 className="text-white font-bold">{modal === 'add' ? 'Ajouter un média' : 'Modifier le média'}</h3>
                 <button onClick={closeModal} className="text-slate-400 hover:text-white"><X size={18} /></button>
               </div>
@@ -190,7 +210,7 @@ export default function AdminMedias() {
 
         {modal === 'delete' && selected && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
               <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto">
                 <Trash2 size={20} className="text-red-400" />
               </div>

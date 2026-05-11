@@ -14,6 +14,7 @@ declare module '@adonisjs/inertia/types' {
   export interface InertiaPages {
     'a-propos': ExtractProps<(typeof import('../../inertia/pages/a-propos.tsx'))['default']>
     'admin/agenda': ExtractProps<(typeof import('../../inertia/pages/admin/agenda.tsx'))['default']>
+    'admin/assets': ExtractProps<(typeof import('../../inertia/pages/admin/assets.tsx'))['default']>
     'admin/dashboard': ExtractProps<(typeof import('../../inertia/pages/admin/dashboard.tsx'))['default']>
     'admin/donations': ExtractProps<(typeof import('../../inertia/pages/admin/donations.tsx'))['default']>
     'admin/evenements': ExtractProps<(typeof import('../../inertia/pages/admin/evenements.tsx'))['default']>
@@ -21,6 +22,7 @@ declare module '@adonisjs/inertia/types' {
     'admin/medias': ExtractProps<(typeof import('../../inertia/pages/admin/medias.tsx'))['default']>
     'admin/membres': ExtractProps<(typeof import('../../inertia/pages/admin/membres.tsx'))['default']>
     'admin/ministeres': ExtractProps<(typeof import('../../inertia/pages/admin/ministeres.tsx'))['default']>
+    'admin/rendez-vous': ExtractProps<(typeof import('../../inertia/pages/admin/rendez-vous.tsx'))['default']>
     'admin/users': ExtractProps<(typeof import('../../inertia/pages/admin/users.tsx'))['default']>
     'agenda': ExtractProps<(typeof import('../../inertia/pages/agenda.tsx'))['default']>
     'allContent': ExtractProps<(typeof import('../../inertia/pages/allContent.tsx'))['default']>

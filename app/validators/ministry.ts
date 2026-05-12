@@ -17,7 +17,6 @@ export const ministryValidator = vine.compile(
     description: vine.string().trim().optional(),
     content: vine.string().trim().optional(),
     coverImg: vine.file({ size: '2mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
-    urlImg: vine.file({ size: '2mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
     badgeColor: vine.string().trim().maxLength(50).optional(),
     tag: vine.string().trim().maxLength(100).optional(),
   })

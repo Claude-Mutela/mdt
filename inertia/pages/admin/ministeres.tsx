@@ -1,8 +1,8 @@
 import { Head, router, useForm } from '@inertiajs/react'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
-import { Plus, Pencil, Trash2, X, Check, ImageIcon, Link as LinkIcon, FileText, Upload } from 'lucide-react'
+import { Plus, Pencil, Trash2, X, Check, ImageIcon, FileText, Upload } from 'lucide-react'
 
 interface Ministry {
   id: number
@@ -10,7 +10,6 @@ interface Ministry {
   description: string | null
   content: string | null
   coverImg: string | null
-  urlImg: string | null
   badgeColor: string | null
   tag: string | null
 }
@@ -28,9 +27,9 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
   // Pagination State for Ministries
   const [currentPage, setCurrentPage] = useState(1)
   const perPage = 10
-  const total = ministries.length
+  const total = (ministries || []).length
   const lastPage = Math.ceil(total / perPage)
-  const paginatedMinistries = ministries.slice((currentPage - 1) * perPage, currentPage * perPage)
+  const paginatedMinistries = (ministries || []).slice((currentPage - 1) * perPage, currentPage * perPage)
   const meta = { total, perPage, currentPage, lastPage, firstPage: 1 }
 
   // Modals State
@@ -39,7 +38,6 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
 
   // Refs for file inputs
   const coverInputRef = useRef<HTMLInputElement>(null)
-  const urlInputRef = useRef<HTMLInputElement>(null)
 
   // Form for Ministries
   const minForm = useForm({
@@ -47,10 +45,23 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
     description: '',
     content: '',
     coverImg: null as File | null,
-    urlImg: null as File | null,
     badgeColor: 'bg-blue-500',
     tag: '',
   })
+
+  // Preview logic
+  const [preview, setPreview] = useState<string | null>(null)
+  useEffect(() => {
+    if (minForm.data.coverImg) {
+      const url = URL.createObjectURL(minForm.data.coverImg)
+      setPreview(url)
+      return () => URL.revokeObjectURL(url)
+    } else if (selectedMin?.coverImg) {
+      setPreview(selectedMin.coverImg)
+    } else {
+      setPreview(null)
+    }
+  }, [minForm.data.coverImg, selectedMin])
 
   // ======================
   // Handlers Ministries
@@ -58,6 +69,7 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
   function openAddMin() {
     minForm.reset()
     minForm.clearErrors()
+    setSelectedMin(null)
     setMinModal('add')
   }
 
@@ -68,8 +80,7 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
       name: m.name,
       description: m.description || '',
       content: m.content || '',
-      coverImg: null, // Reset file inputs on edit
-      urlImg: null,
+      coverImg: null,
       badgeColor: m.badgeColor || 'bg-blue-500',
       tag: m.tag || '',
     })
@@ -80,16 +91,17 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
   function saveMin() {
     if (minModal === 'add') {
       minForm.post('/admin/ministeres', {
+        forceFormData: true,
         onSuccess: () => setMinModal(null)
       })
     } else if (minModal === 'edit' && selectedMin) {
       // Pour les uploads en PUT, on utilise POST avec spoofing _method: 'put'
-      minForm.post(`/admin/ministeres/${selectedMin.id}`, {
+      // Utilisation de minForm.post avec transform pour inclure _method
+      minForm.transform((data) => ({
+        ...data,
+        _method: 'put'
+      })).post(`/admin/ministeres/${selectedMin.id}`, {
         forceFormData: true,
-        onBefore: () => {
-          // @ts-ignore
-          minForm.setData('_method', 'put')
-        },
         onSuccess: () => setMinModal(null)
       })
     }
@@ -119,7 +131,7 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
           </button>
         </div>
 
-        {ministries.length === 0 ? (
+        {(!ministries || ministries.length === 0) ? (
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center text-slate-400 shadow-xl">
             Aucun ministère créé pour le moment.
           </div>
@@ -132,8 +144,8 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
                   <div className="p-6">
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        {m.urlImg ? (
-                          <img src={m.urlImg} alt={m.name} className="w-12 h-12 rounded-xl object-cover border border-slate-700 shadow-sm" />
+                        {m.coverImg ? (
+                          <img src={m.coverImg} alt={m.name} className="w-12 h-12 rounded-xl object-cover border border-slate-700 shadow-sm" />
                         ) : (
                           <div className={`w-12 h-12 ${m.badgeColor || 'bg-slate-500'} rounded-xl flex items-center justify-center text-white font-black text-lg shrink-0 shadow-sm`}>
                             {m.name[0]}
@@ -178,7 +190,7 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
                 <button onClick={() => setMinModal(null)} className="text-slate-400 hover:text-white transition-colors"><X size={18} /></button>
               </div>
               
-              <div className="p-6 space-y-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
+              <form onSubmit={(e) => { e.preventDefault(); saveMin(); }} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
                 
                 <div className="grid grid-cols-2 gap-5">
                   {/* Nom */}
@@ -205,15 +217,15 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
                   </div>
                 </div>
 
-                {/* Images Upload */}
-                <div className="grid grid-cols-2 gap-5">
-                  <div className="space-y-2">
-                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold flex items-center gap-2">
-                      <ImageIcon size={12} /> Image de couverture
-                    </label>
+                {/* Images Upload & Preview */}
+                <div className="space-y-2">
+                  <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold flex items-center gap-2">
+                    <ImageIcon size={12} /> Image de couverture
+                  </label>
+                  <div className="flex gap-4 items-center">
                     <div 
                       onClick={() => coverInputRef.current?.click()}
-                      className={`h-24 border-2 border-dashed ${minForm.errors.coverImg ? 'border-red-500 bg-red-500/5' : 'border-slate-700 hover:border-primary bg-slate-800/50'} rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all group`}
+                      className={`flex-1 h-32 border-2 border-dashed ${minForm.errors.coverImg ? 'border-red-500 bg-red-500/5' : 'border-slate-700 hover:border-primary bg-slate-800/50'} rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all group`}
                     >
                       <input 
                         type="file" 
@@ -221,43 +233,22 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
                         className="hidden" 
                         onChange={e => minForm.setData('coverImg', e.target.files ? e.target.files[0] : null)} 
                       />
-                      {minForm.data.coverImg ? (
-                        <span className="text-xs text-primary font-medium">{minForm.data.coverImg.name}</span>
-                      ) : (
-                        <>
-                          <Upload size={20} className="text-slate-500 group-hover:text-primary transition-colors" />
-                          <span className="text-[10px] text-slate-500 mt-1 uppercase tracking-tighter">Cliquez pour uploader</span>
-                        </>
-                      )}
+                      <Upload size={24} className="text-slate-500 group-hover:text-primary transition-colors" />
+                      <span className="text-xs text-slate-500 mt-2">
+                        {minForm.data.coverImg ? minForm.data.coverImg.name : 'Cliquez pour uploader une image'}
+                      </span>
                     </div>
-                    {minForm.errors.coverImg && <p className="text-red-400 text-[10px] italic">{minForm.errors.coverImg}</p>}
-                  </div>
 
-                  <div className="space-y-2">
-                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold flex items-center gap-2">
-                      <LinkIcon size={12} /> Image Avatar / Logo
-                    </label>
-                    <div 
-                      onClick={() => urlInputRef.current?.click()}
-                      className={`h-24 border-2 border-dashed ${minForm.errors.urlImg ? 'border-red-500 bg-red-500/5' : 'border-slate-700 hover:border-primary bg-slate-800/50'} rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all group`}
-                    >
-                      <input 
-                        type="file" 
-                        ref={urlInputRef} 
-                        className="hidden" 
-                        onChange={e => minForm.setData('urlImg', e.target.files ? e.target.files[0] : null)} 
-                      />
-                      {minForm.data.urlImg ? (
-                        <span className="text-xs text-primary font-medium">{minForm.data.urlImg.name}</span>
-                      ) : (
-                        <>
-                          <Upload size={20} className="text-slate-500 group-hover:text-primary transition-colors" />
-                          <span className="text-[10px] text-slate-500 mt-1 uppercase tracking-tighter">Cliquez pour uploader</span>
-                        </>
-                      )}
-                    </div>
-                    {minForm.errors.urlImg && <p className="text-red-400 text-[10px] italic">{minForm.errors.urlImg}</p>}
+                    {preview && (
+                      <div className="w-32 h-32 rounded-xl overflow-hidden border border-slate-700 relative group">
+                        <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-[10px] text-white font-bold uppercase">Aperçu</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
+                  {minForm.errors.coverImg && <p className="text-red-400 text-[10px] italic">{minForm.errors.coverImg}</p>}
                 </div>
 
                 <div>
@@ -299,14 +290,13 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
                   </div>
                 </div>
 
-              </div>
-
-              <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-900/50">
-                <button onClick={() => setMinModal(null)} className="px-4 py-2 rounded-xl text-sm text-slate-400 hover:text-white border border-slate-700 hover:bg-slate-800 transition-colors">Annuler</button>
-                <button disabled={minForm.processing} onClick={saveMin} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm bg-primary hover:bg-primary-dark text-white font-semibold transition-colors disabled:opacity-50">
-                  <Check size={15} /> {minForm.processing ? 'Envoi...' : 'Enregistrer'}
-                </button>
-              </div>
+                <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                  <button type="button" onClick={() => setMinModal(null)} className="px-4 py-2 rounded-xl text-sm text-slate-400 hover:text-white border border-slate-700 hover:bg-slate-800 transition-colors">Annuler</button>
+                  <button type="submit" disabled={minForm.processing} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm bg-primary hover:bg-primary-dark text-white font-semibold transition-colors disabled:opacity-50">
+                    <Check size={15} /> {minForm.processing ? 'Envoi...' : 'Enregistrer'}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}

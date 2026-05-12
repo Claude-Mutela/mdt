@@ -1,13 +1,12 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Ministry from '#models/ministry'
 import { ministryValidator } from '#validators/ministry'
-import app from '@adonisjs/core/services/app'
-import string from '@adonisjs/core/helpers/string'
+import CloudinaryService from '#services/cloudinary_service'
 
 export default class AdminMinistriesController {
   async index({ inertia }: HttpContext) {
     const ministries = await Ministry.all()
-    return inertia.render('admin/ministeres', { ministries })
+    return inertia.render('admin/ministeres' as any, { ministries })
   }
 
   // Ministries CRUD
@@ -24,23 +23,15 @@ export default class AdminMinistriesController {
         tag: data.tag,
       })
 
-      // Handle Image Uploads
+      // Handle Cloudinary Uploads
       const coverImg = request.file('coverImg')
-      if (coverImg) {
-        const fileName = `${string.uuid()}.${coverImg.extname}`
-        await coverImg.move(app.makePath('public/uploads/ministries'), { name: fileName })
-        ministry.coverImg = `/uploads/ministries/${fileName}`
-      }
-
-      const urlImg = request.file('urlImg')
-      if (urlImg) {
-        const fileName = `${string.uuid()}.${urlImg.extname}`
-        await urlImg.move(app.makePath('public/uploads/ministries'), { name: fileName })
-        ministry.urlImg = `/uploads/ministries/${fileName}`
+      if (coverImg && coverImg.tmpPath) {
+        const url = await CloudinaryService.upload(coverImg.tmpPath, 'ministries/covers')
+        ministry.coverImg = url
       }
 
       await ministry.save()
-      session.flash('success', 'Ministère créé avec succès.')
+      session.flash('success', 'Ministère créé avec succès sur Cloudinary.')
     } catch (error) {
       console.error(error)
       session.flash('error', "Erreur lors de la création du ministère.")
@@ -61,23 +52,15 @@ export default class AdminMinistriesController {
         tag: data.tag,
       })
 
-      // Handle Image Uploads (Update only if new file provided)
+      // Handle Cloudinary Uploads (Update only if new file provided)
       const coverImg = request.file('coverImg')
-      if (coverImg) {
-        const fileName = `${string.uuid()}.${coverImg.extname}`
-        await coverImg.move(app.makePath('public/uploads/ministries'), { name: fileName })
-        ministry.coverImg = `/uploads/ministries/${fileName}`
-      }
-
-      const urlImg = request.file('urlImg')
-      if (urlImg) {
-        const fileName = `${string.uuid()}.${urlImg.extname}`
-        await urlImg.move(app.makePath('public/uploads/ministries'), { name: fileName })
-        ministry.urlImg = `/uploads/ministries/${fileName}`
+      if (coverImg && coverImg.tmpPath) {
+        const url = await CloudinaryService.upload(coverImg.tmpPath, 'ministries/covers')
+        ministry.coverImg = url
       }
 
       await ministry.save()
-      session.flash('success', 'Ministère mis à jour avec succès.')
+      session.flash('success', 'Ministère mis à jour avec succès sur Cloudinary.')
     } catch (error) {
       console.error(error)
       session.flash('error', "Erreur lors de la mise à jour du ministère.")

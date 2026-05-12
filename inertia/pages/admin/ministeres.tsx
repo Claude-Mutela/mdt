@@ -2,6 +2,7 @@ import { Head, router, useForm } from '@inertiajs/react'
 import { useState, useRef, useEffect } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
+import CloudinaryImage from '../../components/CloudinaryImage'
 import { Plus, Pencil, Trash2, X, Check, ImageIcon, FileText, Upload } from 'lucide-react'
 
 interface Ministry {
@@ -141,7 +142,13 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
                         {m.coverImg ? (
-                          <img src={m.coverImg} alt={m.name} className="w-12 h-12 rounded-xl object-cover border border-slate-700 shadow-sm" />
+                          <CloudinaryImage 
+                            src={m.coverImg} 
+                            width={100} 
+                            height={100} 
+                            alt={m.name} 
+                            className="w-12 h-12 rounded-xl object-cover border border-slate-700 shadow-sm" 
+                          />
                         ) : (
                           <div className={`w-12 h-12 ${m.badgeColor || 'bg-slate-500'} rounded-xl flex items-center justify-center text-white font-black text-lg shrink-0 shadow-sm`}>
                             {m.name[0]}
@@ -237,7 +244,7 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
 
                     {preview && (
                       <div className="w-32 h-32 rounded-xl overflow-hidden border border-slate-700 relative group">
-                        <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                        <CloudinaryImage src={preview} width={300} height={300} alt="Preview" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <span className="text-[10px] text-white font-bold uppercase">Aperçu</span>
                         </div>

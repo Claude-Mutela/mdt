@@ -187,7 +187,12 @@ router
     router
       .group(() => {
         router.on('/membres').renderInertia('admin/membres', {}).as('admin.membres')
-        router.on('/ministeres').renderInertia('admin/ministeres', {}).as('admin.ministeres')
+        
+        router.get('/ministeres', [() => import('#controllers/admin_ministries_controller'), 'index']).as('admin.ministeres')
+        router.post('/ministeres', [() => import('#controllers/admin_ministries_controller'), 'storeMinistry']).as('admin.ministeres.store')
+        router.put('/ministeres/:id', [() => import('#controllers/admin_ministries_controller'), 'updateMinistry']).as('admin.ministeres.update')
+        router.delete('/ministeres/:id', [() => import('#controllers/admin_ministries_controller'), 'destroyMinistry']).as('admin.ministeres.destroy')
+        
         router.on('/donations').renderInertia('admin/donations', {}).as('admin.donations')
       })
       .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur', 'user'] }))

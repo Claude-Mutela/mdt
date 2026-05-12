@@ -124,19 +124,6 @@ export class CatMediaSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
-export class CatMinistrySchema extends BaseModel {
-  static $columns = ['catMinName', 'createdAt', 'id', 'updatedAt'] as const
-  $columns = CatMinistrySchema.$columns
-  @column()
-  declare catMinName: string
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
-  @column({ isPrimary: true })
-  declare id: number
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
-}
-
 export class DonSchema extends BaseModel {
   static $columns = ['amount', 'catDonId', 'createdAt', 'date', 'donateur', 'id', 'status', 'updatedAt'] as const
   $columns = DonSchema.$columns
@@ -326,12 +313,10 @@ export class MemberSchema extends BaseModel {
 }
 
 export class MinistrySchema extends BaseModel {
-  static $columns = ['badgeColor', 'catMinistryId', 'content', 'coverImg', 'createdAt', 'description', 'id', 'name', 'tag', 'updatedAt', 'urlImg'] as const
+  static $columns = ['badgeColor', 'content', 'coverImg', 'createdAt', 'description', 'id', 'name', 'tag', 'updatedAt', 'urlImg'] as const
   $columns = MinistrySchema.$columns
   @column()
   declare badgeColor: string | null
-  @column()
-  declare catMinistryId: number
   @column()
   declare content: string | null
   @column()

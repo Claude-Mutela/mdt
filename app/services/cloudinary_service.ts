@@ -31,4 +31,23 @@ export default class CloudinaryService {
       throw error
     }
   }
+
+  static extractPublicId(url: string): string | null {
+    try {
+      const parts = url.split('/')
+      const uploadIndex = parts.indexOf('upload')
+      if (uploadIndex === -1) return null
+
+      let startIndex = uploadIndex + 1
+      if (parts[startIndex].startsWith('v')) {
+        startIndex++
+      }
+      
+      const publicIdWithExt = parts.slice(startIndex).join('/')
+      return publicIdWithExt.split('.')[0]
+    } catch {
+      return null
+    }
+  }
 }
+

@@ -95,12 +95,8 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
         onSuccess: () => setMinModal(null)
       })
     } else if (minModal === 'edit' && selectedMin) {
-      // Pour les uploads en PUT, on utilise POST avec spoofing _method: 'put'
-      // Utilisation de minForm.post avec transform pour inclure _method
-      minForm.transform((data) => ({
-        ...data,
-        _method: 'put'
-      })).post(`/admin/ministeres/${selectedMin.id}`, {
+      // Pour les uploads avec fichiers, le spoofing via l'URL est plus fiable
+      minForm.post(`/admin/ministeres/${selectedMin.id}?_method=PUT`, {
         forceFormData: true,
         onSuccess: () => setMinModal(null)
       })

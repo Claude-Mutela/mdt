@@ -13,6 +13,8 @@ export default class AdminMinistriesController {
   async storeMinistry({ request, response, session }: HttpContext) {
     try {
       const data = await request.validateUsing(ministryValidator)
+
+
       
       const ministry = new Ministry()
       ministry.fill({
@@ -55,12 +57,20 @@ export default class AdminMinistriesController {
       // Handle Cloudinary Uploads (Update only if new file provided)
       const coverImg = request.file('coverImg')
       if (coverImg && coverImg.tmpPath) {
+        // Delete old image if it exists
+        if (ministry.coverImg) {
+          const oldPublicId = CloudinaryService.extractPublicId(ministry.coverImg)
+          if (oldPublicId) {
+            await CloudinaryService.delete(oldPublicId)
+          }
+        }
+
         const url = await CloudinaryService.upload(coverImg.tmpPath, 'ministries/covers')
         ministry.coverImg = url
       }
 
       await ministry.save()
-      session.flash('success', 'Ministère mis à jour avec succès sur Cloudinary.')
+      session.flash('success', 'Ministère mis à jour avec succès.')
     } catch (error) {
       console.error(error)
       session.flash('error', "Erreur lors de la mise à jour du ministère.")
@@ -68,9 +78,20 @@ export default class AdminMinistriesController {
     return response.redirect().back()
   }
 
+
+
   async destroyMinistry({ params, response, session }: HttpContext) {
     try {
       const ministry = await Ministry.findOrFail(params.id)
+
+      // Delete image from Cloudinary if it exists
+      if (ministry.coverImg) {
+        const publicId = CloudinaryService.extractPublicId(ministry.coverImg)
+        if (publicId) {
+          await CloudinaryService.delete(publicId)
+        }
+      }
+
       await ministry.delete()
       session.flash('success', 'Ministère supprimé avec succès.')
     } catch (error) {
@@ -78,4 +99,5 @@ export default class AdminMinistriesController {
     }
     return response.redirect().back()
   }
+
 }

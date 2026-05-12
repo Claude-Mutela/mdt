@@ -145,39 +145,53 @@ router.on('/contact').renderInertia('contact', {}).as('contact')
 router.on('/rendez-vous').renderInertia('rendez-vous', {}).as('rendez-vous')
 router.on('/donation').renderInertia('donation', {}).as('donation')
 
+/* ── Auth routes ──────────────────────────────────────────────────── */
 router
   .group(() => {
-    router.get('signup', [controllers.NewAccount, 'create'])
-    router.post('signup', [controllers.NewAccount, 'store'])
-
-    router.get('login', [controllers.Session, 'create'])
-    router.post('login', [controllers.Session, 'store'])
+    router.get('login', [() => import('#controllers/auth_controller'), 'showLogin']).as('login')
+    router.post('login', [() => import('#controllers/auth_controller'), 'login']).as('login.store')
   })
   .use(middleware.guest())
 
-router
-  .group(() => {
-    router.post('logout', [controllers.Session, 'destroy'])
-  })
-  .use(middleware.auth())
+router.post('logout', [() => import('#controllers/auth_controller'), 'logout']).as('logout').use(middleware.auth())
 
 /* ── Admin routes ─────────────────────────────────────────────────── */
 router
   .group(() => {
+    // Dashboard accessible à tous les connectés
     router.on('/').renderInertia('admin/dashboard', {}).as('admin.dashboard')
-    router.get('/users', [() => import('#controllers/admin_users_controller'), 'index']).as('admin.users.index')
-    router.post('/users', [() => import('#controllers/admin_users_controller'), 'store']).as('admin.users.store')
-    router.put('/users/:id', [() => import('#controllers/admin_users_controller'), 'update']).as('admin.users.update')
-    router.delete('/users/:id', [() => import('#controllers/admin_users_controller'), 'destroy']).as('admin.users.destroy')
-    router.on('/membres').renderInertia('admin/membres', {}).as('admin.membres')
-    router.on('/agenda').renderInertia('admin/agenda', {}).as('admin.agenda')
-    router.on('/rendez-vous').renderInertia('admin/rendez-vous', {}).as('admin.rendez-vous')
-    router.on('/assets').renderInertia('admin/assets', {}).as('admin.assets')
-    router.on('/ministeres').renderInertia('admin/ministeres', {}).as('admin.ministeres')
-    router.on('/evenements').renderInertia('admin/evenements', {}).as('admin.evenements')
-    router.on('/medias').renderInertia('admin/medias', {}).as('admin.medias')
-    router.on('/galerie').renderInertia('admin/galerie', {}).as('admin.galerie')
-    router.on('/donations').renderInertia('admin/donations', {}).as('admin.donations')
+
+    // Gestion des utilisateurs : Uniquement SUPERADMIN
+    router
+      .group(() => {
+        router.get('/users', [() => import('#controllers/admin_users_controller'), 'index']).as('admin.users.index')
+        router.post('/users', [() => import('#controllers/admin_users_controller'), 'store']).as('admin.users.store')
+        router.put('/users/:id', [() => import('#controllers/admin_users_controller'), 'update']).as('admin.users.update')
+        router.delete('/users/:id', [() => import('#controllers/admin_users_controller'), 'destroy']).as('admin.users.destroy')
+      })
+      .use(middleware.role({ allowedRoles: ['superadmin'] }))
+
+    // Sections partagées entre SUPERADMIN, ADMIN et PASTEUR
+    router
+      .group(() => {
+        router.on('/agenda').renderInertia('admin/agenda', {}).as('admin.agenda')
+        router.on('/rendez-vous').renderInertia('admin/rendez-vous', {}).as('admin.rendez-vous')
+        router.on('/assets').renderInertia('admin/assets', {}).as('admin.assets')
+        router.on('/evenements').renderInertia('admin/evenements', {}).as('admin.evenements')
+        router.on('/medias').renderInertia('admin/medias', {}).as('admin.medias')
+        router.on('/galerie').renderInertia('admin/galerie', {}).as('admin.galerie')
+      })
+      .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur'] }))
+
+    // Sections accessibles à TOUT LE MONDE (SuperAdmin, Admin, Pasteur, User)
+    router
+      .group(() => {
+        router.on('/membres').renderInertia('admin/membres', {}).as('admin.membres')
+        router.on('/ministeres').renderInertia('admin/ministeres', {}).as('admin.ministeres')
+        router.on('/donations').renderInertia('admin/donations', {}).as('admin.donations')
+      })
+      .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur', 'user'] }))
   })
   .prefix('/admin')
+  .use(middleware.auth())
 

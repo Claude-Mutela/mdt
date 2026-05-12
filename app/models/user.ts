@@ -4,7 +4,7 @@ import { compose } from '@adonisjs/core/helpers'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { beforeSave } from '@adonisjs/lucid/orm'
 
-export default class User extends compose(UserSchema, withAuthFinder(hash)) {
+export default class User extends compose(UserSchema, withAuthFinder(() => hash as any)) {
   @beforeSave()
   public static async concatenateFullName(user: User) {
     if (user.$dirty.firstname || user.$dirty.lastname) {

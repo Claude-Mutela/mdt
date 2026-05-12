@@ -13,10 +13,6 @@ export default class AdminUsersController {
   async store({ request, response, session }: HttpContext) {
     const data = await request.validateUsing(createUserValidator)
     
-    if (data.password) {
-      data.password = await hash.make(data.password)
-    }
-
     await User.create(data)
     session.flash('success', 'Utilisateur créé avec succès')
     return response.redirect().back()
@@ -29,9 +25,7 @@ export default class AdminUsersController {
       meta: { userId: user.id }
     })
 
-    if (payload.password) {
-      payload.password = await hash.make(payload.password)
-    } else {
+    if (!payload.password) {
       delete payload.password
     }
 

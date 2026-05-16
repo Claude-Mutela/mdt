@@ -5,8 +5,8 @@ const messages = {
   'required': 'Le champ {{ field }} est obligatoire.',
   'string': 'Le champ {{ field }} doit être une chaîne de caractères.',
   'number': 'Le champ {{ field }} doit être un nombre.',
-  'maxLength': 'Le champ {{ field }} ne doit pas dépasser {{ maxLength }} caractères.',
-  'minLength': 'Le champ {{ field }} doit faire au moins {{ minLength }} caractères.',
+  'maxLength': 'Le champ {{ field }} ne doit pas dépasser {{ max }} caractères.',
+  'minLength': 'Le champ {{ field }} doit faire au moins {{ min }} caractères.',
   'file.size': 'L’image est trop lourde (max 2Mo).',
   'file.extname': 'L’image doit être au format jpg, png ou webp.',
 }

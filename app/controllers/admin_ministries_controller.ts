@@ -11,8 +11,9 @@ export default class AdminMinistriesController {
 
   // Ministries CRUD
   async storeMinistry({ request, response, session }: HttpContext) {
+    const data = await request.validateUsing(ministryValidator)
+    
     try {
-      const data = await request.validateUsing(ministryValidator)
 
 
       
@@ -42,9 +43,10 @@ export default class AdminMinistriesController {
   }
 
   async updateMinistry({ params, request, response, session }: HttpContext) {
+    const data = await request.validateUsing(ministryValidator)
+    
     try {
       const ministry = await Ministry.findOrFail(params.id)
-      const data = await request.validateUsing(ministryValidator)
       
       ministry.merge({
         name: data.name,

@@ -1,6 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
-import hash from '@adonisjs/core/services/hash'
 import { createUserValidator, updateUserValidator } from '#validators/admin_user'
 
 export default class AdminUsersController {

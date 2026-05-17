@@ -8,7 +8,6 @@
 */
 
 import { middleware } from '#start/kernel'
-import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
 
 router.on('/').renderInertia('home', {}).as('home')
@@ -174,7 +173,15 @@ router
     // Sections partagées entre SUPERADMIN, ADMIN et PASTEUR
     router
       .group(() => {
-        router.on('/agenda').renderInertia('admin/agenda', {}).as('admin.agenda')
+        router.get('/agenda', [() => import('#controllers/admin_agenda_controller'), 'index']).as('admin.agenda')
+        router.post('/agenda', [() => import('#controllers/admin_agenda_controller'), 'store']).as('admin.agenda.store')
+        router.put('/agenda/:id', [() => import('#controllers/admin_agenda_controller'), 'update']).as('admin.agenda.update')
+        router.delete('/agenda/:id', [() => import('#controllers/admin_agenda_controller'), 'destroy']).as('admin.agenda.destroy')
+        
+        router.post('/agenda/categories', [() => import('#controllers/admin_agenda_controller'), 'storeCategory']).as('admin.agenda.categories.store')
+        router.put('/agenda/categories/:id', [() => import('#controllers/admin_agenda_controller'), 'updateCategory']).as('admin.agenda.categories.update')
+        router.delete('/agenda/categories/:id', [() => import('#controllers/admin_agenda_controller'), 'destroyCategory']).as('admin.agenda.categories.destroy')
+        
         router.on('/rendez-vous').renderInertia('admin/rendez-vous', {}).as('admin.rendez-vous')
         router.on('/assets').renderInertia('admin/assets', {}).as('admin.assets')
         router.on('/evenements').renderInertia('admin/evenements', {}).as('admin.evenements')

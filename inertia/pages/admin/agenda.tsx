@@ -1,7 +1,7 @@
 import { Head, useForm, router } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
-import { Plus, Pencil, Trash2, X, Check, Clock, Calendar as CalendarIcon, Tag, Save } from 'lucide-react'
+import { Plus, Pencil, Trash2, X, Check, Clock, Calendar as CalendarIcon, Tag, Save, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface CatActivity {
   id: number
@@ -46,6 +46,24 @@ export default function AdminAgenda({ agendas, categories, currentWeek }: { agen
   function handleWeekChange(newWeek: string) {
     setWeek(newWeek)
     router.get('/admin/agenda', { week: newWeek }, { preserveState: true })
+  }
+
+  // Navigate to prev / next ISO week without Luxon on the frontend
+  function shiftWeek(delta: number) {
+    const [yearStr, weekStr] = week.split('-W')
+    let y = parseInt(yearStr, 10)
+    let w = parseInt(weekStr, 10) + delta
+    // Wrap around: ISO year has 52 or 53 weeks
+    const weeksInYear = (y: number) => {
+      // Dec 28 is always in the last ISO week of the year
+      const d = new Date(y, 11, 28)
+      const dayOfWeek = d.getDay() || 7
+      d.setDate(d.getDate() + 4 - dayOfWeek)
+      return Math.ceil((((d.getTime() - new Date(d.getFullYear(), 0, 1).getTime()) / 86400000) + 1) / 7)
+    }
+    if (w < 1) { y -= 1; w = weeksInYear(y) }
+    else if (w > weeksInYear(y)) { y += 1; w = 1 }
+    handleWeekChange(`${y}-W${String(w).padStart(2, '0')}`)
   }
 
   function openAdd() { 
@@ -160,14 +178,30 @@ export default function AdminAgenda({ agendas, categories, currentWeek }: { agen
           <p className="text-slate-400 text-sm flex-1">Gérez les créneaux hebdomadaires des cultes et activités.</p>
           
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 px-3 py-2 rounded-xl">
-              <CalendarIcon size={16} className="text-slate-400" />
-              <input 
-                type="week" 
-                value={week} 
-                onChange={(e) => handleWeekChange(e.target.value)}
-                className="bg-transparent text-sm text-white focus:outline-none w-36 cursor-pointer"
-              />
+            <div className="flex items-center gap-1 bg-slate-900 border border-slate-700 rounded-xl overflow-hidden">
+              <button
+                onClick={() => shiftWeek(-1)}
+                className="px-2.5 py-2 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                title="Semaine précédente"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <div className="flex items-center gap-1.5 px-2">
+                <CalendarIcon size={14} className="text-slate-400" />
+                <input
+                  type="week"
+                  value={week}
+                  onChange={(e) => handleWeekChange(e.target.value)}
+                  className="bg-transparent text-sm text-white focus:outline-none w-28 cursor-pointer"
+                />
+              </div>
+              <button
+                onClick={() => shiftWeek(1)}
+                className="px-2.5 py-2 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                title="Semaine suivante"
+              >
+                <ChevronRight size={16} />
+              </button>
             </div>
 
             <button onClick={() => setModal('category')} className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors">
@@ -189,11 +223,17 @@ export default function AdminAgenda({ agendas, categories, currentWeek }: { agen
               <div className="divide-y divide-slate-800/50">
                 {items.map((c, index) => (
                   <div key={c.id} className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 hover:bg-slate-800/30 transition-colors group">
-                    <div className="flex items-center gap-1.5 text-slate-400 min-w-[100px]">
+                    <div className="flex items-center gap-1.5 text-slate-400 min-w-[130px]">
                       <Clock size={14} className="text-primary" />
                       <span className="text-sm font-mono font-bold text-slate-300">
                         {c.hourStart ? c.hourStart.substring(0, 5) : '--:--'}
                       </span>
+                      {c.hourEnd && (
+                        <>
+                          <span className="text-slate-600 text-xs">→</span>
+                          <span className="text-sm font-mono text-slate-400">{c.hourEnd.substring(0, 5)}</span>
+                        </>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-white font-semibold">{c.title}</p>
@@ -267,6 +307,16 @@ export default function AdminAgenda({ agendas, categories, currentWeek }: { agen
                       type="time" 
                       value={form.data.hourStart} 
                       onChange={(e) => form.setData('hourStart', e.target.value)}
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors" 
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider">Heure de fin</label>
+                    <input 
+                      type="time" 
+                      value={form.data.hourEnd} 
+                      onChange={(e) => form.setData('hourEnd', e.target.value)}
                       className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors" 
                     />
                   </div>

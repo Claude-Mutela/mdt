@@ -183,7 +183,11 @@ router
         router.delete('/agenda/categories/:id', [() => import('#controllers/admin_agenda_controller'), 'destroyCategory']).as('admin.agenda.categories.destroy')
         
         router.on('/rendez-vous').renderInertia('admin/rendez-vous', {}).as('admin.rendez-vous')
-        router.on('/assets').renderInertia('admin/assets', {}).as('admin.assets')
+        router.get('/assets', [() => import('#controllers/admin_assets_controller'), 'index']).as('admin.assets')
+        router.post('/assets', [() => import('#controllers/admin_assets_controller'), 'store']).as('admin.assets.store')
+        router.patch('/assets/:id/activate', [() => import('#controllers/admin_assets_controller'), 'activate']).as('admin.assets.activate')
+        router.patch('/assets/:id/deactivate', [() => import('#controllers/admin_assets_controller'), 'deactivate']).as('admin.assets.deactivate')
+        router.delete('/assets/:id', [() => import('#controllers/admin_assets_controller'), 'destroy']).as('admin.assets.destroy')
         router.on('/evenements').renderInertia('admin/evenements', {}).as('admin.evenements')
         router.on('/medias').renderInertia('admin/medias', {}).as('admin.medias')
         router.on('/galerie').renderInertia('admin/galerie', {}).as('admin.galerie')

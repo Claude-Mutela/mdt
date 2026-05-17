@@ -9,18 +9,31 @@ cloudinary.config({
 
 
 export default class CloudinaryService {
-  static async upload(filePath: string, folder: string = 'mdt'): Promise<string> {
-    try {
-      const result = await cloudinary.uploader.upload(filePath, {
-        folder: folder,
-        resource_type: 'auto',
-      })
-      return result.secure_url
-    } catch (error) {
-
-      console.error('[Cloudinary Upload Error]', error)
-      throw error
-    }
+  static upload(filePath: string, folder: string = 'mdt'): Promise<string> {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_large(
+        filePath,
+        {
+          folder: folder,
+          resource_type: 'auto',
+          chunk_size: 6000000, // Tronçonnage par blocs de 6 Mo
+          timeout: 120000,     // Timeout de 2 minutes
+          transformation: [
+            { quality: 'auto', fetch_format: 'auto' } // Optimisation automatique
+          ]
+        },
+        (error, result) => {
+          if (error) {
+            console.error('[Cloudinary Upload Error]', error)
+            return reject(error)
+          }
+          if (!result || !result.secure_url) {
+            return reject(new Error('Le téléversement a réussi mais aucune URL sécurisée n\'a été renvoyée.'))
+          }
+          resolve(result.secure_url)
+        }
+      )
+    })
   }
 
   static async delete(publicId: string): Promise<void> {

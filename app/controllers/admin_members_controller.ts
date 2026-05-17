@@ -8,17 +8,36 @@ export default class AdminMembersController {
   /**
    * Afficher la liste des membres
    */
-  async index({ inertia }: HttpContext) {
-    const members = await Member.query()
+  async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
+    const ministryId = request.input('ministryId')
+    const search = request.input('search')
+
+    const query = Member.query()
       .preload('ministry')
       .preload('user')
       .orderBy('createdAt', 'desc')
-    
+
+    if (ministryId) {
+      query.where('ministryId', ministryId)
+    }
+
+    if (search) {
+      query.where((q) => {
+        q.where('firstname', 'like', `%${search}%`)
+          .orWhere('lastname', 'like', `%${search}%`)
+          .orWhere('email', 'like', `%${search}%`)
+          .orWhere('phone', 'like', `%${search}%`)
+      })
+    }
+
+    const members = await query.paginate(page, 15)
     const ministries = await Ministry.all()
-    
+
     return inertia.render('admin/membres' as any, { 
       members,
-      ministries 
+      ministries,
+      filters: { ministryId, search }
     })
   }
 

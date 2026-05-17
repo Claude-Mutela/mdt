@@ -1,178 +1,438 @@
-import { Head } from '@inertiajs/react'
-import { useState } from 'react'
+import { Head, router, useForm } from '@inertiajs/react'
+import { useState, useEffect, useRef } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
-import { Plus, Search, Filter, Pencil, Trash2, X, Check, Printer } from 'lucide-react'
+import { Plus, Pencil, Trash2, X, Check, User, Mail, Phone, Calendar, ShieldCheck, Search, Printer } from 'lucide-react'
 
-type Statut = 'Actif' | 'Inactif'
-
-interface Membre {
+interface Ministry {
   id: number
-  nom: string
-  telephone: string
-  email: string
-  ministere: string
-  date: string
-  statut: Statut
+  name: string
 }
 
-const MINISTERES = ['Tous', 'Génération PHILA', 'École du Dimanche', 'Chorale & Louange', 'Femmes de Valeur']
+interface Member {
+  id: number
+  firstname: string
+  lastname: string
+  email: string | null
+  phone: string | null
+  gender: 'M' | 'F' | null
+  dateIntegration: string | null
+  statut: 'actif' | 'inactif'
+  typeMember: 'responsable' | 'membre' | 'visiteur' | null
+  ministryId: number | null
+  ministry: Ministry | null
+  createdAt: string
+}
 
-const initialData: Membre[] = [
-  { id: 1, nom: 'Amani Kalonda',   telephone: '+243 81 234 5678', email: 'amani@mdt.cd',   ministere: 'Génération PHILA',  date: '02 Avr 2025', statut: 'Actif'   },
-  { id: 2, nom: 'Esther Mbala',    telephone: '+243 99 876 5432', email: 'esther@mdt.cd',  ministere: 'Femmes de Valeur',  date: '01 Avr 2025', statut: 'Actif'   },
-  { id: 3, nom: 'Daniel Mutombo',  telephone: '+243 82 111 2222', email: 'daniel@mdt.cd',  ministere: 'Chorale & Louange', date: '30 Mar 2025', statut: 'Actif'   },
-  { id: 4, nom: 'Sarah Lukusa',    telephone: '+243 90 333 4444', email: 'sarah@mdt.cd',   ministere: 'École du Dimanche', date: '28 Mar 2025', statut: 'Actif'   },
-  { id: 5, nom: 'Paul Ilunga',     telephone: '+243 81 555 6666', email: 'paul@mdt.cd',    ministere: 'Génération PHILA',  date: '25 Mar 2025', statut: 'Inactif' },
-  { id: 6, nom: 'Grace Kasongo',   telephone: '+243 97 777 8888', email: 'grace@mdt.cd',   ministere: 'Femmes de Valeur',  date: '20 Mar 2025', statut: 'Actif'   },
-  { id: 7, nom: 'Emmanuel Tshiab', telephone: '+243 84 999 0000', email: 'emman@mdt.cd',   ministere: 'Chorale & Louange', date: '15 Mar 2025', statut: 'Actif'   },
-  { id: 8, nom: 'Lydie Ngoy',      telephone: '+243 82 123 9876', email: 'lydie@mdt.cd',   ministere: 'École du Dimanche', date: '10 Mar 2025', statut: 'Inactif' },
-]
+interface Props {
+  members: {
+    data: Member[]
+    meta: any
+  }
+  ministries: Ministry[]
+  filters: {
+    ministryId: string | number | null
+    search: string | null
+  }
+}
 
-const empty: Omit<Membre, 'id'> = { nom: '', telephone: '', email: '', ministere: 'Génération PHILA', date: '', statut: 'Actif' }
+export default function AdminMembres({ members, ministries, filters }: Props) {
+  // Filters State
+  const [search, setSearch] = useState(filters.search || '')
+  const [ministryId, setMinistryId] = useState(filters.ministryId || '')
+  const isMounted = useRef(false)
 
-export default function AdminMembres() {
-  const [membres, setMembres]       = useState<Membre[]>(initialData)
-  const [search, setSearch]         = useState('')
-  const [filtreMin, setFiltreMin]   = useState('Tous')
-  const [filtreStatut, setFiltreStatut] = useState('Tous')
-  const [modal, setModal]           = useState<'add' | 'edit' | 'delete' | null>(null)
-  const [selected, setSelected]     = useState<Membre | null>(null)
-  const [form, setForm]             = useState<Omit<Membre, 'id'>>(empty)
-  
-  const [currentPage, setCurrentPage] = useState(1)
-  const perPage = 15
+  // Auto-filtering with debounce
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true
+      return
+    }
 
-  const filtered = membres.filter((m) => {
-    const matchSearch  = m.nom.toLowerCase().includes(search.toLowerCase()) || m.email.toLowerCase().includes(search.toLowerCase())
-    const matchMin     = filtreMin === 'Tous'    || m.ministere === filtreMin
-    const matchStatut  = filtreStatut === 'Tous' || m.statut === filtreStatut
-    return matchSearch && matchMin && matchStatut
+    const timeoutId = setTimeout(() => {
+      router.get('/admin/membres', { search, ministryId }, {
+        preserveState: true,
+        replace: true,
+      })
+    }, 300)
+
+    return () => clearTimeout(timeoutId)
+  }, [search, ministryId])
+
+  // Modals State
+  const [modal, setModal] = useState<'add' | 'edit' | 'delete' | null>(null)
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
+
+  // Form for Add/Edit
+  const form = useForm({
+    firstname: '',
+    lastname: '',
+    email: '',
+    phone: '',
+    gender: 'M' as 'M' | 'F',
+    dateIntegration: '',
+    statut: 'actif' as 'actif' | 'inactif',
+    typeMember: 'membre' as 'responsable' | 'membre' | 'visiteur',
+    ministryId: '' as number | string,
   })
 
-  const total = filtered.length
-  const lastPage = Math.ceil(total / perPage)
-  const paginatedData = filtered.slice((currentPage - 1) * perPage, currentPage * perPage)
-
-  const meta = {
-    total,
-    perPage,
-    currentPage,
-    lastPage,
-    firstPage: 1
+  const handleReset = () => {
+    setSearch('')
+    setMinistryId('')
   }
 
-  function openAdd()              { setForm(empty); setModal('add') }
-  function openEdit(m: Membre)    { setSelected(m); setForm({ nom: m.nom, telephone: m.telephone, email: m.email, ministere: m.ministere, date: m.date, statut: m.statut }); setModal('edit') }
-  function openDelete(m: Membre)  { setSelected(m); setModal('delete') }
-  function closeModal()           { setModal(null); setSelected(null) }
+  function openAdd() {
+    form.reset()
+    form.clearErrors()
+    setSelectedMember(null)
+    setModal('add')
+  }
 
-  function handleSave() {
+  function openEdit(m: Member) {
+    form.reset()
+    form.clearErrors()
+    form.setData({
+      firstname: m.firstname,
+      lastname: m.lastname,
+      email: m.email || '',
+      phone: m.phone || '',
+      gender: m.gender || 'M',
+      dateIntegration: m.dateIntegration ? m.dateIntegration.split('T')[0] : '',
+      statut: m.statut,
+      typeMember: m.typeMember || 'membre',
+      ministryId: m.ministryId || '',
+    })
+    setSelectedMember(m)
+    setModal('edit')
+  }
+
+  function submit() {
     if (modal === 'add') {
-      setMembres([...membres, { id: Date.now(), ...form }])
-    } else if (modal === 'edit' && selected) {
-      setMembres(membres.map((m) => m.id === selected.id ? { ...m, ...form } : m))
+      form.post('/admin/members', {
+        onSuccess: () => setModal(null)
+      })
+    } else if (modal === 'edit' && selectedMember) {
+      form.put(`/admin/members/${selectedMember.id}`, {
+        onSuccess: () => setModal(null)
+      })
     }
-    closeModal()
   }
 
-  function handleDelete() {
-    if (selected) setMembres(membres.filter((m) => m.id !== selected.id))
-    closeModal()
-  }
-
-  function handlePrint() {
-    window.print()
+  function destroy() {
+    if (selectedMember) {
+      router.delete(`/admin/members/${selectedMember.id}`, {
+        onSuccess: () => setModal(null)
+      })
+    }
   }
 
   return (
     <>
       <Head title="Membres — Admin Phila MDT" />
-      <style>{`
-        @media print {
-          body * { visibility: hidden; }
-          .print-section, .print-section * { visibility: visible; }
-          .print-section { position: absolute; left: 0; top: 0; width: 100%; }
-          .no-print { display: none !important; }
-        }
-      `}</style>
       <AdminLayout title="Gestion des membres">
-        {/* ── Toolbar ── */}
-        <div className="flex flex-wrap gap-3 mb-6 no-print">
-          <div className="relative flex-1 min-w-48">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              value={search} onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher un membre…"
-              className="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-primary"
-            />
+        
+        {/* Unified Header & Actions Bar */}
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3 mb-6 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-center gap-4 flex-1">
+            <h2 className="text-white font-bold text-lg whitespace-nowrap px-2">Membres</h2>
+            
+            <div className="flex flex-1 items-center gap-2 max-w-3xl">
+              <div className="relative flex-1">
+                <input 
+                  type="text" 
+                  placeholder="Rechercher (nom, email, tel)..." 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 bg-slate-800/50 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-all"
+                />
+                <div className="absolute left-3 top-2.5 text-slate-500">
+                  <Search size={16} />
+                </div>
+              </div>
+
+              <select 
+                value={ministryId}
+                onChange={(e) => setMinistryId(e.target.value)}
+                className="px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-all cursor-pointer min-w-[160px]"
+              >
+                <option value="">Tous les ministères</option>
+                {ministries
+                  .filter(m => !m.name.toLowerCase().includes('test'))
+                  .map(min => (
+                    <option key={min.id} value={min.id}>{min.name}</option>
+                  ))
+                }
+              </select>
+              
+              {(filters.search || filters.ministryId) && (
+                <button 
+                  onClick={handleReset} 
+                  title="Réinitialiser"
+                  className="text-slate-500 hover:text-white p-2 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
           </div>
+
           <div className="flex items-center gap-2">
-            <Filter size={15} className="text-slate-400" />
-            <select
-              value={filtreMin} onChange={(e) => setFiltreMin(e.target.value)}
-              className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-primary"
+            <button 
+              onClick={() => window.print()} 
+              className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-700 transition-colors"
             >
-              {MINISTERES.map((m) => <option key={m}>{m}</option>)}
-            </select>
+              <Printer size={16} /> <span className="hidden sm:inline">Imprimer</span>
+            </button>
+            <button 
+              onClick={openAdd} 
+              className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-primary/20 active:scale-95"
+            >
+              <Plus size={16} /> <span className="hidden sm:inline">Ajouter un membre</span>
+              <span className="sm:hidden">Ajouter</span>
+            </button>
           </div>
-          <button onClick={handlePrint} className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border border-slate-700">
-            <Printer size={16} /> Imprimer
-          </button>
-          <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary/20">
-            <Plus size={18} /> Ajouter
-          </button>
         </div>
 
-        {/* ── Table ── */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden print-section">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead>
-                <tr className="bg-slate-900/50 border-b border-slate-800 text-slate-400 uppercase text-[11px] tracking-wider">
-                  <th className="px-6 py-4 font-medium">Membre</th>
-                  <th className="px-6 py-4 font-medium">Contact</th>
-                  <th className="px-6 py-4 font-medium">Ministère</th>
-                  <th className="px-6 py-4 font-medium text-center">Statut</th>
-                  <th className="px-6 py-4 font-medium text-right no-print">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/50">
-                {paginatedData.map((m) => (
-                  <tr key={m.id} className="hover:bg-slate-800/30 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 text-xs font-bold shrink-0">
-                          {m.nom[0]}
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-800/50 border-b border-slate-800">
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Membre</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Contact</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Ministère</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Type / Statut</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800">
+              {members.data.map((m) => (
+                <tr key={m.id} className="hover:bg-slate-800/30 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 border border-slate-700">
+                        <User size={18} />
+                      </div>
+                      <div>
+                        <div className="text-white font-semibold">{m.firstname} {m.lastname}</div>
+                        <div className="text-slate-500 text-xs">{m.gender === 'M' ? 'Homme' : 'Femme'}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="space-y-1">
+                      {m.email && (
+                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                          <Mail size={12} className="text-slate-600" /> {m.email}
                         </div>
-                        <span className="text-white font-medium">{m.nom}</span>
+                      )}
+                      {m.phone && (
+                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                          <Phone size={12} className="text-slate-600" /> {m.phone}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-slate-300">
+                      {m.ministry ? (
+                        <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-medium border border-blue-500/20">
+                          {m.ministry.name}
+                        </span>
+                      ) : (
+                        <span className="text-slate-600 text-xs italic">Aucun ministère</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-1.5 h-1.5 rounded-full ${m.statut === 'actif' ? 'bg-green-500' : 'bg-red-500'}`} />
+                        <span className={`text-[10px] uppercase font-bold tracking-tighter ${m.statut === 'actif' ? 'text-green-500' : 'text-red-500'}`}>
+                          {m.statut}
+                        </span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col text-xs">
-                        <span className="text-slate-300">{m.telephone}</span>
-                        <span className="text-slate-500">{m.email}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-slate-400">{m.ministere}</td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${m.statut === 'Actif' ? 'bg-green-500/10 text-green-400' : 'bg-slate-700 text-slate-400'}`}>
-                        {m.statut}
+                      <span className="text-[10px] text-slate-500 font-medium px-2 py-0.5 rounded bg-slate-800 w-fit">
+                        {m.typeMember || 'Non défini'}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 text-right no-print">
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => openEdit(m)} className="p-1.5 text-slate-400 hover:text-white transition-colors"><Pencil size={14}/></button>
-                        <button onClick={() => openDelete(m)} className="p-1.5 text-slate-400 hover:text-red-400 transition-colors"><Trash2 size={14}/></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button onClick={() => openEdit(m)} className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                        <Pencil size={16} />
+                      </button>
+                      <button onClick={() => { setSelectedMember(m); setModal('delete') }} className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          
+          {members.data.length === 0 && (
+            <div className="p-12 text-center text-slate-500">
+              Aucun membre trouvé.
+            </div>
+          )}
         </div>
+
+        <div className="mt-6">
+          <Pagination meta={members.meta} links={(members as any).links} />
+        </div>
+
+        {/* MODAL ADD/EDIT */}
+        {(modal === 'add' || modal === 'edit') && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+                <h3 className="text-white font-bold">{modal === 'add' ? 'Ajouter un membre' : 'Modifier le membre'}</h3>
+                <button onClick={() => setModal(null)} className="text-slate-400 hover:text-white transition-colors"><X size={18} /></button>
+              </div>
+              
+              <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="p-6 space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Prénom <span className="text-red-500">*</span></label>
+                    <input 
+                      value={form.data.firstname} 
+                      onChange={e => form.setData('firstname', e.target.value)}
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary" 
+                    />
+                    {form.errors.firstname && <p className="text-red-400 text-[10px] mt-1">{form.errors.firstname}</p>}
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Nom <span className="text-red-500">*</span></label>
+                    <input 
+                      value={form.data.lastname} 
+                      onChange={e => form.setData('lastname', e.target.value)}
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary" 
+                    />
+                    {form.errors.lastname && <p className="text-red-400 text-[10px] mt-1">{form.errors.lastname}</p>}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Email</label>
+                    <input 
+                      type="email"
+                      value={form.data.email} 
+                      onChange={e => form.setData('email', e.target.value)}
+                      className={`w-full mt-1 px-4 py-2.5 bg-slate-800 border ${form.errors.email ? 'border-red-500' : 'border-slate-700'} rounded-xl text-sm text-white focus:outline-none focus:border-primary`} 
+                    />
+                    {form.errors.email && <p className="text-red-400 text-[10px] mt-1 italic">{form.errors.email}</p>}
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Téléphone</label>
+                    <input 
+                      value={form.data.phone} 
+                      onChange={e => form.setData('phone', e.target.value)}
+                      className={`w-full mt-1 px-4 py-2.5 bg-slate-800 border ${form.errors.phone ? 'border-red-500' : 'border-slate-700'} rounded-xl text-sm text-white focus:outline-none focus:border-primary`} 
+                    />
+                    {form.errors.phone && <p className="text-red-400 text-[10px] mt-1 italic">{form.errors.phone}</p>}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Genre</label>
+                    <select 
+                      value={form.data.gender} 
+                      onChange={e => form.setData('gender', e.target.value as any)}
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary"
+                    >
+                      <option value="M">Homme</option>
+                      <option value="F">Femme</option>
+                    </select>
+                    {form.errors.gender && <p className="text-red-400 text-[10px] mt-1 italic">{form.errors.gender}</p>}
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Statut</label>
+                    <select 
+                      value={form.data.statut} 
+                      onChange={e => form.setData('statut', e.target.value as any)}
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary"
+                    >
+                      <option value="actif">Actif</option>
+                      <option value="inactif">Inactif</option>
+                    </select>
+                    {form.errors.statut && <p className="text-red-400 text-[10px] mt-1 italic">{form.errors.statut}</p>}
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Type de membre</label>
+                    <select 
+                      value={form.data.typeMember} 
+                      onChange={e => form.setData('typeMember', e.target.value as any)}
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary"
+                    >
+                      <option value="membre">Membre</option>
+                      <option value="responsable">Responsable</option>
+                      <option value="visiteur">Visiteur</option>
+                    </select>
+                    {form.errors.typeMember && <p className="text-red-400 text-[10px] mt-1 italic">{form.errors.typeMember}</p>}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Ministère</label>
+                    <select 
+                      value={form.data.ministryId} 
+                      onChange={e => form.setData('ministryId', e.target.value)}
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary"
+                    >
+                      <option value="">-- Aucun --</option>
+                      {ministries.map(min => (
+                        <option key={min.id} value={min.id}>{min.name}</option>
+                      ))}
+                    </select>
+                    {form.errors.ministryId && <p className="text-red-400 text-[10px] mt-1 italic">{form.errors.ministryId}</p>}
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Date d'intégration</label>
+                    <input 
+                      type="date"
+                      value={form.data.dateIntegration} 
+                      onChange={e => form.setData('dateIntegration', e.target.value)}
+                      className={`w-full mt-1 px-4 py-2.5 bg-slate-800 border ${form.errors.dateIntegration ? 'border-red-500' : 'border-slate-700'} rounded-xl text-sm text-white focus:outline-none focus:border-primary`} 
+                    />
+                    {form.errors.dateIntegration && <p className="text-red-400 text-[10px] mt-1 italic">{form.errors.dateIntegration}</p>}
+                  </div>
+                </div>
+
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                  <button type="button" onClick={() => setModal(null)} className="px-4 py-2 rounded-xl text-sm text-slate-400 hover:text-white border border-slate-700 hover:bg-slate-800 transition-colors">Annuler</button>
+                  <button type="submit" disabled={form.processing} className="flex items-center gap-2 px-6 py-2 rounded-xl text-sm bg-primary hover:bg-primary-dark text-white font-semibold transition-colors disabled:opacity-50">
+                    <Check size={16} /> {form.processing ? 'Chargement...' : 'Enregistrer'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL DELETE */}
+        {modal === 'delete' && selectedMember && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-4">
+              <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto">
+                <Trash2 size={24} className="text-red-400" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-white font-bold text-lg">Supprimer le membre</h3>
+                <p className="text-slate-400 text-sm mt-1">Voulez-vous vraiment supprimer <strong className="text-white">{selectedMember.firstname} {selectedMember.lastname}</strong> ?</p>
+              </div>
+              <div className="flex gap-3">
+                <button onClick={() => setModal(null)} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm transition-colors">Annuler</button>
+                <button onClick={destroy} className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors">Supprimer</button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </AdminLayout>
     </>
   )

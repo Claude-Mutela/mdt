@@ -186,7 +186,11 @@ router
     // Sections accessibles à TOUT LE MONDE (SuperAdmin, Admin, Pasteur, User)
     router
       .group(() => {
-        router.on('/membres').renderInertia('admin/membres', {}).as('admin.membres')
+        router.get('/membres/print', [() => import('#controllers/admin_members_controller'), 'print']).as('admin.membres.print')
+        router.get('/membres', [() => import('#controllers/admin_members_controller'), 'index']).as('admin.membres')
+        router.post('/members', [() => import('#controllers/admin_members_controller'), 'store']).as('admin.members.store')
+        router.put('/members/:id', [() => import('#controllers/admin_members_controller'), 'update']).as('admin.members.update')
+        router.delete('/members/:id', [() => import('#controllers/admin_members_controller'), 'destroy']).as('admin.members.destroy')
         
         router.get('/ministeres', [() => import('#controllers/admin_ministries_controller'), 'index']).as('admin.ministeres')
         router.post('/ministeres', [() => import('#controllers/admin_ministries_controller'), 'storeMinistry']).as('admin.ministeres.store')

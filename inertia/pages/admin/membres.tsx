@@ -62,6 +62,9 @@ export default function AdminMembres({ members, ministries, filters }: Props) {
   // Modals State
   const [modal, setModal] = useState<'add' | 'edit' | 'delete' | null>(null)
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
+  const [printModal, setPrintModal] = useState(false)
+  const [printMode, setPrintMode] = useState<'global' | 'ministry'>('global')
+  const [printMinistryId, setPrintMinistryId] = useState('')
 
   // Form for Add/Edit
   const form = useForm({
@@ -116,6 +119,15 @@ export default function AdminMembres({ members, ministries, filters }: Props) {
         onSuccess: () => setModal(null)
       })
     }
+  }
+
+  function handlePrint() {
+    let url = '/admin/membres/print'
+    if (printMode === 'ministry' && printMinistryId) {
+      url += `?ministryId=${printMinistryId}`
+    }
+    window.open(url, '_blank')
+    setPrintModal(false)
   }
 
   function destroy() {
@@ -178,7 +190,7 @@ export default function AdminMembres({ members, ministries, filters }: Props) {
 
           <div className="flex items-center gap-2">
             <button 
-              onClick={() => window.print()} 
+              onClick={() => { setPrintMode('global'); setPrintModal(true); }} 
               className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-700 transition-colors"
             >
               <Printer size={16} /> <span className="hidden sm:inline">Imprimer</span>
@@ -428,6 +440,83 @@ export default function AdminMembres({ members, ministries, filters }: Props) {
               <div className="flex gap-3">
                 <button onClick={() => setModal(null)} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm transition-colors">Annuler</button>
                 <button onClick={destroy} className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors">Supprimer</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL PRINT OPTIONS */}
+        {printModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                  <Printer size={18} className="text-primary" /> Options d'impression
+                </h3>
+                <button onClick={() => setPrintModal(false)} className="text-slate-400 hover:text-white transition-colors"><X size={18} /></button>
+              </div>
+              
+              <div className="space-y-4">
+                <p className="text-sm text-slate-400">Choisissez les données que vous souhaitez imprimer.</p>
+                
+                <div className="space-y-3">
+                  <label className="flex items-center gap-3 p-3 border border-slate-700 rounded-xl cursor-pointer hover:bg-slate-800 transition-colors">
+                    <input 
+                      type="radio" 
+                      name="print_type" 
+                      checked={printMode === 'global'} 
+                      onChange={() => setPrintMode('global')}
+                      className="text-primary focus:ring-primary h-4 w-4 bg-slate-900 border-slate-600" 
+                    />
+                    <div>
+                      <div className="text-white font-medium text-sm">Impression Globale</div>
+                      <div className="text-slate-500 text-xs">Tous les membres de l'église.</div>
+                    </div>
+                  </label>
+
+                  <label className="flex flex-col gap-2 p-3 border border-slate-700 rounded-xl cursor-pointer hover:bg-slate-800 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="radio" 
+                        name="print_type" 
+                        checked={printMode === 'ministry'} 
+                        onChange={() => {
+                          setPrintMode('ministry')
+                          if (!printMinistryId) {
+                            setPrintMinistryId(ministries.filter(m => !m.name.toLowerCase().includes('test'))[0]?.id.toString() || '1')
+                          }
+                        }}
+                        className="text-primary focus:ring-primary h-4 w-4 bg-slate-900 border-slate-600" 
+                      />
+                      <div>
+                        <div className="text-white font-medium text-sm">Par Ministère</div>
+                        <div className="text-slate-500 text-xs">Uniquement les membres d'un département.</div>
+                      </div>
+                    </div>
+                    
+                    {printMode === 'ministry' && (
+                      <select 
+                        value={printMinistryId}
+                        onChange={(e) => setPrintMinistryId(e.target.value)}
+                        className="mt-2 w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:outline-none focus:border-primary"
+                      >
+                        {ministries
+                          .filter(m => !m.name.toLowerCase().includes('test'))
+                          .map(min => (
+                            <option key={min.id} value={min.id}>{min.name}</option>
+                          ))
+                        }
+                      </select>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t border-slate-800">
+                <button onClick={() => setPrintModal(false)} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm font-medium transition-colors">Annuler</button>
+                <button onClick={handlePrint} className="flex-1 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-bold transition-colors shadow-lg shadow-primary/20">
+                  Générer le document
+                </button>
               </div>
             </div>
           </div>

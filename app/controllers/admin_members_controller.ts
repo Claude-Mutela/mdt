@@ -42,6 +42,40 @@ export default class AdminMembersController {
   }
 
   /**
+   * Imprimer la liste des membres
+   */
+  async print({ inertia, request }: HttpContext) {
+    const ministryId = request.input('ministryId')
+    const typeMember = request.input('typeMember')
+    
+    const query = Member.query()
+      .preload('ministry')
+      .preload('user')
+      .orderBy('firstname', 'asc')
+
+    let filterTitle = "Liste globale des membres des Ministères"
+
+    if (ministryId) {
+      query.where('ministryId', ministryId)
+      const ministry = await Ministry.find(ministryId)
+      if (ministry) {
+        filterTitle = `Membres du ministère : ${ministry.name}`
+      }
+    } else if (typeMember) {
+      query.where('typeMember', typeMember)
+      filterTitle = `Liste des membres - Type : ${typeMember.charAt(0).toUpperCase() + typeMember.slice(1)}`
+    }
+
+    const members = await query.exec()
+
+    return inertia.render('admin/membres_print' as any, { 
+      members,
+      filterTitle,
+      printDate: new Date().toLocaleDateString('fr-FR')
+    })
+  }
+
+  /**
    * Créer un nouveau membre
    */
   async store({ request, response, session }: HttpContext) {

@@ -165,18 +165,18 @@ export class DonHistorySchema extends BaseModel {
 }
 
 export class EventSchema extends BaseModel {
-  static $columns = ['catEventId', 'content', 'coverImg', 'createdAt', 'date', 'description', 'id', 'name', 'place', 'status', 'updatedAt', 'urlImg'] as const
+  static $columns = ['catEventId', 'content', 'createdAt', 'date', 'dateFin', 'description', 'id', 'name', 'place', 'status', 'updatedAt', 'urlImg'] as const
   $columns = EventSchema.$columns
   @column()
   declare catEventId: number
   @column()
   declare content: string | null
-  @column()
-  declare coverImg: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column.date()
   declare date: DateTime | null
+  @column.date()
+  declare dateFin: DateTime | null
   @column()
   declare description: string | null
   @column({ isPrimary: true })

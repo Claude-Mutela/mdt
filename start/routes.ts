@@ -202,7 +202,18 @@ router
         router.post('/medias/categories', [() => import('#controllers/admin_medias_controller'), 'storeCategory']).as('admin.medias.categories.store')
         router.put('/medias/categories/:id', [() => import('#controllers/admin_medias_controller'), 'updateCategory']).as('admin.medias.categories.update')
         router.delete('/medias/categories/:id', [() => import('#controllers/admin_medias_controller'), 'destroyCategory']).as('admin.medias.categories.destroy')
-        router.on('/galerie').renderInertia('admin/galerie', {}).as('admin.galerie')
+        router.get('/galerie', [() => import('#controllers/admin_galeries_controller'), 'index']).as('admin.galerie')
+        router.post('/galerie/albums', [() => import('#controllers/admin_galeries_controller'), 'storeAlbum']).as('admin.galerie.albums.store')
+        router.put('/galerie/albums/:id', [() => import('#controllers/admin_galeries_controller'), 'updateAlbum']).as('admin.galerie.albums.update')
+        router.delete('/galerie/albums/:id', [() => import('#controllers/admin_galeries_controller'), 'destroyAlbum']).as('admin.galerie.albums.destroy')
+
+        router.post('/galerie/photos', [() => import('#controllers/admin_galeries_controller'), 'storePhoto']).as('admin.galerie.photos.store')
+        router.put('/galerie/photos/:id', [() => import('#controllers/admin_galeries_controller'), 'updatePhoto']).as('admin.galerie.photos.update')
+        router.delete('/galerie/photos/:id', [() => import('#controllers/admin_galeries_controller'), 'destroyPhoto']).as('admin.galerie.photos.destroy')
+
+        router.post('/galerie/categories', [() => import('#controllers/admin_galeries_controller'), 'storeCategory']).as('admin.galerie.categories.store')
+        router.put('/galerie/categories/:id', [() => import('#controllers/admin_galeries_controller'), 'updateCategory']).as('admin.galerie.categories.update')
+        router.delete('/galerie/categories/:id', [() => import('#controllers/admin_galeries_controller'), 'destroyCategory']).as('admin.galerie.categories.destroy')
       })
       .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur'] }))
 

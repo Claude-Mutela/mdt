@@ -279,7 +279,7 @@ export default function Agenda() {
         </section>
 
         {/* Final CTA */}
-        {/* <section className="max-w-4xl mx-auto px-4 mt-20 text-center space-y-10">
+        <section className="max-w-4xl mx-auto px-4 mt-20 text-center space-y-10">
           <div className="w-20 h-20 bg-white rounded-3xl shadow-xl flex items-center justify-center mx-auto text-primary border border-slate-100">
              <Heart size={32} />
           </div>
@@ -298,13 +298,14 @@ export default function Agenda() {
               <ArrowRight size={20} />
             </Link>
             <Link 
-              href="/evenements" 
-              className="bg-white border border-slate-200 text-slate-600 font-bold h-14 px-10 rounded-2xl hover:bg-slate-50 transition-all flex items-center gap-3"
+              href="/activites/intercession-priere" 
+              className="bg-white border-2 border-primary text-primary font-bold h-14 px-10 rounded-2xl hover:bg-primary/5 transition-all flex items-center gap-3 shadow-sm"
             >
-              Événements spéciaux
+              <Heart size={18} />
+              Besoin de Prière
             </Link>
           </div>
-        </section> */}
+        </section>
       </main>
     </>
   )

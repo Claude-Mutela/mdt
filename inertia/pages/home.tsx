@@ -235,7 +235,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Allô Prière MDT Section */}
+      {/* Agenda MDT Section */}
       <section className="py-12 lg:py-20 bg-slate-900 px-4 overflow-hidden relative">
         {/* Decorative glows */}
         <div className="absolute top-0 left-0 w-96 h-96 bg-primary/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
@@ -251,64 +251,63 @@ export default function Home() {
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
               </span>
               <span className="text-primary-light font-black uppercase tracking-widest text-xs">
-                Programme 24h/24 · 7j/7
+                Programme hebdomadaire · Toute la semaine
               </span>
             </div>
 
             <div className="space-y-4">
               <h2 className="text-white text-4xl md:text-5xl font-black font-serif leading-tight">
-                Allô Prière <span className="text-primary-light">MDT</span>
+                L'Agenda de la <span className="text-primary-light">Semaine</span>
               </h2>
               <p className="text-white/70 text-lg leading-relaxed">
-                La Maison de Témoignages vous offre un service de soutien dans la prière, disponible à toute heure du jour et de la nuit. Nos équipes d'intercesseurs se relaient sans interruption pour porter vos besoins devant le trône de la grâce.
+                Chaque semaine, la Maison de Témoignages vous propose un programme riche : enseignements bibliques, temps d'intercession, réunions de famille et cultes de célébration. Une vie spirituelle intense, rythmée et accessible à tous.
               </p>
               <p className="text-white/60 text-base leading-relaxed">
-                Que vous traversiez une épreuve, cherchiez une percée spirituelle ou souhaitiez partager un sujet de prière, nos priants sont là pour vous. <span className="text-white font-semibold">Aucun besoin n'est trop grand ni trop petit pour Dieu.</span>
+                Du lundi au dimanche, il y a toujours un rendez-vous avec la présence de Dieu. <span className="text-white font-semibold">Choisissez celui qui correspond à votre semaine.</span>
               </p>
             </div>
 
-            {/* Contact Numbers */}
+            {/* Key activities */}
             <div className="space-y-4">
-              <p className="text-white/50 uppercase text-xs font-black tracking-widest">Nos numéros de contact</p>
+              <p className="text-white/50 uppercase text-xs font-black tracking-widest">Rendez-vous clés de la semaine</p>
               <div className="grid sm:grid-cols-2 gap-3">
                 {[
-                  { label: "Ligne principale", number: "+243 97 000 0001" },
-                  { label: "Ligne secondaire", number: "+243 82 000 0002" },
-                ].map((contact) => (
-                  <a
-                    key={contact.number}
-                    href={`tel:${contact.number.replace(/\s/g, '')}`}
-                    className="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-primary/20 hover:border-primary/50 transition-all duration-300"
+                  { label: "Mardi Malakisi", time: "Mar · 17h30" },
+                  { label: "Jeudi Etoko", time: "Jeu · 17h30" },
+                  { label: "Culte Dominical", time: "Dim · 08h00" },
+                  { label: "Intercession Matinale", time: "Lun · 06h00" },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 group-hover:bg-primary/40 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-primary-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-                      </svg>
+                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                      <Calendar size={18} className="text-primary-light" />
                     </div>
                     <div>
-                      <p className="text-white/40 text-[10px] uppercase tracking-wider font-bold">{contact.label}</p>
-                      <p className="text-white font-bold text-sm">{contact.number}</p>
+                      <p className="text-white/40 text-[10px] uppercase tracking-wider font-bold">{item.time}</p>
+                      <p className="text-white font-bold text-sm">{item.label}</p>
                     </div>
-                  </a>
+                  </div>
                 ))}
               </div>
             </div>
 
             {/* CTA Button */}
             <Link
-              href="/activites/intercession-priere"
+              href="/agenda"
               className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-light transition-all shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5 transform duration-300"
             >
-              En savoir plus
+              Voir tous les détails de la semaine
               <ArrowRight size={18} />
             </Link>
           </div>
 
-          {/* Right – Image */}
+          {/* Right – Agenda Image */}
           <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group">
             <img
               src="/temple-jeudi-etoko.jpeg"
-              alt="Prière MDT - Intercession continue"
+              alt="Agenda Phila MDT - Programme de la semaine"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
@@ -318,14 +317,14 @@ export default function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
               </span>
-              <span className="text-white text-xs font-bold">En prière maintenant</span>
+              <span className="text-white text-xs font-bold">Semaine en cours</span>
             </div>
             {/* Bottom card */}
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-2">
-                <p className="text-primary-light font-black uppercase text-xs tracking-widest">Programme de prières</p>
-                <p className="text-white font-bold text-xl font-serif">24 heures sur 24 · 7 jours sur 7</p>
-                <p className="text-white/60 text-sm">Des intercesseurs en veille permanente pour vous</p>
+                <p className="text-primary-light font-black uppercase text-xs tracking-widest">Programme hebdomadaire</p>
+                <p className="text-white font-bold text-xl font-serif">7 jours de vie spirituelle intense</p>
+                <p className="text-white/60 text-sm">Cultes · Enseignements · Prière · Jeunesse · Mission</p>
               </div>
             </div>
           </div>
@@ -451,6 +450,64 @@ export default function Home() {
               location="Temple de l'église & Live"
               tag="Intercession"
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Agenda Preview Section */}
+      <section className="py-12 lg:py-20 bg-background-off px-4 border-t border-slate-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-10">
+            <div className="space-y-2">
+              <span className="text-primary font-black uppercase tracking-widest text-xs">Agenda de la semaine</span>
+              <h2 className="text-slate-900 text-4xl font-black font-serif">Cette semaine à Phila MDT</h2>
+              <p className="text-slate-500">Ne manquez aucun rendez-vous spirituel · Chaque semaine, une nouvelle rencontre avec Dieu.</p>
+            </div>
+            <Link
+              href="/agenda"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-bold hover:bg-primary-light transition-all shadow-lg shadow-primary/20 shrink-0"
+            >
+              Voir l'agenda complet
+              <Calendar size={18} />
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              { day: "Lundi",    title: "Intercession Matinale",  time: "06:00 – 07:00", tag: "Prière",       tagBg: "bg-blue-100 text-blue-700",    accent: "border-blue-200"   },
+              { day: "Mardi",    title: "Mardi Malakisi",         time: "17:30 – 19:30", tag: "Enseignement", tagBg: "bg-primary text-white",        accent: "border-primary/30", highlight: true },
+              { day: "Mercredi", title: "Réunion des Couples",    time: "18:00 – 19:30", tag: "Famille",      tagBg: "bg-pink-100 text-pink-700",   accent: "border-pink-200"   },
+              { day: "Jeudi",    title: "Jeudi Etoko",            time: "17:30 – 19:30", tag: "Intercession", tagBg: "bg-orange-500 text-white",     accent: "border-orange-200", highlight: true },
+              { day: "Vendredi", title: "Génération PHILA",       time: "17:30 – 19:30", tag: "Jeunesse",    tagBg: "bg-purple-100 text-purple-700",accent: "border-purple-200" },
+              { day: "Dimanche", title: "Culte Dominical",        time: "08:00 – 10:00", tag: "Célébration",  tagBg: "bg-primary text-white",        accent: "border-primary/30", highlight: true },
+            ].map((item, i) => (
+              <Link
+                key={i}
+                href="/agenda"
+                className={`group p-6 rounded-2xl border-2 bg-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col gap-4 ${
+                  item.highlight ? item.accent + ' shadow-md' : 'border-slate-100'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg ${item.tagBg}`}>
+                    {item.tag}
+                  </span>
+                  <span className="text-slate-400 text-sm font-bold">{item.day}</span>
+                </div>
+                <h3 className={`text-xl font-black font-serif transition-colors ${
+                  item.highlight ? 'text-primary' : 'text-slate-900 group-hover:text-primary'
+                }`}>
+                  {item.title}
+                </h3>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-slate-500 text-sm">
+                    <Clock size={14} className="text-primary" />
+                    <span className="font-semibold">{item.time}</span>
+                  </div>
+                  <ArrowRight size={16} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

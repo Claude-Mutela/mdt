@@ -12,7 +12,6 @@ const Navbar: React.FC = () => {
     { name: 'Médias', path: '/media' },
     { name: 'Ministères', path: '/ministries' },
     { name: 'Events', path: '/evenements' },
-    { name: 'Agenda', path: '/agenda' },
     { name: 'Acadis', path: '/acadis' },
     { name: 'Rendez-vous', path: '/rendez-vous' },
     { name: 'Contact', path: '/contact' },
@@ -55,6 +54,12 @@ const Navbar: React.FC = () => {
               ))}
             </div>
             <Link
+              href="/intercession-priere"
+              className="bg-white border-2 border-primary text-primary text-sm font-bold h-10 px-5 rounded-lg transition-all hover:bg-primary/5 active:scale-95 flex items-center justify-center"
+            >
+              Besoin de Prière
+            </Link>
+            <Link
               href="/donation"
               className="bg-primary hover:bg-primary-light text-white text-sm font-bold h-10 px-6 rounded-lg transition-all shadow-md active:scale-95 flex items-center justify-center"
             >
@@ -86,9 +91,16 @@ const Navbar: React.FC = () => {
             </Link>
           ))}
           <Link
+            href="/intercession-priere"
+            onClick={() => setIsOpen(false)}
+            className="w-full bg-white border-2 border-primary text-primary font-bold h-12 rounded-lg mt-2 flex items-center justify-center"
+          >
+            Besoin de Prière
+          </Link>
+          <Link
             href="/donation"
             onClick={() => setIsOpen(false)}
-            className="w-full bg-primary text-white font-bold h-12 rounded-lg mt-4 flex items-center justify-center"
+            className="w-full bg-primary text-white font-bold h-12 rounded-lg mt-2 flex items-center justify-center"
           >
             Faire un don
           </Link>

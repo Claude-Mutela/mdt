@@ -235,183 +235,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Agenda MDT Section */}
-      <section className="py-12 lg:py-20 bg-slate-900 px-4 overflow-hidden relative">
-        {/* Decorative glows */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none" />
-
-        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Left – Description */}
-          <div className="space-y-8">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-3">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
-              </span>
-              <span className="text-primary-light font-black uppercase tracking-widest text-xs">
-                Programme hebdomadaire · Toute la semaine
-              </span>
-            </div>
-
-            <div className="space-y-4">
-              <h2 className="text-white text-4xl md:text-5xl font-black font-serif leading-tight">
-                L'Agenda de la <span className="text-primary-light">Semaine</span>
-              </h2>
-              <p className="text-white/70 text-lg leading-relaxed">
-                Chaque semaine, la Maison de Témoignages vous propose un programme riche : enseignements bibliques, temps d'intercession, réunions de famille et cultes de célébration. Une vie spirituelle intense, rythmée et accessible à tous.
-              </p>
-              <p className="text-white/60 text-base leading-relaxed">
-                Du lundi au dimanche, il y a toujours un rendez-vous avec la présence de Dieu. <span className="text-white font-semibold">Choisissez celui qui correspond à votre semaine.</span>
-              </p>
-            </div>
-
-            {/* Key activities */}
-            <div className="space-y-4">
-              <p className="text-white/50 uppercase text-xs font-black tracking-widest">Rendez-vous clés de la semaine</p>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {[
-                  { label: "Mardi Malakisi", time: "Mar · 17h30" },
-                  { label: "Jeudi Etoko", time: "Jeu · 17h30" },
-                  { label: "Culte Dominical", time: "Dim · 08h00" },
-                  { label: "Intercession Matinale", time: "Lun · 06h00" },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
-                      <Calendar size={18} className="text-primary-light" />
-                    </div>
-                    <div>
-                      <p className="text-white/40 text-[10px] uppercase tracking-wider font-bold">{item.time}</p>
-                      <p className="text-white font-bold text-sm">{item.label}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* CTA Button */}
-            <Link
-              href="/agenda"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-light transition-all shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5 transform duration-300"
-            >
-              Voir tous les détails de la semaine
-              <ArrowRight size={18} />
-            </Link>
-          </div>
-
-          {/* Right – Agenda Image */}
-          <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group">
-            <img
-              src="/temple-jeudi-etoko.jpeg"
-              alt="Agenda Phila MDT - Programme de la semaine"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
-            {/* Badge overlay */}
-            <div className="absolute top-6 left-6 flex items-center gap-2 bg-black/50 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
-              </span>
-              <span className="text-white text-xs font-bold">Semaine en cours</span>
-            </div>
-            {/* Bottom card */}
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-2">
-                <p className="text-primary-light font-black uppercase text-xs tracking-widest">Programme hebdomadaire</p>
-                <p className="text-white font-bold text-xl font-serif">7 jours de vie spirituelle intense</p>
-                <p className="text-white/60 text-sm">Cultes · Enseignements · Prière · Jeunesse · Mission</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Ministries Slider Section */}
-      <section className="py-12 lg:py-20 bg-background-off px-4 overflow-hidden border-t border-slate-100">
-        <div className="max-w-6xl mx-auto mb-8 lg:mb-10">
-          <h2 className="text-slate-900 text-4xl font-black font-serif mb-2">Nos Ministères</h2>
-          <p className="text-slate-500">Il y a une place pour chacun à l'Église Phila MDT.</p>
-        </div>
-        
-        <div className="max-w-6xl mx-auto">
-          <div ref={sliderRef} className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {MINISTRIES.map((min) => (
-                <div key={min.id} className="shrink-0 w-[320px] md:w-[360px] snap-start bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-shadow duration-300 flex flex-col group">
-                <div className="h-48 relative overflow-hidden bg-slate-100">
-                  <img src={min.image} alt={min.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className={`absolute bottom-3 left-4 px-3 py-1 rounded-[6px] text-[10px] font-black uppercase tracking-wider text-white ${min.tagColor}`}>
-                    {min.tag}
-                  </div>
-                </div>
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="font-serif font-black text-xl text-slate-900 mb-2 group-hover:text-primary transition-colors">{min.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed mb-6 flex-grow">{min.desc}</p>
-                  <Link href="/ministries" className="text-primary font-bold text-sm hover:text-primary-light transition-colors flex items-center gap-1 w-max group-hover:gap-2">
-                    En savoir plus
-                    <ArrowRight size={16} />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Cellules Section */}
-      <section className="py-12 lg:py-20 bg-primary/5 px-4 overflow-hidden relative">
-        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          
-          {/* Left – Image */}
-          <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group order-2 lg:order-1">
-            <img
-              src="/hospitalite-mdt.jpeg"
-              alt="Cellules de maison"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <div className="bg-white/90 backdrop-blur-md border border-white/20 rounded-2xl p-5 space-y-2 shadow-lg">
-                <p className="text-primary font-black uppercase text-xs tracking-widest">Proximité</p>
-                <p className="text-slate-900 font-bold text-xl font-serif">Une famille spirituelle près de chez vous</p>
-                <p className="text-slate-600 text-sm">Des rencontres conviviales pour grandir ensemble</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Right – Description */}
-          <div className="space-y-8 order-1 lg:order-2">
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/10 text-primary rounded-full">
-              <span className="font-black uppercase tracking-widest text-xs">Communion Fraternelle</span>
-            </div>
-
-            <div className="space-y-4">
-              <h2 className="text-slate-900 text-4xl md:text-5xl font-black font-serif leading-tight">
-                Nos Cellules de <span className="text-primary">Maison</span>
-              </h2>
-              <p className="text-slate-600 text-lg leading-relaxed">
-                L'église, ce n'est pas seulement le dimanche au temple ! Rejoignez l'une de nos cellules réparties à travers la ville pour vivre la communion fraternelle, partager la Parole et prier ensemble dans un cadre plus intime.
-              </p>
-              <p className="text-slate-600 text-base leading-relaxed">
-                Les cellules de maison sont le lieu idéal pour grandir spirituellement, tisser des liens forts avec d'autres croyants et développer vos dons. Il y a forcément une cellule près de chez vous.
-              </p>
-            </div>
-
-            <Link
-              href="/cellules"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-300"
-            >
-              En savoir plus
-              <ArrowRight size={18} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Schedule Section */}
       <section id="cultes" className="py-12 lg:py-20 bg-white px-4">
         <div className="max-w-6xl mx-auto">
@@ -508,6 +331,182 @@ export default function Home() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Club 365 Section */}
+      <section className="py-12 lg:py-20 bg-slate-900 px-4 overflow-hidden relative">
+        {/* Decorative glows */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          {/* Left – Description */}
+          <div className="space-y-8">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-3">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+              </span>
+              <span className="text-primary-light font-black uppercase tracking-widest text-xs">
+                Formation Biblique · Maturité Chrétienne
+              </span>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-white text-4xl md:text-5xl font-black font-serif leading-tight">
+                Club <span className="text-primary-light">365</span>
+              </h2>
+              <p className="text-white/70 text-lg leading-relaxed">
+                Le Club 365 est notre programme de lecture intégrale de la Bible en une année. Chaque jour, un passage, un chapitre, une rencontre avec la Parole de Dieu. Un voyage spirituel structuré pour grandir en connaissance, en foi et en maturité chrétienne.
+              </p>
+              <p className="text-white/60 text-base leading-relaxed">
+                Que vous soyez débutant ou croyant aguerri, le Club 365 vous guide pas à pas à travers les 66 livres de la Bible. <span className="text-white font-semibold">Une discipline quotidienne qui transforme votre vie.</span>
+              </p>
+            </div>
+
+            {/* Stats */}
+            <div className="space-y-4">
+              <p className="text-white/50 uppercase text-xs font-black tracking-widest">Le défi en chiffres</p>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { value: "66", label: "Livres de la Bible" },
+                  { value: "1 189", label: "Chapitres à lire" },
+                  { value: "365", label: "Jours pour y arriver" },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 text-center gap-1"
+                  >
+                    <p className="text-primary-light font-black text-2xl leading-none">{stat.value}</p>
+                    <p className="text-white/50 text-[10px] uppercase tracking-wider font-bold leading-snug">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-light transition-all shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5 transform duration-300"
+            >
+              Rejoindre le Club 365
+              <ArrowRight size={18} />
+            </Link>
+          </div>
+
+          {/* Right – Club 365 Image */}
+          <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group">
+            <img
+              src="/temple-jeudi-etoko.jpeg"
+              alt="Club 365 - Lecture intégrale de la Bible"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-75"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
+            {/* Badge overlay */}
+            <div className="absolute top-6 left-6 flex items-center gap-2 bg-black/50 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
+              </span>
+              <span className="text-white text-xs font-bold">Programme annuel en cours</span>
+            </div>
+            {/* Club 365 brand overlay */}
+            <div className="absolute top-6 right-6 bg-primary rounded-2xl px-4 py-3 shadow-xl">
+              <p className="text-white font-black text-2xl leading-none font-serif">club</p>
+              <p className="text-white/90 font-black text-3xl leading-none">365</p>
+            </div>
+            {/* Bottom card */}
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-2">
+                <p className="text-primary-light font-black uppercase text-xs tracking-widest">Guide de la lecture annuelle</p>
+                <p className="text-white font-bold text-xl font-serif">Toute la Bible en 365 jours</p>
+                <p className="text-white/60 text-sm">Formation · Maturité · Connaissance · Transformation</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Ministries Slider Section */}
+      <section className="py-12 lg:py-20 bg-background-off px-4 overflow-hidden border-t border-slate-100">
+        <div className="max-w-6xl mx-auto mb-8 lg:mb-10">
+          <h2 className="text-slate-900 text-4xl font-black font-serif mb-2">Nos Ministères</h2>
+          <p className="text-slate-500">Il y a une place pour chacun à l'Église Phila MDT.</p>
+        </div>
+        
+        <div className="max-w-6xl mx-auto">
+          <div ref={sliderRef} className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {MINISTRIES.map((min) => (
+                <div key={min.id} className="shrink-0 w-[320px] md:w-[360px] snap-start bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-shadow duration-300 flex flex-col group">
+                <div className="h-48 relative overflow-hidden bg-slate-100">
+                  <img src={min.image} alt={min.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className={`absolute bottom-3 left-4 px-3 py-1 rounded-[6px] text-[10px] font-black uppercase tracking-wider text-white ${min.tagColor}`}>
+                    {min.tag}
+                  </div>
+                </div>
+                <div className="p-6 flex flex-col flex-grow">
+                  <h3 className="font-serif font-black text-xl text-slate-900 mb-2 group-hover:text-primary transition-colors">{min.title}</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed mb-6 flex-grow">{min.desc}</p>
+                  <Link href="/ministries" className="text-primary font-bold text-sm hover:text-primary-light transition-colors flex items-center gap-1 w-max group-hover:gap-2">
+                    En savoir plus
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Cellules Section */}
+      <section className="py-12 lg:py-20 bg-primary/5 px-4 overflow-hidden relative">
+        <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          
+          {/* Left – Image */}
+          <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group order-2 lg:order-1">
+            <img
+              src="/hospitalite-mdt.jpeg"
+              alt="Cellules de maison"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="bg-white/90 backdrop-blur-md border border-white/20 rounded-2xl p-5 space-y-2 shadow-lg">
+                <p className="text-primary font-black uppercase text-xs tracking-widest">Proximité</p>
+                <p className="text-slate-900 font-bold text-xl font-serif">Une famille spirituelle près de chez vous</p>
+                <p className="text-slate-600 text-sm">Des rencontres conviviales pour grandir ensemble</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right – Description */}
+          <div className="space-y-8 order-1 lg:order-2">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/10 text-primary rounded-full">
+              <span className="font-black uppercase tracking-widest text-xs">Communion Fraternelle</span>
+            </div>
+
+            <div className="space-y-4">
+              <h2 className="text-slate-900 text-4xl md:text-5xl font-black font-serif leading-tight">
+                Nos Cellules de <span className="text-primary">Maison</span>
+              </h2>
+              <p className="text-slate-600 text-lg leading-relaxed">
+                L'église, ce n'est pas seulement le dimanche au temple ! Rejoignez l'une de nos cellules réparties à travers la ville pour vivre la communion fraternelle, partager la Parole et prier ensemble dans un cadre plus intime.
+              </p>
+              <p className="text-slate-600 text-base leading-relaxed">
+                Les cellules de maison sont le lieu idéal pour grandir spirituellement, tisser des liens forts avec d'autres croyants et développer vos dons. Il y a forcément une cellule près de chez vous.
+              </p>
+            </div>
+
+            <Link
+              href="/cellules"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-300"
+            >
+              En savoir plus
+              <ArrowRight size={18} />
+            </Link>
           </div>
         </div>
       </section>

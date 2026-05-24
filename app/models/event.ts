@@ -13,9 +13,6 @@ export default class Event extends BaseModel {
   declare name: string
 
   @column()
-  declare coverImg: string | null
-
-  @column()
   declare urlImg: string | null
 
   @column()
@@ -29,6 +26,9 @@ export default class Event extends BaseModel {
 
   @column.date()
   declare date: DateTime | null
+
+  @column.date({ columnName: 'date_fin' })
+  declare dateFin: DateTime | null
 
   @column()
   declare status: 'a_venir' | 'en_cours' | 'termine' | 'annule'

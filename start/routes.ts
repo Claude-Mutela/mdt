@@ -8,7 +8,6 @@
 */
 
 import { middleware } from '#start/kernel'
-import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
 
 router.on('/').renderInertia('home', {}).as('home')
@@ -145,39 +144,97 @@ router.on('/contact').renderInertia('contact', {}).as('contact')
 router.on('/rendez-vous').renderInertia('rendez-vous', {}).as('rendez-vous')
 router.on('/donation').renderInertia('donation', {}).as('donation')
 
+/* ── Auth routes ──────────────────────────────────────────────────── */
 router
   .group(() => {
-    router.get('signup', [controllers.NewAccount, 'create'])
-    router.post('signup', [controllers.NewAccount, 'store'])
-
-    router.get('login', [controllers.Session, 'create'])
-    router.post('login', [controllers.Session, 'store'])
+    router.get('login', [() => import('#controllers/auth_controller'), 'showLogin']).as('login')
+    router.post('login', [() => import('#controllers/auth_controller'), 'login']).as('login.store')
   })
   .use(middleware.guest())
 
-router
-  .group(() => {
-    router.post('logout', [controllers.Session, 'destroy'])
-  })
-  .use(middleware.auth())
+router.post('logout', [() => import('#controllers/auth_controller'), 'logout']).as('logout').use(middleware.auth())
 
 /* ── Admin routes ─────────────────────────────────────────────────── */
 router
   .group(() => {
-    router.on('/').renderInertia('admin/dashboard', {}).as('admin.dashboard')
-    router.get('/users', [() => import('#controllers/admin_users_controller'), 'index']).as('admin.users.index')
-    router.post('/users', [() => import('#controllers/admin_users_controller'), 'store']).as('admin.users.store')
-    router.put('/users/:id', [() => import('#controllers/admin_users_controller'), 'update']).as('admin.users.update')
-    router.delete('/users/:id', [() => import('#controllers/admin_users_controller'), 'destroy']).as('admin.users.destroy')
-    router.on('/membres').renderInertia('admin/membres', {}).as('admin.membres')
-    router.on('/agenda').renderInertia('admin/agenda', {}).as('admin.agenda')
-    router.on('/rendez-vous').renderInertia('admin/rendez-vous', {}).as('admin.rendez-vous')
-    router.on('/assets').renderInertia('admin/assets', {}).as('admin.assets')
-    router.on('/ministeres').renderInertia('admin/ministeres', {}).as('admin.ministeres')
-    router.on('/evenements').renderInertia('admin/evenements', {}).as('admin.evenements')
-    router.on('/medias').renderInertia('admin/medias', {}).as('admin.medias')
-    router.on('/galerie').renderInertia('admin/galerie', {}).as('admin.galerie')
-    router.on('/donations').renderInertia('admin/donations', {}).as('admin.donations')
+    // Dashboard accessible à tous les connectés
+    router.get('/', [() => import('#controllers/admin_dashboard_controller'), 'index']).as('admin.dashboard')
+
+    // Gestion des utilisateurs : Uniquement SUPERADMIN
+    router
+      .group(() => {
+        router.get('/users', [() => import('#controllers/admin_users_controller'), 'index']).as('admin.users.index')
+        router.post('/users', [() => import('#controllers/admin_users_controller'), 'store']).as('admin.users.store')
+        router.put('/users/:id', [() => import('#controllers/admin_users_controller'), 'update']).as('admin.users.update')
+        router.delete('/users/:id', [() => import('#controllers/admin_users_controller'), 'destroy']).as('admin.users.destroy')
+      })
+      .use(middleware.role({ allowedRoles: ['superadmin'] }))
+
+    // Sections partagées entre SUPERADMIN, ADMIN et PASTEUR
+    router
+      .group(() => {
+        router.get('/agenda', [() => import('#controllers/admin_agenda_controller'), 'index']).as('admin.agenda')
+        router.post('/agenda', [() => import('#controllers/admin_agenda_controller'), 'store']).as('admin.agenda.store')
+        router.put('/agenda/:id', [() => import('#controllers/admin_agenda_controller'), 'update']).as('admin.agenda.update')
+        router.delete('/agenda/:id', [() => import('#controllers/admin_agenda_controller'), 'destroy']).as('admin.agenda.destroy')
+        
+        router.post('/agenda/categories', [() => import('#controllers/admin_agenda_controller'), 'storeCategory']).as('admin.agenda.categories.store')
+        router.put('/agenda/categories/:id', [() => import('#controllers/admin_agenda_controller'), 'updateCategory']).as('admin.agenda.categories.update')
+        router.delete('/agenda/categories/:id', [() => import('#controllers/admin_agenda_controller'), 'destroyCategory']).as('admin.agenda.categories.destroy')
+        
+        router.on('/rendez-vous').renderInertia('admin/rendez-vous', {}).as('admin.rendez-vous')
+        router.get('/assets', [() => import('#controllers/admin_assets_controller'), 'index']).as('admin.assets')
+        router.post('/assets', [() => import('#controllers/admin_assets_controller'), 'store']).as('admin.assets.store')
+        router.patch('/assets/:id/activate', [() => import('#controllers/admin_assets_controller'), 'activate']).as('admin.assets.activate')
+        router.patch('/assets/:id/deactivate', [() => import('#controllers/admin_assets_controller'), 'deactivate']).as('admin.assets.deactivate')
+        router.delete('/assets/:id', [() => import('#controllers/admin_assets_controller'), 'destroy']).as('admin.assets.destroy')
+        router.get('/evenements', [() => import('#controllers/admin_events_controller'), 'index']).as('admin.evenements')
+        router.post('/evenements', [() => import('#controllers/admin_events_controller'), 'store']).as('admin.evenements.store')
+        router.put('/evenements/:id', [() => import('#controllers/admin_events_controller'), 'update']).as('admin.evenements.update')
+        router.delete('/evenements/:id', [() => import('#controllers/admin_events_controller'), 'destroy']).as('admin.evenements.destroy')
+        router.post('/evenements/categories', [() => import('#controllers/admin_events_controller'), 'storeCategory']).as('admin.evenements.categories.store')
+        router.put('/evenements/categories/:id', [() => import('#controllers/admin_events_controller'), 'updateCategory']).as('admin.evenements.categories.update')
+        router.delete('/evenements/categories/:id', [() => import('#controllers/admin_events_controller'), 'destroyCategory']).as('admin.evenements.categories.destroy')
+        router.get('/medias', [() => import('#controllers/admin_medias_controller'), 'index']).as('admin.medias')
+        router.post('/medias', [() => import('#controllers/admin_medias_controller'), 'store']).as('admin.medias.store')
+        router.put('/medias/:id', [() => import('#controllers/admin_medias_controller'), 'update']).as('admin.medias.update')
+        router.delete('/medias/:id', [() => import('#controllers/admin_medias_controller'), 'destroy']).as('admin.medias.destroy')
+        router.post('/medias/categories', [() => import('#controllers/admin_medias_controller'), 'storeCategory']).as('admin.medias.categories.store')
+        router.put('/medias/categories/:id', [() => import('#controllers/admin_medias_controller'), 'updateCategory']).as('admin.medias.categories.update')
+        router.delete('/medias/categories/:id', [() => import('#controllers/admin_medias_controller'), 'destroyCategory']).as('admin.medias.categories.destroy')
+        router.get('/galerie', [() => import('#controllers/admin_galeries_controller'), 'index']).as('admin.galerie')
+        router.post('/galerie/albums', [() => import('#controllers/admin_galeries_controller'), 'storeAlbum']).as('admin.galerie.albums.store')
+        router.put('/galerie/albums/:id', [() => import('#controllers/admin_galeries_controller'), 'updateAlbum']).as('admin.galerie.albums.update')
+        router.delete('/galerie/albums/:id', [() => import('#controllers/admin_galeries_controller'), 'destroyAlbum']).as('admin.galerie.albums.destroy')
+
+        router.post('/galerie/photos', [() => import('#controllers/admin_galeries_controller'), 'storePhoto']).as('admin.galerie.photos.store')
+        router.put('/galerie/photos/:id', [() => import('#controllers/admin_galeries_controller'), 'updatePhoto']).as('admin.galerie.photos.update')
+        router.delete('/galerie/photos/:id', [() => import('#controllers/admin_galeries_controller'), 'destroyPhoto']).as('admin.galerie.photos.destroy')
+
+        router.post('/galerie/categories', [() => import('#controllers/admin_galeries_controller'), 'storeCategory']).as('admin.galerie.categories.store')
+        router.put('/galerie/categories/:id', [() => import('#controllers/admin_galeries_controller'), 'updateCategory']).as('admin.galerie.categories.update')
+        router.delete('/galerie/categories/:id', [() => import('#controllers/admin_galeries_controller'), 'destroyCategory']).as('admin.galerie.categories.destroy')
+      })
+      .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur'] }))
+
+    // Sections accessibles à TOUT LE MONDE (SuperAdmin, Admin, Pasteur, User)
+    router
+      .group(() => {
+        router.get('/membres/print', [() => import('#controllers/admin_members_controller'), 'print']).as('admin.membres.print')
+        router.get('/membres', [() => import('#controllers/admin_members_controller'), 'index']).as('admin.membres')
+        router.post('/members', [() => import('#controllers/admin_members_controller'), 'store']).as('admin.members.store')
+        router.put('/members/:id', [() => import('#controllers/admin_members_controller'), 'update']).as('admin.members.update')
+        router.delete('/members/:id', [() => import('#controllers/admin_members_controller'), 'destroy']).as('admin.members.destroy')
+        
+        router.get('/ministeres', [() => import('#controllers/admin_ministries_controller'), 'index']).as('admin.ministeres')
+        router.post('/ministeres', [() => import('#controllers/admin_ministries_controller'), 'storeMinistry']).as('admin.ministeres.store')
+        router.put('/ministeres/:id', [() => import('#controllers/admin_ministries_controller'), 'updateMinistry']).as('admin.ministeres.update')
+        router.delete('/ministeres/:id', [() => import('#controllers/admin_ministries_controller'), 'destroyMinistry']).as('admin.ministeres.destroy')
+        
+        router.on('/donations').renderInertia('admin/donations', {}).as('admin.donations')
+      })
+      .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur', 'user'] }))
   })
   .prefix('/admin')
+  .use(middleware.auth())
 

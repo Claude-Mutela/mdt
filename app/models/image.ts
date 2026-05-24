@@ -18,7 +18,7 @@ export default class Image extends BaseModel {
   @column.date()
   declare date: DateTime | null
 
-  @column()
+  @column({ columnName: 'galery_id' })
   declare galeryId: number
 
   @column.dateTime({ autoCreate: true })

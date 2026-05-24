@@ -18,7 +18,7 @@ export default class Media extends BaseModel {
   @column()
   declare file: string | null
 
-  @column()
+  @column({ columnName: 'url_file' })
   declare urlFile: string | null
 
   @column()
@@ -30,7 +30,7 @@ export default class Media extends BaseModel {
   @column.date()
   declare date: DateTime | null
 
-  @column()
+  @column({ columnName: 'cat_media_id' })
   declare catMediaId: number
 
   @column.dateTime({ autoCreate: true })

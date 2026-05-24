@@ -30,6 +30,35 @@ export class AgendaSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class AppointmentSchema extends BaseModel {
+  static $columns = ['appointmentDate', 'appointmentTime', 'createdAt', 'email', 'firstName', 'format', 'id', 'lastName', 'phone', 'reason', 'status', 'updatedAt'] as const
+  $columns = AppointmentSchema.$columns
+  @column.date()
+  declare appointmentDate: DateTime
+  @column()
+  declare appointmentTime: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare email: string | null
+  @column()
+  declare firstName: string
+  @column()
+  declare format: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare lastName: string
+  @column()
+  declare phone: string
+  @column()
+  declare reason: string
+  @column()
+  declare status: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class CatActivitySchema extends BaseModel {
   static $columns = ['createdAt', 'id', 'name', 'updatedAt'] as const
   $columns = CatActivitySchema.$columns
@@ -95,19 +124,6 @@ export class CatMediaSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
-export class CatMinistrySchema extends BaseModel {
-  static $columns = ['catMinName', 'createdAt', 'id', 'updatedAt'] as const
-  $columns = CatMinistrySchema.$columns
-  @column()
-  declare catMinName: string
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
-  @column({ isPrimary: true })
-  declare id: number
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
-}
-
 export class DonSchema extends BaseModel {
   static $columns = ['amount', 'catDonId', 'createdAt', 'date', 'donateur', 'id', 'status', 'updatedAt'] as const
   $columns = DonSchema.$columns
@@ -149,18 +165,18 @@ export class DonHistorySchema extends BaseModel {
 }
 
 export class EventSchema extends BaseModel {
-  static $columns = ['catEventId', 'content', 'coverImg', 'createdAt', 'date', 'description', 'id', 'name', 'place', 'status', 'updatedAt', 'urlImg'] as const
+  static $columns = ['catEventId', 'content', 'createdAt', 'date', 'dateFin', 'description', 'id', 'name', 'place', 'status', 'updatedAt', 'urlImg'] as const
   $columns = EventSchema.$columns
   @column()
   declare catEventId: number
   @column()
   declare content: string | null
-  @column()
-  declare coverImg: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column.date()
   declare date: DateTime | null
+  @column.date()
+  declare dateFin: DateTime | null
   @column()
   declare description: string | null
   @column({ isPrimary: true })
@@ -196,6 +212,25 @@ export class GalerySchema extends BaseModel {
   declare updatedAt: DateTime | null
   @column()
   declare urlImg: string | null
+}
+
+export class HeroAssetSchema extends BaseModel {
+  static $columns = ['createdAt', 'filePath', 'id', 'name', 'status', 'type', 'updatedAt'] as const
+  $columns = HeroAssetSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare filePath: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare status: string | null
+  @column()
+  declare type: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
 }
 
 export class ImageSchema extends BaseModel {
@@ -278,12 +313,10 @@ export class MemberSchema extends BaseModel {
 }
 
 export class MinistrySchema extends BaseModel {
-  static $columns = ['badgeColor', 'catMinistryId', 'content', 'coverImg', 'createdAt', 'description', 'id', 'name', 'tag', 'updatedAt', 'urlImg'] as const
+  static $columns = ['badgeColor', 'content', 'coverImg', 'createdAt', 'description', 'id', 'name', 'tag', 'updatedAt', 'urlImg'] as const
   $columns = MinistrySchema.$columns
   @column()
   declare badgeColor: string | null
-  @column()
-  declare catMinistryId: number
   @column()
   declare content: string | null
   @column()

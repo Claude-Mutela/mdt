@@ -1,7 +1,6 @@
-import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-import CatMinistry from '#models/cat_ministry'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Member from '#models/member'
 
 export default class Ministry extends BaseModel {
@@ -31,17 +30,11 @@ export default class Ministry extends BaseModel {
   @column()
   declare tag: string | null
 
-  @column()
-  declare catMinistryId: number
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
-
-  @belongsTo(() => CatMinistry)
-  declare catMinistry: BelongsTo<typeof CatMinistry>
 
   @hasMany(() => Member)
   declare members: HasMany<typeof Member>

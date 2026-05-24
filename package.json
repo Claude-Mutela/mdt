@@ -78,6 +78,7 @@
     "@tuyau/core": "^1.0.0",
     "@vinejs/vine": "^4.3.0",
     "better-sqlite3": "^12.6.2",
+    "cloudinary": "^2.10.0",
     "clsx": "^2.1.1",
     "edge.js": "^6.5.0",
     "lucide-react": "^1.7.0",

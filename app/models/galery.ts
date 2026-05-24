@@ -13,16 +13,16 @@ export default class Galery extends BaseModel {
   @column()
   declare title: string
 
-  @column()
+  @column({ columnName: 'cover_img' })
   declare coverImg: string | null
 
-  @column()
+  @column({ columnName: 'url_img' })
   declare urlImg: string | null
 
-  @column()
+  @column({ columnName: 'img_nber' })
   declare imgNber: number
 
-  @column()
+  @column({ columnName: 'cat_galery_id' })
   declare catGaleryId: number
 
   @column.dateTime({ autoCreate: true })

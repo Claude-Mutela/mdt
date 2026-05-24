@@ -32,6 +32,14 @@ const navItems = [
   { label: 'Dons',        href: '/admin/donations',   icon: HeartHandshake },
 ]
 
+interface User {
+  id: number
+  fullName: string
+  email: string
+  role: 'superadmin' | 'admin' | 'pasteur' | 'user'
+  initials: string
+}
+
 interface AdminLayoutProps {
   children: React.ReactNode
   title?: string
@@ -41,6 +49,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const { url, props } = usePage()
   const flash = props.flash as { success?: string, error?: string }
+  const user = props.user as User
 
   useEffect(() => {
     if (flash.success) {
@@ -50,6 +59,26 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
       toast.error(flash.error)
     }
   }, [flash])
+
+  // Fonction pour vérifier si l'utilisateur peut voir un item de navigation
+  const canAccess = (href: string) => {
+    if (!user) return false
+    if (user.role === 'superadmin') return true
+
+    if (user.role === 'admin' || user.role === 'pasteur') {
+      return href !== '/admin/users' // Voit tout sauf Utilisateurs
+    }
+
+    if (user.role === 'user') {
+      // Voit seulement Dashboard, Membres, Ministères et Dons
+      const allowed = ['/admin', '/admin/membres', '/admin/ministeres', '/admin/donations']
+      return allowed.includes(href)
+    }
+
+    return false
+  }
+
+  const filteredNavItems = navItems.filter(item => canAccess(item.href))
 
   return (
     <div className="flex h-screen bg-slate-950 text-white overflow-hidden font-sans">
@@ -84,7 +113,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
 
         {/* Nav */}
         <nav className="flex-1 py-4 space-y-1 px-2 overflow-y-auto">
-          {navItems.map(({ label, href, icon: Icon }) => {
+          {filteredNavItems.map(({ label, href, icon: Icon }) => {
             const active = url === href || (href !== '/admin' && url.startsWith(href))
             return (
               <Link
@@ -139,12 +168,12 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full" />
             </button>
             <div className="flex items-center gap-2 pl-3 border-l border-slate-700">
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold">
-                A
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-black text-white shadow-lg shadow-primary/20">
+                {user?.initials || '??'}
               </div>
               <div className="text-xs">
-                <p className="text-white font-medium">Admin</p>
-                <p className="text-slate-400">Phila MDT</p>
+                <p className="text-white font-bold leading-none mb-0.5">{user?.fullName || 'Utilisateur'}</p>
+                <p className="text-slate-500 uppercase text-[9px] tracking-widest font-black">{user?.role || 'Inconnu'}</p>
               </div>
             </div>
           </div>

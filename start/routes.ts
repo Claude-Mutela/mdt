@@ -158,7 +158,7 @@ router.post('logout', [() => import('#controllers/auth_controller'), 'logout']).
 router
   .group(() => {
     // Dashboard accessible à tous les connectés
-    router.on('/').renderInertia('admin/dashboard', {}).as('admin.dashboard')
+    router.get('/', [() => import('#controllers/admin_dashboard_controller'), 'index']).as('admin.dashboard')
 
     // Gestion des utilisateurs : Uniquement SUPERADMIN
     router

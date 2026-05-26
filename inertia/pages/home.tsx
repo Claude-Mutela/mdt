@@ -88,7 +88,84 @@ const MINISTRIES = [
   }
 ]
 
-export default function Home() {
+import type { FC } from 'react'
+
+interface HeroAsset {
+  id: number
+  name: string
+  filePath: string
+  type: 'image' | 'video'
+  status: 'active' | 'inactive'
+}
+interface LastPreach {
+  id: number
+  title: string
+  format: 'audio' | 'video' | 'texte' | 'podcast'
+  orateur: string | null
+  duree: number | null
+  url: string | null
+  date: string | null
+}
+
+interface AgendaItem {
+  id: number
+  day: string // "YYYY-MM-DD"
+  title: string
+  hourStart: string | null
+  hourEnd: string | null
+  place: string | null
+  category: { id: number; name: string } | null
+}
+
+function formatDuration(seconds: number | null): string {
+  if (!seconds) return ''
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  const s = Math.floor(seconds % 60)
+  if (h > 0) return `${h}h${m.toString().padStart(2, '0')}min`
+  if (m > 0) return `${m}min${s > 0 ? s.toString().padStart(2, '0') + 's' : ''}`
+  return `${s}s`
+}
+
+function isYoutubeUrl(url: string): boolean {
+  return url.includes('youtube.com') || url.includes('youtu.be')
+}
+
+function getYoutubeEmbedUrl(url: string): string {
+  // https://www.youtube.com/watch?v=ID => https://www.youtube.com/embed/ID
+  // https://youtu.be/ID => https://www.youtube.com/embed/ID
+  let videoId = ''
+  const watchMatch = url.match(/[?&]v=([^&#]+)/)
+  const shortMatch = url.match(/youtu\.be\/([^?&#]+)/)
+  if (watchMatch) videoId = watchMatch[1]
+  else if (shortMatch) videoId = shortMatch[1]
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : url
+}
+function getCloudinaryUrl(url: string, transformations: string): string {
+  if (!url) return ''
+  if (!url.includes('cloudinary.com')) return url
+
+  // Find the position of '/upload/' in the URL
+  const uploadIndex = url.indexOf('/upload/')
+  if (uploadIndex === -1) return url
+
+  const prefix = url.substring(0, uploadIndex + 8) // includes '/upload/'
+  const suffix = url.substring(uploadIndex + 8)
+
+  return `${prefix}${transformations}/${suffix}`
+}
+
+const DAYS_FR: Record<string, string> = {
+  '1': 'Lundi', '2': 'Mardi', '3': 'Mercredi', '4': 'Jeudi',
+  '5': 'Vendredi', '6': 'Samedi', '7': 'Dimanche'
+}
+
+const Home: FC<{
+  activeHero: HeroAsset | null
+  lastPreach: LastPreach | null
+  weekAgendas: AgendaItem[]
+  currentWeekLabel: string
+}> = ({ activeHero, lastPreach, weekAgendas, currentWeekLabel }) => {
   const sliderRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -117,19 +194,57 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-[500px] md:h-[600px] flex items-center justify-center text-white text-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          {/* Pour Cloudinary en production : 
-              src="https://res.cloudinary.com/votre_id/video/upload/q_auto,f_auto/nom_de_votre_video.mp4" 
-          */}
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/mdt-banner.jpg"
-            className="w-full h-full object-cover"
-          >
-            <source src="/MARDI MALAKISI _ La connaissance qui libère.mp4" type="video/mp4" />
-          </video>
+          {activeHero ? (
+            activeHero.type === 'video' ? (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+                key={activeHero.id}
+              >
+                <source
+                  src={getCloudinaryUrl(activeHero.filePath, 'w_1280,q_auto,f_auto')}
+                  media="(min-width: 1024px)"
+                />
+                <source
+                  src={getCloudinaryUrl(activeHero.filePath, 'w_854,q_auto,f_auto')}
+                  media="(min-width: 640px)"
+                />
+                <source
+                  src={getCloudinaryUrl(activeHero.filePath, 'w_480,q_auto,f_auto')}
+                />
+              </video>
+            ) : (
+              <picture className="w-full h-full">
+                <source
+                  srcSet={getCloudinaryUrl(activeHero.filePath, 'w_1920,q_auto,f_auto')}
+                  media="(min-width: 1024px)"
+                />
+                <source
+                  srcSet={getCloudinaryUrl(activeHero.filePath, 'w_1024,q_auto,f_auto')}
+                  media="(min-width: 640px)"
+                />
+                <img
+                  src={getCloudinaryUrl(activeHero.filePath, 'w_640,q_auto,f_auto')}
+                  alt={activeHero.name}
+                  className="w-full h-full object-cover"
+                />
+              </picture>
+            )
+          ) : (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster="/mdt-banner.jpg"
+              className="w-full h-full object-cover"
+            >
+              <source src="/MARDI MALAKISI _ La connaissance qui libère.mp4" type="video/mp4" />
+            </video>
+          )}
           <div className="absolute inset-0 bg-black/60"></div>
         </div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 animate-in fade-in slide-in-from-bottom-8 duration-1000">
@@ -202,36 +317,116 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video max-w-5xl mx-auto">
-             <iframe 
-               className="w-full h-full"
-               src="https://www.youtube.com/embed/cxQjanw5br8" 
-               title="Dernière prédication"
-               frameBorder="0"
-               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-               allowFullScreen
-             ></iframe>
-          </div>
-          
-          <div className="mt-8 max-w-5xl mx-auto grid md:grid-cols-3 gap-8 items-start">
-            <div className="md:col-span-2 space-y-4">
-              <h3 className="text-2xl font-black font-serif text-slate-900">Titre du Message : La puissance de la foi</h3>
-              <p className="text-slate-600 leading-relaxed">
-                Un message puissant sur la manière dont notre foi peut transformer les obstacles en opportunités de témoignage. Découvrez comment activer les promesses de Dieu dans votre quotidien.
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-              <div className="flex items-center gap-3 text-slate-600">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Play size={18} className="text-primary" />
+          {lastPreach ? (
+            <>
+              {/* Lecteur média */}
+              <div className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black max-w-5xl mx-auto">
+                {lastPreach.url && lastPreach.format === 'video' && isYoutubeUrl(lastPreach.url) ? (
+                  <div className="aspect-video">
+                    <iframe
+                      className="w-full h-full"
+                      src={getYoutubeEmbedUrl(lastPreach.url)}
+                      title={lastPreach.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : lastPreach.url && lastPreach.format === 'video' ? (
+                  <div className="aspect-video">
+                    <video
+                      controls
+                      className="w-full h-full object-cover"
+                      preload="metadata"
+                    >
+                      <source src={getCloudinaryUrl(lastPreach.url, 'q_auto,f_auto')} />
+                      Votre navigateur ne supporte pas la lecture vidéo.
+                    </video>
+                  </div>
+                ) : lastPreach.url && (lastPreach.format === 'audio' || lastPreach.format === 'podcast') ? (
+                  <div className="flex flex-col items-center justify-center gap-6 p-10 md:p-16 bg-gradient-to-br from-slate-900 to-slate-800">
+                    <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center ring-4 ring-primary/30">
+                      <Play size={40} className="text-primary ml-2" />
+                    </div>
+                    <p className="text-white/70 text-sm font-semibold uppercase tracking-widest">
+                      {lastPreach.format === 'podcast' ? 'Podcast' : 'Audio'}
+                    </p>
+                    <audio
+                      controls
+                      className="w-full max-w-lg"
+                      preload="metadata"
+                    >
+                      <source src={lastPreach.url} />
+                      Votre navigateur ne supporte pas la lecture audio.
+                    </audio>
+                  </div>
+                ) : (
+                  /* Fallback texte / pas de media */
+                  <div className="flex flex-col items-center justify-center gap-4 p-12 bg-gradient-to-br from-slate-900 to-slate-800 aspect-video">
+                    <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
+                      <Play size={36} className="text-white/50 ml-1" />
+                    </div>
+                    <p className="text-white/50 text-sm">Contenu textuel — consultez nos ressources en ligne</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Métadonnées */}
+              <div className="mt-8 max-w-5xl mx-auto grid md:grid-cols-3 gap-8 items-start">
+                <div className="md:col-span-2 space-y-3">
+                  <h3 className="text-2xl font-black font-serif text-slate-900">{lastPreach.title}</h3>
+                  {lastPreach.date && (
+                    <div className="flex items-center gap-2 text-slate-500 text-sm">
+                      <Calendar size={14} className="text-primary" />
+                      <span>{new Date(lastPreach.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Orateur</p>
-                  <p className="font-bold text-slate-900">Pasteur Blonsky MBALA</p>
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                  {lastPreach.orateur && (
+                    <div className="flex items-center gap-3 text-slate-600">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Play size={18} className="text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Orateur</p>
+                        <p className="font-bold text-slate-900">{lastPreach.orateur}</p>
+                      </div>
+                    </div>
+                  )}
+                  {lastPreach.duree != null && lastPreach.duree > 0 && (
+                    <div className="flex items-center gap-3 text-slate-600">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+                        <Clock size={16} className="text-slate-500" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Durée</p>
+                        <p className="font-bold text-slate-900">{formatDuration(lastPreach.duree)}</p>
+                      </div>
+                    </div>
+                  )}
+                  <Link
+                    href="/allContent"
+                    className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary-light transition-all"
+                  >
+                    Tous les messages
+                    <ArrowRight size={16} />
+                  </Link>
                 </div>
               </div>
+            </>
+          ) : (
+            /* Fallback : aucune prédication en base */
+            <div className="max-w-5xl mx-auto flex flex-col items-center justify-center gap-6 py-20 text-center">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                <Play size={36} className="text-primary ml-1" />
+              </div>
+              <p className="text-slate-500 text-lg">Aucune prédication disponible pour le moment.</p>
+              <Link href="/allContent" className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all">
+                Voir tous les messages <ArrowRight size={18} />
+              </Link>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
@@ -277,14 +472,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Agenda Preview Section */}
+      {/* Agenda Preview Section – dynamique */}
       <section className="py-12 lg:py-20 bg-background-off px-4 border-t border-slate-100">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-10">
             <div className="space-y-2">
               <span className="text-primary font-black uppercase tracking-widest text-xs">Agenda de la semaine</span>
               <h2 className="text-slate-900 text-4xl font-black font-serif">Cette semaine à Phila MDT</h2>
-              <p className="text-slate-500">Ne manquez aucun rendez-vous spirituel · Chaque semaine, une nouvelle rencontre avec Dieu.</p>
+              <p className="text-slate-500">{currentWeekLabel} · Ne manquez aucun rendez-vous spirituel.</p>
             </div>
             <Link
               href="/agenda"
@@ -295,43 +490,88 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[
-              { day: "Lundi",    title: "Intercession Matinale",  time: "06:00 – 07:00", tag: "Prière",       tagBg: "bg-blue-100 text-blue-700",    accent: "border-blue-200"   },
-              { day: "Mardi",    title: "Mardi Malakisi",         time: "17:30 – 19:30", tag: "Enseignement", tagBg: "bg-primary text-white",        accent: "border-primary/30", highlight: true },
-              { day: "Mercredi", title: "Réunion des Couples",    time: "18:00 – 19:30", tag: "Famille",      tagBg: "bg-pink-100 text-pink-700",   accent: "border-pink-200"   },
-              { day: "Jeudi",    title: "Jeudi Etoko",            time: "17:30 – 19:30", tag: "Intercession", tagBg: "bg-orange-500 text-white",     accent: "border-orange-200", highlight: true },
-              { day: "Vendredi", title: "Génération PHILA",       time: "17:30 – 19:30", tag: "Jeunesse",    tagBg: "bg-purple-100 text-purple-700",accent: "border-purple-200" },
-              { day: "Dimanche", title: "Culte Dominical",        time: "08:00 – 10:00", tag: "Célébration",  tagBg: "bg-primary text-white",        accent: "border-primary/30", highlight: true },
-            ].map((item, i) => (
-              <Link
-                key={i}
-                href="/agenda"
-                className={`group p-6 rounded-2xl border-2 bg-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col gap-4 ${
-                  item.highlight ? item.accent + ' shadow-md' : 'border-slate-100'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg ${item.tagBg}`}>
-                    {item.tag}
-                  </span>
-                  <span className="text-slate-400 text-sm font-bold">{item.day}</span>
-                </div>
-                <h3 className={`text-xl font-black font-serif transition-colors ${
-                  item.highlight ? 'text-primary' : 'text-slate-900 group-hover:text-primary'
-                }`}>
-                  {item.title}
-                </h3>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-slate-500 text-sm">
-                    <Clock size={14} className="text-primary" />
-                    <span className="font-semibold">{item.time}</span>
-                  </div>
-                  <ArrowRight size={16} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
+          {weekAgendas && weekAgendas.length > 0 ? (() => {
+            // Groupe les événements par jour
+            const todayISO = new Date().toISOString().slice(0, 10)
+            const grouped: Record<string, AgendaItem[]> = {}
+            weekAgendas.forEach((item) => {
+              if (!grouped[item.day]) grouped[item.day] = []
+              grouped[item.day].push(item)
+            })
+            return (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {Object.entries(grouped).map(([date, items]) => {
+                  const isToday = date === todayISO
+                  const dateObj = new Date(date + 'T00:00:00')
+                  const dayNum = String(dateObj.getDay() === 0 ? 7 : dateObj.getDay())
+                  const dayName = DAYS_FR[dayNum] ?? date
+                  return (
+                    <Link
+                      key={date}
+                      href="/agenda"
+                      className={`group p-6 rounded-2xl border-2 bg-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col gap-4 ${
+                        isToday ? 'border-primary/40 shadow-md shadow-primary/10' : 'border-slate-100'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg ${
+                          isToday ? 'bg-primary text-white' : 'bg-slate-100 text-slate-500'
+                        }`}>
+                          {isToday ? "Aujourd'hui" : dayName}
+                        </span>
+                        <span className="text-slate-400 text-xs font-bold">
+                          {dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                        </span>
+                      </div>
+                      <div className="space-y-3">
+                        {items.map((ev) => (
+                          <div key={ev.id} className="flex flex-col gap-1">
+                            <h3 className={`text-lg font-black font-serif transition-colors ${
+                              isToday ? 'text-primary' : 'text-slate-900 group-hover:text-primary'
+                            }`}>
+                              {ev.title}
+                            </h3>
+                            {ev.category && (
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-primary/80 bg-primary/10 px-2 py-0.5 rounded w-max">
+                                {ev.category.name}
+                              </span>
+                            )}
+                            {(ev.hourStart || ev.hourEnd) && (
+                              <div className="flex items-center gap-2 text-slate-500 text-sm">
+                                <Clock size={13} className="text-primary" />
+                                <span className="font-semibold">
+                                  {ev.hourStart}{ev.hourEnd ? ` – ${ev.hourEnd}` : ''}
+                                </span>
+                              </div>
+                            )}
+                            {ev.place && (
+                              <div className="flex items-center gap-2 text-slate-400 text-xs">
+                                <MapPin size={12} />
+                                <span>{ev.place}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-auto pt-2 flex justify-end">
+                        <ArrowRight size={16} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            )
+          })() : (
+            <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <Calendar size={28} className="text-primary" />
+              </div>
+              <p className="text-slate-500">Aucun événement prévu cette semaine.</p>
+              <Link href="/agenda" className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all">
+                Voir tout l'agenda <ArrowRight size={16} />
               </Link>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -551,3 +791,5 @@ export default function Home() {
     </>
   )
 }
+
+export default Home

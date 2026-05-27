@@ -1,23 +1,23 @@
-
 import React from 'react';
 import { Link } from '@inertiajs/react';
 import { ArrowRight } from 'lucide-react';
 
-interface Activity {
+interface Ministry {
+  id: number
   name: string
-  slug: string
-  tag: string
-  desc: string
-  content: string
-  img: string
-  color: string
+  slug: string | null
+  tag: string | null
+  desc: string | null
+  content: string | null
+  img: string | null
+  color: string | null
 }
 
 interface Props {
-  ministries: Activity[]
+  ministries: Ministry[]
 }
 
-const Activities: React.FC<Props> = ({ ministries }) => {
+const Activities: React.FC<Props> = ({ ministries = [] }) => {
   return (
     <div className="bg-white min-h-screen animate-in fade-in slide-in-from-right-4 duration-700">
       {/* Hero Banner */}
@@ -52,19 +52,29 @@ const Activities: React.FC<Props> = ({ ministries }) => {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {ministries.map((min, idx) => (
-              <div key={idx} className="group flex flex-col rounded-2xl border border-slate-100 overflow-hidden hover:shadow-2xl transition-all duration-500 bg-white">
+              <div key={min.id ?? idx} className="group flex flex-col rounded-2xl border border-slate-100 overflow-hidden hover:shadow-2xl transition-all duration-500 bg-white">
                 <div className="relative h-48 overflow-hidden">
-                  <img src={min.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={min.name} />
+                  {min.img ? (
+                    <img src={min.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={min.name} />
+                  ) : (
+                    <div className={`w-full h-full flex items-center justify-center text-white text-4xl font-black ${min.color || 'bg-slate-400'}`}>
+                      {min.name?.[0]?.toUpperCase()}
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <span className={`absolute bottom-4 left-4 ${min.color} text-white text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-widest`}>{min.tag}</span>
+                  {min.tag && (
+                    <span className={`absolute bottom-4 left-4 ${min.color || 'bg-slate-500'} text-white text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-widest`}>{min.tag}</span>
+                  )}
                 </div>
                 <div className="p-6 flex flex-col flex-1">
                   <h3 className="text-lg font-bold font-serif mb-2 group-hover:text-primary transition-colors">{min.name}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed mb-6">{min.desc}</p>
-                  <Link href={`/activites/${min.slug}`} className="mt-auto flex items-center gap-2 text-primary text-sm font-bold hover:gap-4 transition-all">
-                    En savoir plus
-                    <ArrowRight size={14} />
-                  </Link>
+                  <p className="text-sm text-slate-500 leading-relaxed mb-6">{min.desc || 'Aucune description disponible.'}</p>
+                  {min.slug && (
+                    <Link href={`/ministeres/${min.slug}`} className="mt-auto flex items-center gap-2 text-primary text-sm font-bold hover:gap-4 transition-all">
+                      En savoir plus
+                      <ArrowRight size={14} />
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}

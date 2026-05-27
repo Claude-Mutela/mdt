@@ -126,6 +126,7 @@ export default class AdminDashboardController {
       ministere: m.ministry ? m.ministry.name : 'Aucun',
       date: m.createdAt.setLocale('fr').toFormat('dd LLL yyyy'),
       statut: m.statut === 'actif' ? 'Actif' : 'Inactif',
+      coverImg: m.coverImg,
     }))
 
     // 8. Upcoming Events

@@ -2,7 +2,8 @@ import { Head, router, useForm } from '@inertiajs/react'
 import { useState, useEffect, useRef } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
-import { Plus, Pencil, Trash2, X, Check, User, Mail, Phone, Calendar, ShieldCheck, Search, Printer } from 'lucide-react'
+import CloudinaryImage from '../../components/CloudinaryImage'
+import { Plus, Pencil, Trash2, X, Check, User, Mail, Phone, Calendar, ShieldCheck, Search, Printer, ImageIcon, Upload } from 'lucide-react'
 
 interface Ministry {
   id: number
@@ -22,7 +23,9 @@ interface Member {
   ministryId: number | null
   ministry: Ministry | null
   createdAt: string
+  coverImg: string | null
 }
+
 
 interface Props {
   members: {
@@ -77,7 +80,26 @@ export default function AdminMembres({ members, ministries, filters }: Props) {
     statut: 'actif' as 'actif' | 'inactif',
     typeMember: 'membre' as 'responsable' | 'membre' | 'visiteur',
     ministryId: '' as number | string,
+    coverImg: null as File | null,
   })
+
+  // Ref for file input
+  const coverInputRef = useRef<HTMLInputElement>(null)
+
+  // Preview logic for member image
+  const [preview, setPreview] = useState<string | null>(null)
+  useEffect(() => {
+    if (form.data.coverImg) {
+      const url = URL.createObjectURL(form.data.coverImg)
+      setPreview(url)
+      return () => URL.revokeObjectURL(url)
+    } else if (selectedMember?.coverImg) {
+      setPreview(selectedMember.coverImg)
+    } else {
+      setPreview(null)
+    }
+  }, [form.data.coverImg, selectedMember])
+
 
   const handleReset = () => {
     setSearch('')
@@ -104,22 +126,27 @@ export default function AdminMembres({ members, ministries, filters }: Props) {
       statut: m.statut,
       typeMember: m.typeMember || 'membre',
       ministryId: m.ministryId || '',
+      coverImg: null,
     })
     setSelectedMember(m)
     setModal('edit')
   }
 
+
   function submit() {
     if (modal === 'add') {
       form.post('/admin/members', {
+        forceFormData: true,
         onSuccess: () => setModal(null)
       })
     } else if (modal === 'edit' && selectedMember) {
-      form.put(`/admin/members/${selectedMember.id}`, {
+      form.post(`/admin/members/${selectedMember.id}?_method=PUT`, {
+        forceFormData: true,
         onSuccess: () => setModal(null)
       })
     }
   }
+
 
   function handlePrint() {
     let url = '/admin/membres/print'
@@ -221,15 +248,26 @@ export default function AdminMembres({ members, ministries, filters }: Props) {
                 <tr key={m.id} className="hover:bg-slate-800/30 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 border border-slate-700">
-                        <User size={18} />
-                      </div>
+                      {m.coverImg ? (
+                        <CloudinaryImage 
+                          src={m.coverImg} 
+                          width={100} 
+                          height={100} 
+                          alt={`${m.firstname} ${m.lastname}`} 
+                          className="w-10 h-10 rounded-full object-cover border border-slate-700 shadow-sm shrink-0" 
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-slate-400 border border-slate-750 font-bold uppercase text-xs shrink-0 shadow-sm">
+                          {m.firstname[0]}{m.lastname[0]}
+                        </div>
+                      )}
                       <div>
                         <div className="text-white font-semibold">{m.firstname} {m.lastname}</div>
                         <div className="text-slate-500 text-xs">{m.gender === 'M' ? 'Homme' : 'Femme'}</div>
                       </div>
                     </div>
                   </td>
+
                   <td className="px-6 py-4">
                     <div className="space-y-1">
                       {m.email && (
@@ -303,8 +341,70 @@ export default function AdminMembres({ members, ministries, filters }: Props) {
                 <button onClick={() => setModal(null)} className="text-slate-400 hover:text-white transition-colors"><X size={18} /></button>
               </div>
               
-              <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="p-6 space-y-6">
+              <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="p-6 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                
+                {/* Photo de profil du membre */}
+                <div className="space-y-2 pb-2">
+                  <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold flex items-center gap-2">
+                    <ImageIcon size={14} /> Photo de profil (Optionnel)
+                  </label>
+                  <div className="flex items-center gap-6 bg-slate-800/20 border border-slate-800/80 p-4 rounded-2xl">
+                    <div className="relative group shrink-0 w-20 h-20 rounded-full border-2 border-slate-700 overflow-hidden bg-slate-900 flex items-center justify-center shadow-lg">
+                      {preview ? (
+                        <CloudinaryImage 
+                          src={preview} 
+                          width={150} 
+                          height={150} 
+                          alt="Aperçu" 
+                          className="w-full h-full object-cover" 
+                        />
+                      ) : (
+                        <User size={32} className="text-slate-600" />
+                      )}
+                      {preview && (
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-[9px] text-white font-bold uppercase tracking-wider">Aperçu</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <button 
+                          type="button"
+                          onClick={() => coverInputRef.current?.click()}
+                          className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-semibold border border-slate-700 transition-colors cursor-pointer active:scale-95"
+                        >
+                          <Upload size={13} /> {form.data.coverImg ? 'Changer' : 'Sélectionner une photo'}
+                        </button>
+                        {form.data.coverImg && (
+                          <button
+                            type="button"
+                            onClick={() => form.setData('coverImg', null)}
+                            className="p-2 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/10 transition-colors"
+                            title="Supprimer la sélection"
+                          >
+                            <X size={14} />
+                          </button>
+                        )}
+                      </div>
+                      <input 
+                        type="file" 
+                        ref={coverInputRef} 
+                        className="hidden" 
+                        accept="image/*"
+                        onChange={e => form.setData('coverImg', e.target.files ? e.target.files[0] : null)} 
+                      />
+                      <p className="text-[10px] text-slate-500">
+                        {form.data.coverImg ? form.data.coverImg.name : 'JPG, PNG ou WEBP. Max 2 Mo.'}
+                      </p>
+                    </div>
+                  </div>
+                  {form.errors.coverImg && <p className="text-red-400 text-[10px] italic">{form.errors.coverImg}</p>}
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
+
                   <div>
                     <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Prénom <span className="text-red-500">*</span></label>
                     <input 
@@ -523,6 +623,14 @@ export default function AdminMembres({ members, ministries, filters }: Props) {
         )}
 
       </AdminLayout>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+      `}} />
     </>
   )
 }
+

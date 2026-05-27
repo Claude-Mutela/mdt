@@ -6,12 +6,13 @@ import CloudinaryImage from '../../components/CloudinaryImage'
 import { Plus, Pencil, Trash2, X, Check, ImageIcon, FileText, Upload } from 'lucide-react'
 
 interface Ministry {
-  id: number
-  name: string
-  description: string | null
-  content: string | null
-  coverImg: string | null
-  badgeColor: string | null
+  id: number,
+  name: string | null,
+  slug: string | null,
+  description: string | null,
+  content: string | null,
+  coverImg: string | null,
+  badgeColor: string | null,
   tag: string | null
 }
 

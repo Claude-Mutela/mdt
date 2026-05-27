@@ -8,6 +8,8 @@ const messages = {
   'minLength': 'Le champ doit faire au moins {{ min }} caractères.',
   'maxLength': 'Le champ ne doit pas dépasser {{ max }} caractères.',
   'number': 'La valeur doit être un nombre.',
+  'file.size': 'L’image est trop lourde (max 2Mo).',
+  'file.extname': 'L’image doit être au format jpg, png ou webp.',
 }
 
 export const memberValidator = vine.compile(
@@ -22,9 +24,10 @@ export const memberValidator = vine.compile(
     typeMember: vine.enum(['responsable', 'membre', 'visiteur'] as const).optional(),
     ministryId: vine.number().optional(),
     userId: vine.number().optional(),
-
+    coverImg: vine.file({ size: '2mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
   })
 )
 
 
 memberValidator.messagesProvider = new SimpleMessagesProvider(messages)
+

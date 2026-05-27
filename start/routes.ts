@@ -15,9 +15,8 @@ router.on('/a-propos').renderInertia('a-propos', {}).as('apropos')
 router.on('/media').renderInertia('media', {}).as('media')
 router.on('/gallery').renderInertia('gallery', {}).as('gallery')
 router.on('/allContent').renderInertia('allContent', {}).as('allContent')
-router.get('/ministries', ({ inertia }) => {
-  return inertia.render('ministries', { ministries })
-}).as('ministries')
+router.get('/ministries', [() => import('#controllers/ministries_controller'), 'index']).as('ministries')
+router.get('/ministeres/:slug', [() => import('#controllers/ministries_controller'), 'show']).as('ministeres.show')
 
 const ministries = [
   {

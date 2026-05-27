@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react'
 import AdminLayout from '../../layouts/admin'
+import CloudinaryImage from '../../components/CloudinaryImage'
 import {
   Users,
   CalendarDays,
@@ -22,7 +23,7 @@ export default function AdminDashboard({
   currentYear = new Date().getFullYear(),
 }: {
   stats: { label: string; value: string; delta: string }[]
-  recentMembers: { nom: string; ministere: string; date: string; statut: string }[]
+  recentMembers: { nom: string; ministere: string; date: string; statut: string; coverImg?: string | null }[]
   upcomingEvents: { titre: string; date: string; statut: string }[]
   monthlyBars: number[]
   annualGrowthStr: string
@@ -146,12 +147,23 @@ export default function AdminDashboard({
                     <tr key={m.nom} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold shrink-0">
-                            {m.nom ? m.nom[0] : ''}
-                          </div>
+                          {m.coverImg ? (
+                            <CloudinaryImage 
+                              src={m.coverImg} 
+                              width={80} 
+                              height={80} 
+                              alt={m.nom} 
+                              className="w-8 h-8 rounded-full object-cover border border-slate-700 shadow-sm shrink-0" 
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold shrink-0">
+                              {m.nom ? m.nom[0] : ''}
+                            </div>
+                          )}
                           <span className="text-white font-medium">{m.nom}</span>
                         </div>
                       </td>
+
                       <td className="px-6 py-4 text-slate-400">{m.ministere}</td>
                       <td className="px-6 py-4 text-slate-400">{m.date}</td>
                       <td className="px-6 py-4">

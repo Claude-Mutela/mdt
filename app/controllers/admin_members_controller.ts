@@ -3,6 +3,7 @@ import Member from '#models/member'
 import Ministry from '#models/ministry'
 import { memberValidator } from '#validators/member'
 import { DateTime } from 'luxon'
+import CloudinaryService from '#services/cloudinary_service'
 
 export default class AdminMembersController {
   /**
@@ -82,7 +83,6 @@ export default class AdminMembersController {
     const data = await request.validateUsing(memberValidator)
     
     try {
-      
       const member = new Member()
       member.fill({
         firstname: data.firstname,
@@ -100,6 +100,13 @@ export default class AdminMembersController {
         member.dateIntegration = DateTime.fromISO(data.dateIntegration)
       }
 
+      // Handle Cloudinary Upload
+      const coverImg = request.file('coverImg')
+      if (coverImg && coverImg.tmpPath) {
+        const url = await CloudinaryService.upload(coverImg.tmpPath, 'members/avatars')
+        member.coverImg = url
+      }
+
       await member.save()
       session.flash('success', 'Membre ajouté avec succès.')
     } catch (error) {
@@ -108,6 +115,7 @@ export default class AdminMembersController {
     }
     return response.redirect().back()
   }
+
 
   /**
    * Mettre à jour un membre
@@ -136,6 +144,21 @@ export default class AdminMembersController {
         member.dateIntegration = null
       }
 
+      // Handle Cloudinary Uploads (Update only if new file provided)
+      const coverImg = request.file('coverImg')
+      if (coverImg && coverImg.tmpPath) {
+        // Delete old image if it exists
+        if (member.coverImg) {
+          const oldPublicId = CloudinaryService.extractPublicId(member.coverImg)
+          if (oldPublicId) {
+            await CloudinaryService.delete(oldPublicId)
+          }
+        }
+
+        const url = await CloudinaryService.upload(coverImg.tmpPath, 'members/avatars')
+        member.coverImg = url
+      }
+
       await member.save()
       session.flash('success', 'Membre mis à jour avec succès.')
     } catch (error) {
@@ -145,12 +168,22 @@ export default class AdminMembersController {
     return response.redirect().back()
   }
 
+
   /**
    * Supprimer un membre
    */
   async destroy({ params, response, session }: HttpContext) {
     try {
       const member = await Member.findOrFail(params.id)
+
+      // Delete image from Cloudinary if it exists
+      if (member.coverImg) {
+        const publicId = CloudinaryService.extractPublicId(member.coverImg)
+        if (publicId) {
+          await CloudinaryService.delete(publicId)
+        }
+      }
+
       await member.delete()
       session.flash('success', 'Membre supprimé avec succès.')
     } catch (error) {
@@ -158,4 +191,5 @@ export default class AdminMembersController {
     }
     return response.redirect().back()
   }
+
 }

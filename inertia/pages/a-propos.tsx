@@ -149,11 +149,11 @@ export default function About() {
                       <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
                         Phila Cité d'Exaucement
                       </h3>
-                      <p className="text-xs text-primary font-bold tracking-wider uppercase">PCE — Église Fille</p>
+                      <p className="text-xs text-primary font-bold tracking-wider uppercase">Phila CE — Église Fille</p>
                     </div>
 
                     <p className="text-slate-600 text-sm leading-relaxed">
-                      De la vision du CMP est née Phila Cité d'Exaucement (PCE), dirigée par le couple pastoral Athoms et Nadège Mbuma. C’est dans ce foyer ardent d'amour et d’adoration que notre communauté a puisé son élan direct.
+                      De la vision du CMP est née Phila Cité d'Exaucement (Phila CE), dirigée par le couple Pastoral Athoms et Nadège Mbuma. C’est dans ce foyer ardent d'amour et d’adoration que notre communauté a puisé son élan direct.
                     </p>
                   </div>
 
@@ -203,7 +203,7 @@ export default function About() {
                       <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
                         Phila Maison de Témoignages
                       </h3>
-                      <p className="text-xs text-primary font-bold tracking-wider uppercase">PMT — Notre Église</p>
+                      <p className="text-xs text-primary font-bold tracking-wider uppercase">Phila MDT — Notre Église</p>
                     </div>
 
                     <p className="text-slate-600 text-sm leading-relaxed">

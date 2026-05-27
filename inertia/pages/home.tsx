@@ -29,66 +29,8 @@ const CulteCard = ({ day, title, description, time, location, highlight = false,
   )
 }
 
-const MINISTRIES = [
-  {
-    id: 1,
-    tag: "PRIÈRE",
-    tagColor: "bg-[#2A9D8F]",
-    title: "Cellule de Prière",
-    desc: "Rejoignez-nous pour intercéder, chercher la face de Dieu et bâtir des fondations spirituelles solides.",
-    image: "https://images.unsplash.com/photo-1544427920-c49ccfb85579?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 2,
-    tag: "JEUNESSE",
-    tagColor: "bg-[#3A86FF]", 
-    title: "Génération PHILA",
-    desc: "Un espace dynamique pour les 15-30 ans. Rencontres, débats et sorties spirituelles.",
-    image: "https://images.unsplash.com/photo-1529156069898-49953eb1b5ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 3,
-    tag: "ACADIS",
-    tagColor: "bg-[#8338EC]", 
-    title: "Académie Acadis",
-    desc: "Formations bibliques et théologiques pour approfondir votre foi et votre connaissance de la Parole.",
-    image: "https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 4,
-    tag: "SOCIAL",
-    tagColor: "bg-[#06D6A0]", 
-    title: "Action Sociale",
-    desc: "Impactons notre communauté à travers des œuvres de charité et d'assistance aux plus démunis.",
-    image: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 5,
-    tag: "CHORALE",
-    tagColor: "bg-[#9D4EDD]", 
-    title: "Chorale & Louange",
-    desc: "Conduire le peuple de Dieu dans l'adoration avec excellence et passion musicale.",
-    image: "https://images.unsplash.com/photo-1516280440502-1249911e86ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 6,
-    tag: "ÉVANGÉLISATION",
-    tagColor: "bg-[#FF5400]", 
-    title: "Mission Locale",
-    desc: "Annoncer la bonne nouvelle du salut et gagner des âmes pour Christ dans notre ville.",
-    image: "https://images.unsplash.com/photo-1506869640319-fea1a278e0ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: 7,
-    tag: "EVENT",
-    tagColor: "bg-[#FF006E]", 
-    title: "Évènements Spéciaux",
-    desc: "Conférences, séminaires et retraites pour l'édification globale du corps du Christ.",
-    image: "https://images.unsplash.com/photo-1511795409834-4b95ba0ad1bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-  }
-]
-
 import type { FC } from 'react'
+import CloudinaryImage from '~/components/CloudinaryImage'
 
 interface HeroAsset {
   id: number
@@ -115,6 +57,15 @@ interface AgendaItem {
   hourEnd: string | null
   place: string | null
   category: { id: number; name: string } | null
+}
+
+interface Ministry {
+  id: number
+  name: string
+  description: string | null
+  urlImg: string | null
+  badgeColor: string | null
+  tag: string | null
 }
 
 function formatDuration(seconds: number | null): string {
@@ -164,8 +115,9 @@ const Home: FC<{
   activeHero: HeroAsset | null
   lastPreach: LastPreach | null
   weekAgendas: AgendaItem[]
+  allMinistries: Ministry[]
   currentWeekLabel: string
-}> = ({ activeHero, lastPreach, weekAgendas, currentWeekLabel }) => {
+}> = ({ activeHero, lastPreach, weekAgendas, allMinistries, currentWeekLabel }) => {
   const sliderRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -679,24 +631,31 @@ const Home: FC<{
         
         <div className="max-w-6xl mx-auto">
           <div ref={sliderRef} className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {MINISTRIES.map((min) => (
+            {allMinistries ? allMinistries.map((min) => (
                 <div key={min.id} className="shrink-0 w-[320px] md:w-[360px] snap-start bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-shadow duration-300 flex flex-col group">
                 <div className="h-48 relative overflow-hidden bg-slate-100">
-                  <img src={min.image} alt={min.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className={`absolute bottom-3 left-4 px-3 py-1 rounded-[6px] text-[10px] font-black uppercase tracking-wider text-white ${min.tagColor}`}>
+                  {/* <img src={min.urlImg ?? undefined} alt={min.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /> */}
+                  <CloudinaryImage
+                    src={min.urlImg || '/mdt-banner.jpg'}
+                    width={400}
+                    height={300}
+                    alt={min.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className={`absolute bottom-3 left-4 px-3 py-1 rounded-[6px] text-[10px] font-black uppercase tracking-wider text-white ${min.badgeColor}`}>
                     {min.tag}
                   </div>
                 </div>
                 <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="font-serif font-black text-xl text-slate-900 mb-2 group-hover:text-primary transition-colors">{min.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed mb-6 flex-grow">{min.desc}</p>
+                  <h3 className="font-serif font-black text-xl text-slate-900 mb-2 group-hover:text-primary transition-colors">{min.name}</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed mb-6 flex-grow">{min.description}</p>
                   <Link href="/ministries" className="text-primary font-bold text-sm hover:text-primary-light transition-colors flex items-center gap-1 w-max group-hover:gap-2">
                     En savoir plus
                     <ArrowRight size={16} />
                   </Link>
                 </div>
               </div>
-            ))}
+            )) : null}
           </div>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import HeroAsset from '#models/hero_asset'
 import Media from '#models/media'
+import Ministry from '#models/ministry'
 import Agenda from '#models/agenda'
 import { DateTime } from 'luxon'
 
@@ -9,6 +10,8 @@ export default class HomeController {
     // Récupère l'asset Hero actif
     const activeHero = await HeroAsset.query().where('status', 'active').first()
 
+    // Récupère les ministères 
+    const allMinistries = await Ministry.all();
     // Récupère la dernière prédication (culte dominical)
     const lastPreach = await Media.query()
       .whereHas('catMedia', (query) => {
@@ -31,24 +34,32 @@ export default class HomeController {
     return inertia.render('home', {
       activeHero: activeHero
         ? {
-            id: activeHero.id,
-            name: activeHero.name,
-            filePath: activeHero.filePath,
-            type: activeHero.type,
-            status: activeHero.status,
-          }
+          id: activeHero.id,
+          name: activeHero.name,
+          filePath: activeHero.filePath,
+          type: activeHero.type,
+          status: activeHero.status,
+        }
         : null,
       lastPreach: lastPreach
         ? {
-            id: lastPreach.id,
-            title: lastPreach.title,
-            format: lastPreach.format,
-            orateur: lastPreach.orateur,
-            duree: lastPreach.duration,
-            url: lastPreach.urlFile,
-            date: lastPreach.date,
-          }
+          id: lastPreach.id,
+          title: lastPreach.title,
+          format: lastPreach.format,
+          orateur: lastPreach.orateur,
+          duree: lastPreach.duration,
+          url: lastPreach.urlFile,
+          date: lastPreach.date,
+        }
         : null,
+      allMinistries: allMinistries.map((min) => ({
+        id: min.id,
+        name: min.name,
+        description: min.description,
+        urlImg: min.coverImg || min.urlImg,
+        badgeColor: min.badgeColor,
+        tag: min.tag
+      })),
       weekAgendas: weekAgendas.map((a) => ({
         id: a.id,
         day: a.day.toISODate() as string, // "YYYY-MM-DD"

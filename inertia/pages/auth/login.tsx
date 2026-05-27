@@ -8,6 +8,11 @@ export default function Login() {
     email: '',
     password: '',
     remember: false,
+  } as {
+    email: string;
+    password: string;
+    remember: boolean;
+    auth?: string;
   })
 
   const submit = (e: React.FormEvent) => {

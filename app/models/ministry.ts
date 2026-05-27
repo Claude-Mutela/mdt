@@ -13,6 +13,9 @@ export default class Ministry extends BaseModel {
   declare name: string
 
   @column()
+  declare slug: string | null
+
+  @column()
   declare description: string | null
 
   @column()

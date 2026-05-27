@@ -55,6 +55,7 @@ export default class HomeController {
       allMinistries: allMinistries.map((min) => ({
         id: min.id,
         name: min.name,
+        slug: min.slug,
         description: min.description,
         urlImg: min.coverImg || min.urlImg,
         badgeColor: min.badgeColor,

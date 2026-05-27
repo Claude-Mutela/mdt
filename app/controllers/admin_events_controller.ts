@@ -4,6 +4,7 @@ import CatEvent from '#models/cat_event'
 import { createEventValidator, updateEventValidator, catEventValidator } from '#validators/event'
 import CloudinaryService from '#services/cloudinary_service'
 import { DateTime } from 'luxon'
+import string from '@adonisjs/core/helpers/string'
 
 export default class AdminEventsController {
 
@@ -75,6 +76,7 @@ export default class AdminEventsController {
       const event = new Event()
       event.fill({
         name: payload.name,
+        slug: string.slug(payload.name, { lower: true }),
         description: payload.description,
         content: payload.content,
         place: payload.place,
@@ -131,6 +133,7 @@ export default class AdminEventsController {
 
       event.merge({
         name: payload.name,
+        slug: string.slug(payload.name, { lower: true }),
         description: payload.description,
         content: payload.content,
         place: payload.place,

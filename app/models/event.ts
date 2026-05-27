@@ -13,6 +13,9 @@ export default class Event extends BaseModel {
   declare name: string
 
   @column()
+  declare slug: string | null
+
+  @column()
   declare urlImg: string | null
 
   @column()

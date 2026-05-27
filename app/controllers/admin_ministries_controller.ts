@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Ministry from '#models/ministry'
 import { ministryValidator } from '#validators/ministry'
 import CloudinaryService from '#services/cloudinary_service'
+import string from '@adonisjs/core/helpers/string'
 
 export default class AdminMinistriesController {
   async index({ inertia }: HttpContext) {
@@ -20,6 +21,7 @@ export default class AdminMinistriesController {
       const ministry = new Ministry()
       ministry.fill({
         name: data.name,
+        slug: string.slug(data.name, { lower: true }),
         description: data.description,
         content: data.content,
         badgeColor: data.badgeColor,
@@ -50,6 +52,7 @@ export default class AdminMinistriesController {
       
       ministry.merge({
         name: data.name,
+        slug: string.slug(data.name, { lower: true }),
         description: data.description,
         content: data.content,
         badgeColor: data.badgeColor,

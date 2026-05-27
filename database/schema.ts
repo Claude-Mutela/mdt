@@ -165,7 +165,7 @@ export class DonHistorySchema extends BaseModel {
 }
 
 export class EventSchema extends BaseModel {
-  static $columns = ['catEventId', 'content', 'createdAt', 'date', 'dateFin', 'description', 'id', 'name', 'place', 'status', 'updatedAt', 'urlImg'] as const
+  static $columns = ['catEventId', 'content', 'createdAt', 'date', 'dateFin', 'description', 'id', 'name', 'place', 'slug', 'status', 'updatedAt', 'urlImg'] as const
   $columns = EventSchema.$columns
   @column()
   declare catEventId: number
@@ -185,6 +185,8 @@ export class EventSchema extends BaseModel {
   declare name: string
   @column()
   declare place: string | null
+  @column()
+  declare slug: string | null
   @column()
   declare status: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
@@ -313,7 +315,7 @@ export class MemberSchema extends BaseModel {
 }
 
 export class MinistrySchema extends BaseModel {
-  static $columns = ['badgeColor', 'content', 'coverImg', 'createdAt', 'description', 'id', 'name', 'tag', 'updatedAt', 'urlImg'] as const
+  static $columns = ['badgeColor', 'content', 'coverImg', 'createdAt', 'description', 'id', 'name', 'slug', 'tag', 'updatedAt', 'urlImg'] as const
   $columns = MinistrySchema.$columns
   @column()
   declare badgeColor: string | null
@@ -329,6 +331,8 @@ export class MinistrySchema extends BaseModel {
   declare id: number
   @column()
   declare name: string
+  @column()
+  declare slug: string | null
   @column()
   declare tag: string | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })

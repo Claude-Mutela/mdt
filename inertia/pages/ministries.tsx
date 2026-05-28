@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, User } from 'lucide-react';
+import CloudinaryImage from '~/components/CloudinaryImage';
 
 interface Ministry {
   id: number
@@ -13,11 +14,24 @@ interface Ministry {
   color: string | null
 }
 
-interface Props {
-  ministries: Ministry[]
+interface Responsible {
+  id: number
+  firstname: string
+  lastname: string
+  email: string | null
+  phone: string | null
+  gender: 'M' | 'F' | null
+  coverImg: string | null
+  typeMember: string | null
+  ministry: { id: number; name: string } | null
 }
 
-const Activities: React.FC<Props> = ({ ministries = [] }) => {
+interface Props {
+  ministries: Ministry[]
+  responsibles?: Responsible[]
+}
+
+const Activities: React.FC<Props> = ({ ministries = [], responsibles = [] }) => {
   return (
     <div className="bg-white min-h-screen animate-in fade-in slide-in-from-right-4 duration-700">
       {/* Hero Banner */}
@@ -40,6 +54,8 @@ const Activities: React.FC<Props> = ({ ministries = [] }) => {
           <p className="text-white/90 text-lg md:text-xl font-medium">Rejoignez-nous pour grandir ensemble dans la foi et vivre la communion fraternelle.</p>
         </div>
       </section>
+
+      
 
       {/* Ministries */}
       <section className="py-24 px-4 bg-white">
@@ -81,6 +97,54 @@ const Activities: React.FC<Props> = ({ ministries = [] }) => {
           </div>
         </div>
       </section>
+
+      {/* Responsibles */}
+      {responsibles.length > 0 && (
+        <section className="py-24 px-4 bg-slate-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-slate-900 text-3xl font-bold font-serif mb-4">Leadership</h2>
+              <p className="text-slate-500 max-w-2xl mx-auto text-lg">
+                Découvrez les responsables dévoués qui guident nos différents ministères.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {responsibles.map((person, idx) => (
+                <div key={person.id ?? idx} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition-all duration-300 group text-center flex flex-col items-center p-8">
+                  <div className="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-slate-50 shadow-md relative">
+                    {person.coverImg ? (
+                      <CloudinaryImage
+                        src={person.coverImg}
+                        alt={`${person.firstname} ${person.lastname}`}
+                        width={256}
+                        height={256}
+                        crop="fill"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">
+                        <User size={48} />
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-1">{person.firstname} {person.lastname}</h3>
+                  <p className="text-primary font-medium text-sm mb-4">
+                    Responsable {person.ministry?.name ? `- ${person.ministry.name}` : ''}
+                  </p>
+                  
+                  {person.email && (
+                    <div className="mt-auto space-y-2 text-sm text-slate-500 w-full pt-6 border-t border-slate-100">
+                      <p className="truncate px-2">{person.email}</p>
+                      {/* {person.phone && <p>{person.phone}</p>} */}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 };

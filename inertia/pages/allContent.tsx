@@ -3,15 +3,6 @@ import React, { useState, useMemo } from 'react';
 import { Search, Video, Image as ImageIcon, Music, FileText, Filter, ChevronRight } from 'lucide-react';
 import { MediaItem, MediaType } from '../../types';
 
-const mockData: MediaItem[] = [
-  { id: '1', title: 'Culte de la Restauration', type: 'video', category: 'Culte', date: '20 Mai 2024', duration: '1:45:00', thumbnail: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&q=80&w=800', url: '#' },
-  { id: '2', title: 'Louange Matinale', type: 'audio', category: 'Louange', date: '18 Mai 2024', duration: '15:20', thumbnail: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=800', url: '#' },
-  { id: '3', title: 'Retraite Spirituelle 2024', type: 'image', category: 'Événement', date: '15 Mai 2024', thumbnail: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800', url: '#' },
-  { id: '4', title: 'Guide du Disciple PDF', type: 'document', category: 'Formation', date: '10 Mai 2024', size: '2.4 MB', thumbnail: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800', url: '#' },
-  { id: '5', title: 'Vivre la Grâce au quotidien', type: 'video', category: 'Enseignement', date: '05 Mai 2024', duration: '45:00', thumbnail: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&q=80&w=800', url: '#' },
-  { id: '6', title: 'Album Chants de Gloire', type: 'audio', category: 'Musique', date: '01 Mai 2024', duration: '52:10', thumbnail: 'https://images.unsplash.com/photo-1514525253344-f2038749a008?auto=format&fit=crop&q=80&w=800', url: '#' },
-];
-
 // Move MediaGridCard above AllContent and use React.FC to fix type error with key prop.
 const MediaGridCard: React.FC<{ item: MediaItem }> = ({ item }) => {
   const getBadgeColor = () => {
@@ -65,12 +56,12 @@ const MediaGridCard: React.FC<{ item: MediaItem }> = ({ item }) => {
   );
 };
 
-const AllContent: React.FC = () => {
+const AllContent: React.FC<{ items?: MediaItem[] }> = ({ items = [] }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState<MediaType | 'all'>('all');
 
   const filteredData = useMemo(() => {
-    return mockData.filter(item => {
+    return items.filter(item => {
       const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesFilter = activeFilter === 'all' || item.type === activeFilter;
       return matchesSearch && matchesFilter;

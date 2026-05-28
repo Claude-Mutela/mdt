@@ -12,9 +12,9 @@ import router from '@adonisjs/core/services/router'
 
 router.get('/', [() => import('#controllers/home_controller'), 'index']).as('home')
 router.on('/a-propos').renderInertia('a-propos', {}).as('apropos')
-router.on('/media').renderInertia('media', {}).as('media')
+router.get('/media', [() => import('#controllers/media_controller'), 'index']).as('media')
 router.on('/gallery').renderInertia('gallery', {}).as('gallery')
-router.on('/allContent').renderInertia('allContent', {}).as('allContent')
+router.get('/allContent', [() => import('#controllers/media_controller'), 'allContent']).as('allContent')
 router.get('/ministries', [() => import('#controllers/ministries_controller'), 'index']).as('ministries')
 router.get('/ministeres/:slug', [() => import('#controllers/ministries_controller'), 'show']).as('ministeres.show')
 

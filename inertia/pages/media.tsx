@@ -3,34 +3,18 @@ import React from 'react';
 import { Link } from '@inertiajs/react';
 import { PlayCircle, ExternalLink } from 'lucide-react';
 
-const videos = [
-  {
-    title: "Culte du Dimanche - La Foi Inébranlable",
-    category: "Prédication",
-    date: "Il y a 2 jours",
-    duration: "1:12:45",
-    speaker: "Pasteur Principal",
-    thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuAFDsge1-zf7795RPCUHKpW8_MwiKDkH8-352xqO3kuTOo6VDYCv-q5eAmX6GsaqPAuR8P_6x0N-wH4J1CGghtRJ7xn5Nf_sFGP_RT8R0WtjPrGa0bOURDGAV4uONG8QVv1rIG1eaSdeQnidhGuYv6MosIkxqYqinDXi02MvA7JdN23Pycl9F07d4529SqiXd7wKktbO6e_QBpKy0ICQcBQDcB3SNi_Z1vt3dvrdn4CudU6h5oaOrjeylJFHu2BJ7rGshkAMvPu"
-  },
-  {
-    title: "Soirée d'Adoration & Louange",
-    category: "Louange",
-    date: "Il y a 1 semaine",
-    duration: "45:20",
-    speaker: "Équipe Louange",
-    thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuD-mkH24gLY2fF9jKSBfMCGf8YDjr7EBNE3a9oMqYVurErE2CuL89bOSzDJoFlYBMJbFz8pTbP-jViOy5mJA56DMY7_J3LuuWrND7o-kkYobXPR1M8gSMgZef_rQE8w1U1EbpKr7v8zUkYLdtJ1xZgJs-WHaEnQDQXWxq5zChT57CG4THFrZQ2zOAdEm8QzC2xqMeDGleQ8mnOd2cXFiTvAnNKusHQrtzJiwjP4PyAdrSl9KmJnVlYNj_HIkdJwe6N7YeAvmqkc"
-  },
-  {
-    title: "Étude Biblique - L'Évangile de Jean",
-    category: "Enseignement",
-    date: "Il y a 2 semaines",
-    duration: "58:10",
-    speaker: "Pasteur Jean",
-    thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuD-6OOb6ZIPTXMrNmp3U-T7XHO86wzpwyvQzGwAbHlnJuwYqzCOR4cyIwHfDx2lVTA0cwirC7ZbyLZn9fw51JzF__lluHB3qz3XNEWbtzj_Hi_-re50txTXz5dA7qgKbaZjJ0itVYbCH9gtt8lwr1r6VejfaYqPS5h1zsW8XZJJkBF4VAQQlMb7tFajPzHnHS3uSpVk_d5v83PxuYsw2Cpy8N5ZAjsrU7Pj0JafXWGN0F0fSFP9p_ENsda_TKjRo4zEXkMJvUZE"
-  }
-];
+interface Video {
+  id: string
+  title: string
+  category: string
+  date: string
+  duration: string
+  speaker: string | null
+  thumbnail: string
+  url: string
+}
 
-const Media: React.FC = () => {
+const Media: React.FC<{ videos?: Video[] }> = ({ videos = [] }) => {
   return (
     <div className="bg-background-off min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}

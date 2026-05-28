@@ -12,7 +12,7 @@ const messages = {
   'catGaleryId.required': 'Veuillez sélectionner une catégorie.',
   'galeryId.required': 'Veuillez sélectionner un album.',
   'file.required': 'Veuillez téléverser une image.',
-  'file.size': 'L\'image est trop lourde (max 10Mo).',
+  'file.size': 'L\'image est trop lourde (max 30Mo).',
   'file.extname': 'Format de fichier non pris en charge. Utilisez JPG, PNG ou WebP.',
 }
 
@@ -31,7 +31,7 @@ export const createGalleryValidator = vine.compile(
   vine.object({
     title: vine.string().trim().minLength(3).maxLength(300),
     catGaleryId: vine.number(),
-    file: vine.file({ size: '5mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
+    file: vine.file({ size: '30mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
   })
 )
 createGalleryValidator.messagesProvider = new SimpleMessagesProvider(messages)
@@ -40,7 +40,7 @@ export const updateGalleryValidator = vine.compile(
   vine.object({
     title: vine.string().trim().minLength(3).maxLength(300),
     catGaleryId: vine.number(),
-    file: vine.file({ size: '5mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
+    file: vine.file({ size: '30mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
   })
 )
 updateGalleryValidator.messagesProvider = new SimpleMessagesProvider(messages)
@@ -50,7 +50,7 @@ export const createImageValidator = vine.compile(
     title: vine.string().trim().minLength(3).maxLength(300).optional(),
     galeryId: vine.number(),
     date: vine.date().optional(),
-    file: vine.file({ size: '10mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }),
+    file: vine.file({ size: '30mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }),
   })
 )
 createImageValidator.messagesProvider = new SimpleMessagesProvider(messages)
@@ -60,7 +60,7 @@ export const updateImageValidator = vine.compile(
     title: vine.string().trim().maxLength(300).optional(),
     galeryId: vine.number(),
     date: vine.date().optional(),
-    file: vine.file({ size: '10mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
+    file: vine.file({ size: '30mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
   })
 )
 updateImageValidator.messagesProvider = new SimpleMessagesProvider(messages)

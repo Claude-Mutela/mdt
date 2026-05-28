@@ -14,7 +14,14 @@ interface Video {
   url: string
 }
 
-const Media: React.FC<{ videos?: Video[] }> = ({ videos = [] }) => {
+interface GalleryImage {
+  id: string
+  url: string
+  title: string
+  date: string
+}
+
+const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({ videos = [], galleryImages = [] }) => {
   return (
     <div className="bg-background-off min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
@@ -78,9 +85,14 @@ const Media: React.FC<{ videos?: Video[] }> = ({ videos = [] }) => {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <GalleryThumb src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-eeVhQDknROns1HSEdOa0AXI-ooafaMuqzOmXs_4Xa8NydHB5UnBNZSDU-PJ91Hs7gBcBM89HQRLhy9jBYA7BYVHUKk32kHEX8nu6FBuYEFgPuFj_AQa7Hw5RxagBfDYJTAcU6jngt9mRl7QhWstG5RPpIGSPC2Sn9U2k9AcIgPqIZDyWlULhhor77q1MizBXhmm9hx-u6CDG_S7TWVonQ9YEZUJpie-nvaggRij1wvIKRAqAVuOtzK23ey7q1_fa5BS9i4_I" title="Pique-nique" />
-            <GalleryThumb src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFGL5XsfLjYFXN0c0bISM3PbxYJdISyrMw3NEuE-rOWm3zeK6RqonY52HdYn42bqbRn2URNvi2wvZ5fO0cUqSEApgR6usi3pWN76SvwTkQswo19CV0G8ppM21XNUQtS6KXZIcmwHJcAh4Ur5OPsEH90XPdJ60tvmPxDOVP_FCe3Fth8ZfdreEzxwcR-dbXY-h4Ei3-WkM-1PRBWnaiRzIdc7lor49kfA3Gjxz1tEnCpOUoR9WM3uE6EZODaj55Re3FPai-Di9R" title="Adoration" />
-            <GalleryThumb src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEEAPw7qIPLuO71Jx4uAwbBixkRFt4mA05dF22OxTktbRA8oSzhhoZrmXfQ-bZyhWD1-3_baD79wi78VnodxR193hCmVv4sWfiyWV2jtqC4WgPDatWv8PUYdW6N_1tNjbpPH3Hd7_giGMvmkond7tDcqJssTVqVqAxlVOSi3iccGTdDavZt-Hc8GeB7UtGiGp8nHFUUg-oftMT1TAAKfnFLu1ZPn_IbX2g0-fUwD1YtqVTCoX-mm1RHwFrDHzg8aXkbfJM0S2F" title="Communion" />
+            {galleryImages.length > 0
+              ? galleryImages.map((img) => (
+                  <GalleryThumb key={img.id} src={img.url} title={img.title} />
+                ))
+              : (
+                <p className="col-span-3 text-center text-slate-400 py-12">Aucune image disponible pour le moment.</p>
+              )
+            }
           </div>
         </div>
       </section>

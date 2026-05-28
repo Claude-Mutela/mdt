@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Media from '#models/media'
+import Image from '#models/image'
 
 const mapFormatToType = (format: string) => {
   if (format === 'texte') return 'document'
@@ -9,10 +10,10 @@ const mapFormatToType = (format: string) => {
 
 export default class MediaController {
   public async index({ inertia }: HttpContext) {
-    const latestMedias = await Media.query()
-      .orderBy('createdAt', 'desc')
-      .limit(3)
-      .preload('catMedia')
+    const [latestMedias, latestImages] = await Promise.all([
+      Media.query().orderBy('createdAt', 'desc').limit(3).preload('catMedia'),
+      Image.query().orderBy('createdAt', 'desc').limit(3).preload('galery'),
+    ])
 
     return inertia.render('media', {
       videos: latestMedias.map((m) => ({
@@ -24,6 +25,12 @@ export default class MediaController {
         speaker: m.orateur,
         thumbnail: m.urlFile || '',
         url: m.file || '#',
+      })),
+      galleryImages: latestImages.map((img) => ({
+        id: img.id.toString(),
+        url: img.url,
+        title: img.title || img.galery?.title || 'Sans titre',
+        date: img.date ? img.date.toFormat('dd LLL yyyy') : img.createdAt.toFormat('dd LLL yyyy'),
       })),
     } as never)
   }

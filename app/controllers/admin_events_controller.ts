@@ -37,7 +37,9 @@ export default class AdminEventsController {
         status: e.status,
         urlImg: e.urlImg,
         catEventId: e.catEventId,
-        catEvent: e.catEvent ? { id: e.catEvent.id, name: e.catEvent.name } : null
+        catEvent: e.catEvent ? { id: e.catEvent.id, name: e.catEvent.name } : null,
+        startTime: e.startTime,
+        endTime: e.endTime,
       })),
       categories: categories.map(c => ({
         id: c.id,
@@ -84,6 +86,8 @@ export default class AdminEventsController {
         dateFin: endDate,
         status: calculatedStatus,
         catEventId: payload.catEventId,
+        startTime: payload.startTime || null,
+        endTime: payload.endTime || null,
       })
 
       // Cloudinary Upload for urlImg
@@ -141,6 +145,8 @@ export default class AdminEventsController {
         dateFin: endDate,
         status: targetStatus,
         catEventId: payload.catEventId,
+        startTime: payload.startTime || null,
+        endTime: payload.endTime || null,
       })
 
       // Cloudinary Upload for urlImg (only if new file provided)

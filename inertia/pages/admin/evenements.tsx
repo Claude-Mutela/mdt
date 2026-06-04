@@ -27,6 +27,8 @@ interface Evenement {
   urlImg: string | null
   catEventId: number
   catEvent: CatEvent | null
+  startTime: string | null
+  endTime: string | null
 }
 
 const statusStyles: Record<Status, string> = {
@@ -74,6 +76,8 @@ export default function AdminEvenements({
     status: 'a_venir' as Status,
     catEventId: categories.length > 0 ? categories[0].id : 0,
     urlImg: null as File | null,
+    startTime: '',
+    endTime: '',
   })
 
   // Preview logic for cover image
@@ -147,6 +151,8 @@ export default function AdminEvenements({
         status: 'a_venir',
         catEventId: categories[0].id,
         urlImg: null,
+        startTime: '',
+        endTime: '',
       })
     }
     setModal('add')
@@ -164,6 +170,8 @@ export default function AdminEvenements({
       status: e.status,
       catEventId: e.catEventId,
       urlImg: null,
+      startTime: e.startTime || '',
+      endTime: e.endTime || '',
     })
     setModal('edit')
   }
@@ -327,6 +335,7 @@ export default function AdminEvenements({
                           {e.date ? new Date(e.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '...'}
                           {e.dateFin && e.dateFin !== e.date && ` au ${new Date(e.dateFin).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}`}
                           {(!e.dateFin || e.dateFin === e.date) && e.date && ` ${new Date(e.date).getFullYear()}`}
+                          {e.startTime && ` (${e.startTime}${e.endTime ? ` - ${e.endTime}` : ''})`}
                         </span>
                       </div>
                     </td>
@@ -465,6 +474,32 @@ export default function AdminEvenements({
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
                     {eventForm.errors.dateFin && <p className="text-red-400 text-xs mt-1">{eventForm.errors.dateFin}</p>}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Heure de début */}
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Heure de début</label>
+                    <input
+                      type="time"
+                      value={eventForm.data.startTime}
+                      onChange={(e) => eventForm.setData('startTime', e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
+                    />
+                    {eventForm.errors.startTime && <p className="text-red-400 text-xs mt-1">{eventForm.errors.startTime}</p>}
+                  </div>
+
+                  {/* Heure de fin */}
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Heure de fin</label>
+                    <input
+                      type="time"
+                      value={eventForm.data.endTime}
+                      onChange={(e) => eventForm.setData('endTime', e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
+                    />
+                    {eventForm.errors.endTime && <p className="text-red-400 text-xs mt-1">{eventForm.errors.endTime}</p>}
                   </div>
                 </div>
 

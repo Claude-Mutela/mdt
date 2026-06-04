@@ -16,6 +16,7 @@ import {
   ChevronRight,
   HeartHandshake,
   UserCog,
+  Grid3X3,
 } from 'lucide-react'
 
 const navItems = [
@@ -26,6 +27,7 @@ const navItems = [
   { label: 'Rendez-vous',  href: '/admin/rendez-vous', icon: CalendarDays },
   { label: 'Assets',      href: '/admin/assets',      icon: Image },
   { label: 'Ministères',  href: '/admin/ministeres',  icon: Church },
+  { label: 'Cellules',    href: '/admin/cellules',    icon: Grid3X3 },
   { label: 'Événements',  href: '/admin/evenements',  icon: Ticket },
   { label: 'Médias',      href: '/admin/medias',      icon: PlayCircle },
   { label: 'Galerie',     href: '/admin/galerie',     icon: Image },
@@ -70,8 +72,8 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
     }
 
     if (user.role === 'user') {
-      // Voit seulement Dashboard, Membres, Ministères et Dons
-      const allowed = ['/admin', '/admin/membres', '/admin/ministeres', '/admin/donations']
+      // Voit seulement Dashboard, Membres, Ministères, Cellules et Dons
+      const allowed = ['/admin', '/admin/membres', '/admin/ministeres', '/admin/cellules', '/admin/donations']
       return allowed.includes(href)
     }
 

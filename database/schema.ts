@@ -124,6 +124,29 @@ export class CatMediaSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class CelluleSchema extends BaseModel {
+  static $columns = ['adresse', 'contact', 'createdAt', 'description', 'horaire', 'id', 'name', 'responsableId', 'updatedAt'] as const
+  $columns = CelluleSchema.$columns
+  @column()
+  declare adresse: string | null
+  @column()
+  declare contact: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare description: string | null
+  @column()
+  declare horaire: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare responsableId: number | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class DonSchema extends BaseModel {
   static $columns = ['amount', 'catDonId', 'createdAt', 'date', 'donateur', 'id', 'status', 'updatedAt'] as const
   $columns = DonSchema.$columns
@@ -165,7 +188,7 @@ export class DonHistorySchema extends BaseModel {
 }
 
 export class EventSchema extends BaseModel {
-  static $columns = ['catEventId', 'content', 'createdAt', 'date', 'dateFin', 'description', 'id', 'name', 'place', 'slug', 'status', 'updatedAt', 'urlImg'] as const
+  static $columns = ['catEventId', 'content', 'createdAt', 'date', 'dateFin', 'description', 'endTime', 'id', 'name', 'place', 'slug', 'startTime', 'status', 'updatedAt', 'urlImg'] as const
   $columns = EventSchema.$columns
   @column()
   declare catEventId: number
@@ -179,6 +202,8 @@ export class EventSchema extends BaseModel {
   declare dateFin: DateTime | null
   @column()
   declare description: string | null
+  @column()
+  declare endTime: string | null
   @column({ isPrimary: true })
   declare id: number
   @column()
@@ -187,6 +212,8 @@ export class EventSchema extends BaseModel {
   declare place: string | null
   @column()
   declare slug: string | null
+  @column()
+  declare startTime: string | null
   @column()
   declare status: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })

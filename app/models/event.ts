@@ -33,6 +33,12 @@ export default class Event extends BaseModel {
   @column.date({ columnName: 'date_fin' })
   declare dateFin: DateTime | null
 
+  @column({ columnName: 'start_time' })
+  declare startTime: string | null
+
+  @column({ columnName: 'end_time' })
+  declare endTime: string | null
+
   @column()
   declare status: 'a_venir' | 'en_cours' | 'termine' | 'annule'
 

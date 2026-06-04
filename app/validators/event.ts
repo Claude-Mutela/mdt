@@ -35,6 +35,8 @@ export const createEventValidator = vine.compile(
     status: vine.enum(['a_venir', 'en_cours', 'termine', 'annule']).optional(),
     catEventId: vine.number(),
     urlImg: vine.file({ size: '2mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }),
+    startTime: vine.string().optional(),
+    endTime: vine.string().optional(),
   })
 )
 createEventValidator.messagesProvider = new SimpleMessagesProvider(messages)
@@ -50,6 +52,8 @@ export const updateEventValidator = vine.compile(
     status: vine.enum(['a_venir', 'en_cours', 'termine', 'annule']).optional(),
     catEventId: vine.number(),
     urlImg: vine.file({ size: '2mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
+    startTime: vine.string().optional(),
+    endTime: vine.string().optional(),
   })
 )
 updateEventValidator.messagesProvider = new SimpleMessagesProvider(messages)

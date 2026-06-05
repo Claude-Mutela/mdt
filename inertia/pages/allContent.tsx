@@ -1,10 +1,51 @@
 
 import React, { useState, useMemo } from 'react';
-import { Search, Video, Image as ImageIcon, Music, FileText, Filter, ChevronRight } from 'lucide-react';
+import { Search, Video, Image as ImageIcon, Music, FileText, Filter, ChevronRight, ExternalLink } from 'lucide-react';
 import { MediaItem, MediaType } from '../../types';
 
-// Move MediaGridCard above AllContent and use React.FC to fix type error with key prop.
-const MediaGridCard: React.FC<{ item: MediaItem }> = ({ item }) => {
+function isYoutubeUrl(url: string): boolean {
+  if (!url) return false;
+  return url.includes('youtube.com') || url.includes('youtu.be');
+}
+
+function getYoutubeVideoId(url: string): string | null {
+  if (!url) return null;
+  const watchMatch = url.match(/[?&]v=([^&#]+)/);
+  const shortMatch = url.match(/youtu\.be\/([^?&#]+)/);
+  if (watchMatch) return watchMatch[1];
+  if (shortMatch) return shortMatch[1];
+  return null;
+}
+
+function getYoutubeEmbedUrl(url: string): string {
+  const id = getYoutubeVideoId(url);
+  return id ? `https://www.youtube-nocookie.com/embed/${id}` : url;
+}
+
+function getYoutubeThumbnailUrl(url: string): string {
+  const id = getYoutubeVideoId(url);
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : '';
+}
+
+function getVideoPlayUrl(thumbnail: string, url: string): string {
+  if (isYoutubeUrl(thumbnail)) return thumbnail;
+  return url;
+}
+
+function getThumbnail(thumbnail: string, url: string): string {
+  if (isYoutubeUrl(thumbnail)) {
+    return getYoutubeThumbnailUrl(thumbnail);
+  }
+  if (thumbnail && thumbnail.trim() !== '' && !isYoutubeUrl(thumbnail)) {
+    return thumbnail;
+  }
+  if (isYoutubeUrl(url)) {
+    return getYoutubeThumbnailUrl(url);
+  }
+  return '/mdt-banner.jpg';
+}
+
+const MediaGridCard: React.FC<{ item: MediaItem; onSelect: (item: MediaItem) => void }> = ({ item, onSelect }) => {
   const getBadgeColor = () => {
     switch(item.type) {
       case 'video': return 'bg-red-500';
@@ -25,10 +66,15 @@ const MediaGridCard: React.FC<{ item: MediaItem }> = ({ item }) => {
     }
   };
 
+  const displayThumbnail = getThumbnail(item.thumbnail, item.url);
+
   return (
-    <article className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all flex flex-col h-full">
-      <div className="relative aspect-video overflow-hidden">
-        <img src={item.thumbnail} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={item.title} />
+    <article 
+      onClick={() => onSelect(item)} 
+      className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all flex flex-col h-full cursor-pointer"
+    >
+      <div className="relative aspect-video overflow-hidden bg-slate-100">
+        <img src={displayThumbnail} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={item.title} />
         <div className={`absolute top-4 left-4 ${getBadgeColor()} text-white text-[10px] font-black px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg`}>
           {item.type}
         </div>
@@ -38,12 +84,15 @@ const MediaGridCard: React.FC<{ item: MediaItem }> = ({ item }) => {
           </div>
         )}
       </div>
-      <div className="p-8 flex flex-col flex-1">
+      <div className="p-8 flex flex-col flex-grow">
         <div className="flex justify-between items-center mb-4">
           <span className="text-primary font-bold text-[10px] uppercase tracking-widest">{item.category}</span>
           <span className="text-slate-400 text-xs font-medium">{item.date}</span>
         </div>
         <h3 className="text-xl font-bold font-serif text-slate-900 mb-6 leading-tight group-hover:text-primary transition-colors">{item.title}</h3>
+        {item.speaker && (
+          <p className="text-slate-500 text-sm font-medium mb-4">{item.speaker}</p>
+        )}
         <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
           <span className="text-xs text-slate-400">{item.size || 'Média HD'}</span>
           <button className="flex items-center gap-2 text-sm font-black text-primary hover:gap-4 transition-all uppercase tracking-tighter">
@@ -59,6 +108,19 @@ const MediaGridCard: React.FC<{ item: MediaItem }> = ({ item }) => {
 const AllContent: React.FC<{ items?: MediaItem[] }> = ({ items = [] }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState<MediaType | 'all'>('all');
+  const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
+
+  const handleSelect = (item: MediaItem) => {
+    if (item.type === 'document') {
+      window.open(item.url, '_blank');
+    } else {
+      const playUrl = getVideoPlayUrl(item.thumbnail, item.url);
+      setSelectedItem({
+        ...item,
+        url: playUrl,
+      });
+    }
+  };
 
   const filteredData = useMemo(() => {
     return items.filter(item => {
@@ -121,7 +183,7 @@ const AllContent: React.FC<{ items?: MediaItem[] }> = ({ items = [] }) => {
         {filteredData.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             {filteredData.map(item => (
-              <MediaGridCard key={item.id} item={item} />
+              <MediaGridCard key={item.id} item={item} onSelect={handleSelect} />
             ))}
           </div>
         ) : (
@@ -140,6 +202,103 @@ const AllContent: React.FC<{ items?: MediaItem[] }> = ({ items = [] }) => {
           </div>
         )}
       </section>
+
+      {/* Lightbox / Player Modal */}
+      {selectedItem && (
+        <div 
+          onClick={() => setSelectedItem(null)}
+          className="fixed inset-0 bg-black/85 backdrop-blur-sm z-[100] flex items-center justify-center p-4 cursor-pointer animate-in fade-in duration-200"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl cursor-default"
+          >
+            {selectedItem.type === 'video' && isYoutubeUrl(selectedItem.url) && (
+              <div className="absolute top-4 left-4 z-50">
+                <a 
+                  href={selectedItem.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex items-center gap-2 bg-black/60 hover:bg-black text-white text-xs font-bold px-4 py-2 rounded-xl backdrop-blur-md border border-white/10 transition-colors shadow-lg"
+                >
+                  <span>Ouvrir sur YouTube</span>
+                  <ExternalLink size={12} />
+                </a>
+              </div>
+            )}
+
+            {/* Close button */}
+            <button 
+              onClick={() => setSelectedItem(null)} 
+              className="absolute top-4 right-4 bg-black/60 hover:bg-black text-white p-2 rounded-full z-50 transition-colors border border-white/10"
+              aria-label="Fermer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            
+            {selectedItem.type === 'video' && (
+              <div className="aspect-video w-full bg-black">
+                {isYoutubeUrl(selectedItem.url) ? (
+                  <iframe
+                    className="w-full h-full"
+                    src={`${getYoutubeEmbedUrl(selectedItem.url)}?autoplay=1`}
+                    title={selectedItem.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    controls
+                    autoPlay
+                    className="w-full h-full object-cover"
+                  >
+                    <source src={selectedItem.url} />
+                    Votre navigateur ne supporte pas la lecture de cette vidéo.
+                  </video>
+                )}
+              </div>
+            )}
+
+            {selectedItem.type === 'audio' && (
+              <div className="p-8 md:p-12 bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col items-center gap-6 text-center">
+                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center ring-4 ring-primary/30">
+                  <svg className="text-primary ml-1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </div>
+                <div className="space-y-2 max-w-lg">
+                  <span className="text-xs font-black text-primary uppercase tracking-widest">{selectedItem.category}</span>
+                  <h3 className="text-white text-xl font-bold font-serif leading-tight">{selectedItem.title}</h3>
+                  {selectedItem.speaker && (
+                    <p className="text-slate-400 text-sm font-medium">{selectedItem.speaker}</p>
+                  )}
+                </div>
+                <audio
+                  controls
+                  autoPlay
+                  className="w-full max-w-md mt-4"
+                >
+                  <source src={selectedItem.url} />
+                  Votre navigateur ne supporte pas la lecture audio.
+                </audio>
+              </div>
+            )}
+
+            {selectedItem.type === 'image' && (
+              <div className="max-h-[85vh] flex items-center justify-center bg-black relative">
+                <img 
+                  src={selectedItem.url} 
+                  alt={selectedItem.title} 
+                  className="max-w-full max-h-[80vh] object-contain"
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/95 to-transparent text-white">
+                  <h3 className="font-serif font-bold text-lg">{selectedItem.title}</h3>
+                  <p className="text-xs text-white/60">{selectedItem.date}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

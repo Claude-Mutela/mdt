@@ -25,6 +25,7 @@ router.on('/cellules').renderInertia('cellules', {}).as('cellules')
 router.on('/contact').renderInertia('contact', {}).as('contact')
 router.on('/rendez-vous').renderInertia('rendez-vous', {}).as('rendez-vous')
 router.on('/donation').renderInertia('donation', {}).as('donation')
+router.on('/intercession-priere').renderInertia('intercession-priere', {}).as('intercession')
 
 /* ── Auth routes ──────────────────────────────────────────────────── */
 router

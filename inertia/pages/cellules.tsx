@@ -1,55 +1,32 @@
 import { Head, Link } from '@inertiajs/react'
-import { MapPin, Clock, Phone, Users, ArrowRight } from 'lucide-react'
+import { MapPin, Clock, Phone, Users, ArrowRight, User } from 'lucide-react'
 
-const cellules = [
-  {
-    id: 1,
-    nom: 'Cellule Kalamu Centrale',
-    description: "Une cellule dynamique au cœur de Matonge. Nous nous réunissons pour partager la Parole dans la simplicité et prier pour nos familles.",
-    horaire: "Chaque Mercredi, 18h00 - 19h30",
-    adresse: "Quartier Matonge, Avenue Kanda-Kanda n°42, Kalamu",
-    telephone: "+243 82 000 0001",
-    tagColor: "bg-blue-500",
-  },
-  {
-    id: 2,
-    nom: 'Cellule Lemba Salongo',
-    description: "Idéale pour les résidents de Lemba. Nos rencontres sont axées sur l'étude biblique approfondie et l'intercession en faveur de l'église.",
-    horaire: "Chaque Vendredi, 17h30 - 19h00",
-    adresse: "Quartier Salongo, Avenue de la Paix n°15, Lemba",
-    telephone: "+243 82 000 0002",
-    tagColor: "bg-green-500",
-  },
-  {
-    id: 3,
-    nom: 'Cellule Gombe Espérance',
-    description: "Située en centre-ville, cette cellule accueille les professionnels après le travail pour un temps de ressourcement spirituel.",
-    horaire: "Chaque Jeudi, 18h30 - 20h00",
-    adresse: "Avenue de la Justice n°120, Gombe",
-    telephone: "+243 97 000 0003",
-    tagColor: "bg-purple-500",
-  },
-  {
-    id: 4,
-    nom: 'Cellule Bandal Tshibangu',
-    description: "Une communauté chaleureuse à Bandalungwa, très axée sur la louange, le témoignage et le soutien mutuel.",
-    horaire: "Chaque Mardi, 18h00 - 19h30",
-    adresse: "Avenue Tshibangu n°8, Bandalungwa",
-    telephone: "+243 81 000 0004",
-    tagColor: "bg-orange-500",
-  },
-  {
-    id: 5,
-    nom: 'Cellule Ngaliema',
-    description: "Pour les résidents de Ma Campagne et environs. Une cellule familiale où petits et grands trouvent leur place dans la prière.",
-    horaire: "Chaque Samedi, 16h00 - 17h30",
-    adresse: "Avenue de la Montagne n°22, Ma Campagne, Ngaliema",
-    telephone: "+243 85 000 0005",
-    tagColor: "bg-rose-500",
-  }
+interface CelluleItem {
+  id: number
+  nom: string
+  description: string
+  horaire: string
+  adresse: string
+  telephone: string
+  responsable: string | null
+}
+
+interface Props {
+  cellules: CelluleItem[]
+}
+
+const TAG_COLORS = [
+  'bg-blue-500',
+  'bg-green-500',
+  'bg-purple-500',
+  'bg-orange-500',
+  'bg-rose-500',
+  'bg-teal-500',
+  'bg-indigo-500',
+  'bg-amber-500',
 ]
 
-export default function Cellules() {
+export default function Cellules({ cellules = [] }: Props) {
   return (
     <>
       <Head title="Nos Cellules de Maison — Phila MDT" />
@@ -77,63 +54,90 @@ export default function Cellules() {
         {/* ── Grid Section ── */}
         <section className="py-20 relative -mt-10 z-20">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {cellules.map((cellule) => (
-                <div 
-                  key={cellule.id} 
-                  className="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group"
-                >
-                  <div className="p-8 flex-grow space-y-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors leading-tight">
-                        {cellule.nom}
-                      </h3>
-                      <span className={`w-3 h-3 rounded-full shrink-0 mt-2 ${cellule.tagColor} shadow-sm shadow-${cellule.tagColor}/50`} />
-                    </div>
-                    
-                    <p className="text-slate-600 text-sm leading-relaxed">
-                      {cellule.description}
-                    </p>
 
-                    <div className="space-y-4 pt-4 border-t border-slate-50">
-                      <div className="flex gap-3">
-                        <Clock size={18} className="text-primary shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Horaire</p>
-                          <p className="text-slate-900 font-medium text-sm">{cellule.horaire}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex gap-3">
-                        <MapPin size={18} className="text-primary shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Adresse</p>
-                          <p className="text-slate-900 font-medium text-sm">{cellule.adresse}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-3">
-                        <Phone size={18} className="text-primary shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Contact</p>
-                          <p className="text-slate-900 font-medium text-sm">{cellule.telephone}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <Link 
-                    href="/contact"
-                    className="px-8 py-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between group-hover:bg-primary group-hover:border-primary transition-colors duration-300"
+            {cellules.length === 0 ? (
+              <div className="text-center py-24 text-slate-500">
+                <Users size={48} className="mx-auto mb-4 text-slate-300" />
+                <p className="text-xl font-semibold">Aucune cellule disponible pour le moment.</p>
+                <p className="text-sm mt-2">Revenez bientôt ou contactez-nous pour plus d'informations.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {cellules.map((cellule, index) => (
+                  <div
+                    key={cellule.id}
+                    className="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group"
                   >
-                    <span className="text-sm font-bold text-slate-500 group-hover:text-white/90 transition-colors">
-                      Rejoindre cette cellule
-                    </span>
-                    <ArrowRight size={18} className="text-slate-400 group-hover:text-white transition-colors" />
-                  </Link>
-                </div>
-              ))}
-            </div>
+                    <div className="p-8 flex-grow space-y-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors leading-tight">
+                          {cellule.nom}
+                        </h3>
+                        <span className={`w-3 h-3 rounded-full shrink-0 mt-2 ${TAG_COLORS[index % TAG_COLORS.length]}`} />
+                      </div>
+
+                      {cellule.description && (
+                        <p className="text-slate-600 text-sm leading-relaxed">
+                          {cellule.description}
+                        </p>
+                      )}
+
+                      <div className="space-y-4 pt-4 border-t border-slate-50">
+                        {cellule.horaire && (
+                          <div className="flex gap-3">
+                            <Clock size={18} className="text-primary shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Horaire</p>
+                              <p className="text-slate-900 font-medium text-sm">{cellule.horaire}</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {cellule.adresse && (
+                          <div className="flex gap-3">
+                            <MapPin size={18} className="text-primary shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Adresse</p>
+                              <p className="text-slate-900 font-medium text-sm">{cellule.adresse}</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {cellule.telephone && (
+                          <div className="flex gap-3">
+                            <Phone size={18} className="text-primary shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Contact</p>
+                              <p className="text-slate-900 font-medium text-sm">{cellule.telephone}</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {cellule.responsable && (
+                          <div className="flex gap-3">
+                            <User size={18} className="text-primary shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Responsable</p>
+                              <p className="text-slate-900 font-medium text-sm">{cellule.responsable}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/contact"
+                      className="px-8 py-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between group-hover:bg-primary group-hover:border-primary transition-colors duration-300"
+                    >
+                      <span className="text-sm font-bold text-slate-500 group-hover:text-white/90 transition-colors">
+                        Rejoindre cette cellule
+                      </span>
+                      <ArrowRight size={18} className="text-slate-400 group-hover:text-white transition-colors" />
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* ── Contact CTA ── */}
             <div className="mt-16 bg-white rounded-3xl p-8 md:p-12 text-center shadow-lg border border-slate-100 max-w-4xl mx-auto">
@@ -143,7 +147,7 @@ export default function Cellules() {
               <p className="text-slate-600 mb-8 max-w-2xl mx-auto">
                 Contactez notre secrétariat pour être orienté vers la cellule la plus proche, ou découvrez comment ouvrir une nouvelle cellule chez vous.
               </p>
-              <a 
+              <a
                 href="/contact"
                 className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold px-8 py-3.5 rounded-xl transition-colors shadow-md"
               >

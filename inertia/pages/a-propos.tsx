@@ -1,13 +1,13 @@
 import HeroAbout from '../components/HeroAbout'
 import { Head } from '@inertiajs/react'
 import { useState } from 'react'
-import { Eye, Globe, Heart, ArrowRight, Network, ExternalLink } from 'lucide-react'
+import { Eye, Globe, Heart, ArrowRight, ExternalLink } from 'lucide-react'
 
 
 const pastoralCouple = {
-  nom: 'Pasteur Blonsky & Maman Lydia',
+  nom: 'Blonsky & Lydia Mbala',
   role: 'Couple Pastoral',
-  photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop',
+  photo: '/couple_blonsky_mbala.jpg',
 }
 
 const faqs = [
@@ -80,39 +80,48 @@ export default function About() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-16 lg:gap-y-0 gap-x-8 lg:gap-x-16 relative z-10">
                 
                 {/* 1. Centre Missionnaire Philadelphie (CMP) */}
-                <div className="group bg-white rounded-3xl p-8 border-2 border-[#EAE5DF] hover:border-primary/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full relative">
-                  {/* Badge de génération */}
-                  <div className="absolute -top-4 left-6 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                    Génération 1 — L'Église de la Vision
-                  </div>
+                <div className="group bg-white rounded-3xl border-2 border-[#EAE5DF] hover:border-primary/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
                   
-                  <div className="space-y-5 mt-2">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
-                      <Globe size={28} className="text-primary" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
-                        Centre Missionnaire Philadelphie
-                      </h3>
-                      <p className="text-xs text-primary font-bold tracking-wider uppercase">CMP — Église Mère</p>
+                  <div>
+                    {/* Image Header */}
+                    <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
+                      <img 
+                        src="/rolland&viviane.png" 
+                        alt="Couple Roland et Viviane Dalo" 
+                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" 
+                      />
+                      {/* Badge de génération */}
+                      <div className="absolute top-4 left-4 z-10 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
+                        Génération 1 — L'Église de la Vision
+                      </div>
                     </div>
 
-                    <p className="text-slate-600 text-sm leading-relaxed">
-                      L'histoire commence au Centre Missionnaire Philadelphie (CMP), sous l'impulsion spirituelle du Pasteur Roland Dalo. C'est l'église fondatrice de la vision, où les fondements et la doctrine d'impact ont été plantés.
-                    </p>
+                    <div className="p-6 md:p-8 space-y-4">
+                      <div className="space-y-1">
+                        <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
+                          Centre Missionnaire Philadelphie
+                        </h3>
+                        <p className="text-xs text-primary font-bold tracking-wider uppercase">CMP — Église Mère</p>
+                      </div>
+
+                      <p className="text-slate-600 text-sm leading-relaxed">
+                        L'histoire commence au Centre Missionnaire Philadelphie (CMP), sous l'impulsion spirituelle du Pasteur Roland Dalo. C'est l'église fondatrice de la vision, où les fondements et la doctrine d'impact ont été plantés.
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
-                    <a 
-                      href="https://eglisecmp.com/" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="inline-flex items-center gap-2 text-sm font-black text-primary hover:text-primary-dark transition-colors"
-                    >
-                      <span>Visiter le site</span>
-                      <ExternalLink size={14} />
-                    </a>
+                  <div className="p-6 md:p-8 pt-0">
+                    <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
+                      <a 
+                        href="https://eglisecmp.com/" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-2 text-sm font-black text-primary hover:text-primary-dark transition-colors"
+                      >
+                        <span>Visiter le site</span>
+                        <ExternalLink size={14} />
+                      </a>
+                    </div>
                   </div>
 
                   {/* Connecteur 1 (Vers Gen 2) */}
@@ -134,39 +143,48 @@ export default function About() {
                 </div>
 
                 {/* 2. Phila Cité d'Exaucement (PCE) */}
-                <div className="group bg-white rounded-3xl p-8 border-2 border-[#EAE5DF] hover:border-primary/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full relative">
-                  {/* Badge de génération */}
-                  <div className="absolute -top-4 left-6 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                    Génération 2 — La Filiation Directe
-                  </div>
+                <div className="group bg-white rounded-3xl border-2 border-[#EAE5DF] hover:border-primary/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
                   
-                  <div className="space-y-5 mt-2">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
-                      <Network size={28} className="text-primary" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
-                        Phila Cité d'Exaucement
-                      </h3>
-                      <p className="text-xs text-primary font-bold tracking-wider uppercase">Phila CE — Église Fille</p>
+                  <div>
+                    {/* Image Header */}
+                    <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
+                      <img 
+                        src="/athoms&nadege.png" 
+                        alt="Couple Athoms et Nadège Mbuma" 
+                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" 
+                      />
+                      {/* Badge de génération */}
+                      <div className="absolute top-4 left-4 z-10 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
+                        Génération 2 — La Filiation Directe
+                      </div>
                     </div>
 
-                    <p className="text-slate-600 text-sm leading-relaxed">
-                      De la vision du CMP est née Phila Cité d'Exaucement (Phila CE), dirigée par le couple Pastoral Athoms et Nadège Mbuma. C’est dans ce foyer ardent d'amour et d’adoration que notre communauté a puisé son élan direct.
-                    </p>
+                    <div className="p-6 md:p-8 space-y-4">
+                      <div className="space-y-1">
+                        <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
+                          Phila Cité d'Exaucement
+                        </h3>
+                        <p className="text-xs text-primary font-bold tracking-wider uppercase">Phila CE — Église Fille</p>
+                      </div>
+
+                      <p className="text-slate-600 text-sm leading-relaxed">
+                        De la vision du CMP est née Phila Cité d'Exaucement (Phila CE), dirigée par le couple Pastoral Athoms et Nadège Mbuma. C’est dans ce foyer ardent d'amour et d’adoration que notre communauté a puisé son élan direct.
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
-                    <a 
-                      href="https://ce.church/" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="inline-flex items-center gap-2 text-sm font-black text-primary hover:text-primary-dark transition-colors"
-                    >
-                      <span>Visiter le site</span>
-                      <ExternalLink size={14} />
-                    </a>
+                  <div className="p-6 md:p-8 pt-0">
+                    <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
+                      <a 
+                        href="https://ce.church/" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-2 text-sm font-black text-primary hover:text-primary-dark transition-colors"
+                      >
+                        <span>Visiter le site</span>
+                        <ExternalLink size={14} />
+                      </a>
+                    </div>
                   </div>
 
                   {/* Connecteur 2 (Vers Gen 3) */}
@@ -188,34 +206,43 @@ export default function About() {
                 </div>
 
                 {/* 3. Phila Maison de Témoignages (PMT) */}
-                <div className="group bg-gradient-to-br from-primary/5 to-primary/10 rounded-3xl p-8 border-2 border-primary hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full relative">
-                  {/* Badge de génération */}
-                  <div className="absolute -top-4 left-6 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-md animate-pulse">
-                    Génération 3 — Notre Communauté
-                  </div>
+                <div className="group bg-gradient-to-br from-primary/5 to-primary/10 rounded-3xl border-2 border-primary hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
                   
-                  <div className="space-y-5 mt-2">
-                    <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center group-hover:scale-110 shadow-lg shadow-primary/30 transition-all duration-300">
-                      <Heart size={28} className="text-white" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
-                        Phila Maison de Témoignages
-                      </h3>
-                      <p className="text-xs text-primary font-bold tracking-wider uppercase">Phila MDT — Notre Église</p>
+                  <div>
+                    {/* Image Header */}
+                    <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
+                      <img 
+                        src="/couple_blonsky_mbala.jpg" 
+                        alt="Couple Blonsky et Lydia Mbala" 
+                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" 
+                      />
+                      {/* Badge de génération */}
+                      <div className="absolute top-4 left-4 z-10 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-md animate-pulse">
+                        Génération 3 — Notre Communauté
+                      </div>
                     </div>
 
-                    <p className="text-slate-600 text-sm leading-relaxed">
-                      Dernière-née de cette lignée spirituelle, notre église locale sous la conduite pastorale s'établit pour proclamer la grandeur de Dieu. Notre mission est de transformer les vies en de véritables monuments de témoignages.
-                    </p>
+                    <div className="p-6 md:p-8 space-y-4">
+                      <div className="space-y-1">
+                        <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
+                          Phila Maison de Témoignages
+                        </h3>
+                        <p className="text-xs text-primary font-bold tracking-wider uppercase">Phila MDT — Notre Église</p>
+                      </div>
+
+                      <p className="text-slate-600 text-sm leading-relaxed">
+                        Dernière-née de cette lignée spirituelle, notre église locale sous la conduite pastorale s'établit pour proclamer la grandeur de Dieu. Notre mission est de transformer les vies en de véritables monuments de témoignages.
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="pt-6 mt-6 border-t border-primary/20 flex items-center justify-between">
-                    <span className="text-xs font-black text-primary uppercase tracking-widest flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
-                      Vision Vivante
-                    </span>
+                  <div className="p-6 md:p-8 pt-0">
+                    <div className="pt-6 border-t border-primary/20 flex items-center justify-between">
+                      <span className="text-xs font-black text-primary uppercase tracking-widest flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
+                        Vision Vivante
+                      </span>
+                    </div>
                   </div>
                 </div>
 

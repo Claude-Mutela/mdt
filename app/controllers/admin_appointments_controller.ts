@@ -1,7 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Appointment from '#models/appointment'
-import { appointmentStatusValidator } from '#validators/appointment'
+import { appointmentStatusValidator, appointmentRescheduleValidator } from '#validators/appointment'
 import { BrevoService } from '#services/brevo_service'
+import { DateTime } from 'luxon'
 
 export default class AdminAppointmentsController {
   /**
@@ -79,6 +80,27 @@ export default class AdminAppointmentsController {
     } catch (error) {
       console.error('[AdminAppointmentsController] Erreur lors de la modification du statut:', error)
       session.flash('error', 'Erreur lors de la mise à jour du rendez-vous.')
+    }
+
+    return response.redirect().back()
+  }
+
+  /**
+   * PATCH /admin/rendez-vous/:id/reschedule
+   * Modifie la date et/ou l'heure du rendez-vous.
+   */
+  async reschedule({ params, request, response, session }: HttpContext) {
+    const payload = await request.validateUsing(appointmentRescheduleValidator)
+
+    try {
+      const appointment = await Appointment.findOrFail(params.id)
+      appointment.appointmentDate = DateTime.fromJSDate(payload.appointmentDate)
+      appointment.appointmentTime = payload.appointmentTime
+      await appointment.save()
+      session.flash('success', 'Date et heure du rendez-vous mises à jour avec succès.')
+    } catch (error) {
+      console.error('[AdminAppointmentsController] Erreur lors du reschedule:', error)
+      session.flash('error', 'Erreur lors de la modification du rendez-vous.')
     }
 
     return response.redirect().back()

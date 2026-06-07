@@ -1,10 +1,11 @@
-import { Head, router } from '@inertiajs/react'
+import { Head, router, useForm } from '@inertiajs/react'
 import { useState, useEffect } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
-import { 
-  Search, Calendar, Printer, 
-  CheckCircle2, XCircle, Mail, Phone, Trash2
+import {
+  Search, Calendar, Printer,
+  CheckCircle2, XCircle, Mail, Phone, Trash2,
+  Pencil, X, Clock, CalendarDays, Check, Loader2
 } from 'lucide-react'
 
 interface Appointment {
@@ -31,7 +32,25 @@ export default function AdminAppointments({ appointments: initialAppointments = 
   const [currentPage, setCurrentPage] = useState(1)
   const perPage = 15
 
-  // Sync state with props when data updates
+  // ── Reschedule modal ───────────────────────────────────────
+  const [rescheduleTarget, setRescheduleTarget] = useState<Appointment | null>(null)
+  const rescheduleForm = useForm({ appointmentDate: '', appointmentTime: '' })
+
+  function openReschedule(app: Appointment) {
+    rescheduleForm.reset()
+    rescheduleForm.setData({ appointmentDate: app.date, appointmentTime: app.time })
+    setRescheduleTarget(app)
+  }
+
+  function submitReschedule(e: React.FormEvent) {
+    e.preventDefault()
+    if (!rescheduleTarget) return
+    rescheduleForm.patch(`/admin/rendez-vous/${rescheduleTarget.id}/reschedule`, {
+      onSuccess: () => setRescheduleTarget(null),
+    })
+  }
+
+  // Sync state with props when Inertia re-renders
   useEffect(() => {
     setAppointments(initialAppointments)
   }, [initialAppointments])
@@ -55,8 +74,7 @@ export default function AdminAppointments({ appointments: initialAppointments = 
   }
 
   const filtered = appointments.filter(app => {
-    // Search matching client name, subject, email or phone
-    const matchesSearch = 
+    const matchesSearch =
       app.clientName.toLowerCase().includes(search.toLowerCase()) ||
       app.subject.toLowerCase().includes(search.toLowerCase()) ||
       app.email.toLowerCase().includes(search.toLowerCase()) ||
@@ -64,19 +82,13 @@ export default function AdminAppointments({ appointments: initialAppointments = 
 
     if (filterDate === 'all') return matchesSearch
 
-    const appDateStr = app.date // YYYY-MM-DD
     const todayStr = new Date().toISOString().split('T')[0]
-    
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
     const tomorrowStr = tomorrow.toISOString().split('T')[0]
 
-    if (filterDate === 'today') {
-      return matchesSearch && appDateStr === todayStr
-    }
-    if (filterDate === 'tomorrow') {
-      return matchesSearch && appDateStr === tomorrowStr
-    }
+    if (filterDate === 'today') return matchesSearch && app.date === todayStr
+    if (filterDate === 'tomorrow') return matchesSearch && app.date === tomorrowStr
     return matchesSearch
   })
 
@@ -84,17 +96,7 @@ export default function AdminAppointments({ appointments: initialAppointments = 
   const lastPage = Math.ceil(total / perPage) || 1
   const paginatedData = filtered.slice((currentPage - 1) * perPage, currentPage * perPage)
 
-  const meta = {
-    total,
-    perPage,
-    currentPage,
-    lastPage,
-    firstPage: 1
-  }
-
-  const handlePrint = () => {
-    window.print()
-  }
+  const meta = { total, perPage, currentPage, lastPage, firstPage: 1 }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -109,8 +111,8 @@ export default function AdminAppointments({ appointments: initialAppointments = 
     <>
       <Head title="Rendez-vous — Admin Phila MDT" />
       <AdminLayout title="Gestion des Rendez-vous">
-        
-        {/* ── Toolbar ──────────────────────────────────────────── */}
+
+        {/* ── Toolbar ── */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6 print:hidden">
           <div className="flex flex-1 gap-3 min-w-[300px]">
             <div className="relative flex-1">
@@ -118,23 +120,17 @@ export default function AdminAppointments({ appointments: initialAppointments = 
               <input
                 type="text"
                 value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value)
-                  setCurrentPage(1) // Reset to first page on search
-                }}
+                onChange={(e) => { setSearch(e.target.value); setCurrentPage(1) }}
                 placeholder="Rechercher (nom, motif, email, téléphone)..."
                 className="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors"
               />
             </div>
             <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-xl px-3">
               <Calendar size={16} className="text-slate-400" />
-              <select 
+              <select
                 value={filterDate}
-                onChange={(e) => {
-                  setFilterDate(e.target.value)
-                  setCurrentPage(1) // Reset page on filter
-                }}
-                className="bg-transparent border-none text-sm text-slate-300 focus:ring-0 py-2 capitalize outline-none"
+                onChange={(e) => { setFilterDate(e.target.value); setCurrentPage(1) }}
+                className="bg-transparent border-none text-sm text-slate-300 focus:ring-0 py-2 outline-none"
               >
                 <option value="all">Toutes les dates</option>
                 <option value="today">Aujourd'hui</option>
@@ -142,16 +138,15 @@ export default function AdminAppointments({ appointments: initialAppointments = 
               </select>
             </div>
           </div>
-
-          <button 
-            onClick={handlePrint}
+          <button
+            onClick={() => window.print()}
             className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border border-slate-700 shadow-lg"
           >
             <Printer size={16} /> Imprimer la liste
           </button>
         </div>
 
-        {/* ── Table ────────────────────────────────────────────── */}
+        {/* ── Table ── */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
           <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-800/20">
             <h2 className="text-white font-bold flex items-center gap-2">
@@ -161,9 +156,7 @@ export default function AdminAppointments({ appointments: initialAppointments = 
           </div>
           <div className="overflow-x-auto">
             {paginatedData.length === 0 ? (
-              <div className="p-12 text-center text-slate-500">
-                Aucun rendez-vous trouvé.
-              </div>
+              <div className="p-12 text-center text-slate-500">Aucun rendez-vous trouvé.</div>
             ) : (
               <table className="w-full text-sm text-left">
                 <thead>
@@ -177,7 +170,7 @@ export default function AdminAppointments({ appointments: initialAppointments = 
                 </thead>
                 <tbody className="divide-y divide-slate-800/50">
                   {paginatedData.map((app) => (
-                    <tr key={app.id} className="hover:bg-slate-800/30 transition-colors group">
+                    <tr key={app.id} className="hover:bg-slate-800/30 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
                           <span className="text-white font-semibold">{app.clientName}</span>
@@ -208,31 +201,43 @@ export default function AdminAppointments({ appointments: initialAppointments = 
                         </span>
                       </td>
                       <td className="px-6 py-4 print:hidden">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
+                          {/* Modifier la date/heure */}
+                          <button
+                            onClick={() => openReschedule(app)}
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-blue-400 hover:bg-blue-400/10 transition-all"
+                            title="Modifier la date / heure"
+                          >
+                            <Pencil size={15} />
+                          </button>
+
+                          {/* Confirmer / Annuler — seulement si en attente */}
                           {app.status === 'pending' && (
                             <>
-                              <button 
+                              <button
                                 onClick={() => handleConfirm(app.id)}
                                 className="p-1.5 rounded-lg text-slate-500 hover:text-green-400 hover:bg-green-400/10 transition-all"
                                 title="Confirmer le rendez-vous"
                               >
-                                <CheckCircle2 size={16} />
+                                <CheckCircle2 size={15} />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => handleCancel(app.id)}
-                                className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                                className="p-1.5 rounded-lg text-slate-500 hover:text-orange-400 hover:bg-orange-400/10 transition-all"
                                 title="Annuler le rendez-vous"
                               >
-                                <XCircle size={16} />
+                                <XCircle size={15} />
                               </button>
                             </>
                           )}
-                          <button 
+
+                          {/* Supprimer */}
+                          <button
                             onClick={() => handleDelete(app.id)}
                             className="p-1.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
                             title="Supprimer la demande"
                           >
-                            <Trash2 size={16} />
+                            <Trash2 size={15} />
                           </button>
                         </div>
                       </td>
@@ -246,13 +251,95 @@ export default function AdminAppointments({ appointments: initialAppointments = 
             <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
           )}
         </div>
-
       </AdminLayout>
+
+      {/* ══════════════════════════════════════════════════════
+          MODAL — MODIFIER DATE & HEURE
+      ══════════════════════════════════════════════════════ */}
+      {rescheduleTarget && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+              <div>
+                <h3 className="text-white font-bold">Modifier le rendez-vous</h3>
+                <p className="text-slate-400 text-xs mt-0.5">{rescheduleTarget.clientName}</p>
+              </div>
+              <button
+                onClick={() => setRescheduleTarget(null)}
+                className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={submitReschedule} className="p-6 space-y-4">
+              {/* Date */}
+              <div>
+                <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold flex items-center gap-1.5 mb-1.5">
+                  <CalendarDays size={11} /> Nouvelle date <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={rescheduleForm.data.appointmentDate}
+                  onChange={(e) => rescheduleForm.setData('appointmentDate', e.target.value)}
+                  className={`w-full px-4 py-2.5 bg-slate-800 border ${rescheduleForm.errors.appointmentDate ? 'border-red-500' : 'border-slate-700'} rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors`}
+                />
+                {rescheduleForm.errors.appointmentDate && (
+                  <p className="text-red-400 text-xs mt-1">{rescheduleForm.errors.appointmentDate}</p>
+                )}
+              </div>
+
+              {/* Heure */}
+              <div>
+                <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold flex items-center gap-1.5 mb-1.5">
+                  <Clock size={11} /> Nouvelle heure <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="time"
+                  required
+                  value={rescheduleForm.data.appointmentTime}
+                  onChange={(e) => rescheduleForm.setData('appointmentTime', e.target.value)}
+                  className={`w-full px-4 py-2.5 bg-slate-800 border ${rescheduleForm.errors.appointmentTime ? 'border-red-500' : 'border-slate-700'} rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors`}
+                />
+                {rescheduleForm.errors.appointmentTime && (
+                  <p className="text-red-400 text-xs mt-1">{rescheduleForm.errors.appointmentTime}</p>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="flex gap-3 pt-2 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setRescheduleTarget(null)}
+                  className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={rescheduleForm.processing}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition-colors disabled:opacity-50"
+                >
+                  {rescheduleForm.processing ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <Check size={14} />
+                  )}
+                  Enregistrer
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @media print {
           body { background: white !important; color: black !important; }
-          aside, header, .print-hidden { display: none !important; }
+          aside, header { display: none !important; }
           .bg-slate-900 { background: white !important; border: 1px solid #ddd !important; }
           .text-white { color: black !important; }
           .text-slate-400, .text-slate-500 { color: #666 !important; }

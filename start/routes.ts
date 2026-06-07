@@ -68,6 +68,7 @@ router
         
         router.get('/rendez-vous', [() => import('#controllers/admin_appointments_controller'), 'index']).as('admin.rendez-vous')
         router.put('/rendez-vous/:id', [() => import('#controllers/admin_appointments_controller'), 'update']).as('admin.rendez-vous.update')
+        router.patch('/rendez-vous/:id/reschedule', [() => import('#controllers/admin_appointments_controller'), 'reschedule']).as('admin.rendez-vous.reschedule')
         router.delete('/rendez-vous/:id', [() => import('#controllers/admin_appointments_controller'), 'destroy']).as('admin.rendez-vous.destroy')
         router.get('/assets', [() => import('#controllers/admin_assets_controller'), 'index']).as('admin.assets')
         router.post('/assets', [() => import('#controllers/admin_assets_controller'), 'store']).as('admin.assets.store')

@@ -56,7 +56,7 @@ export default class AdminCellulesController {
    */
   async store({ request, response, session }: HttpContext) {
     // Pas de meta : la règle unique vérifie sur toute la table
-    const data = await request.validateUsing(celluleValidator)
+    const data = await request.validateUsing(celluleValidator, { meta: {} })
 
     try {
       // Vérification que le responsable choisi est bien éligible

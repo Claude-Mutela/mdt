@@ -1,15 +1,42 @@
-import { Head } from '@inertiajs/react'
+import { Head, useForm } from '@inertiajs/react'
 import { CalendarDays, Clock, User, Phone, Mail, CheckCircle2, MessageSquare, Video } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function RendezVous() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [motif, setMotif] = useState('')
+  const [autreMotif, setAutreMotif] = useState('')
+
+  const { data, setData, post, processing, errors, reset } = useForm({
+    lastName: '',
+    firstName: '',
+    phone: '',
+    email: '',
+    reason: '',
+    format: '',
+    appointmentDate: '',
+    appointmentTime: '',
+  })
+
+  // Synchronise le motif sélectionné et l'autre motif avec le champ "reason" de useForm
+  useEffect(() => {
+    if (motif === 'autre') {
+      setData('reason', autreMotif)
+    } else {
+      setData('reason', motif)
+    }
+  }, [motif, autreMotif])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Pour l'instant, on simule une soumission réussie
-    setIsSubmitted(true)
+    post('/rendez-vous', {
+      onSuccess: () => {
+        setIsSubmitted(true)
+        reset()
+        setMotif('')
+        setAutreMotif('')
+      },
+    })
   }
 
   return (
@@ -76,9 +103,12 @@ export default function RendezVous() {
                           type="text" 
                           id="nom" 
                           required
-                          className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm"
+                          value={data.lastName}
+                          onChange={(e) => setData('lastName', e.target.value)}
+                          className={`w-full bg-slate-50 border ${errors.lastName ? 'border-red-500' : 'border-slate-200'} text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm`}
                           placeholder="Votre nom"
                         />
+                        {errors.lastName && <p className="text-red-500 text-xs mt-1 ml-1">{errors.lastName}</p>}
                       </div>
                       
                       {/* Prénom */}
@@ -90,9 +120,12 @@ export default function RendezVous() {
                           type="text" 
                           id="prenom" 
                           required
-                          className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm"
+                          value={data.firstName}
+                          onChange={(e) => setData('firstName', e.target.value)}
+                          className={`w-full bg-slate-50 border ${errors.firstName ? 'border-red-500' : 'border-slate-200'} text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm`}
                           placeholder="Votre prénom"
                         />
+                        {errors.firstName && <p className="text-red-500 text-xs mt-1 ml-1">{errors.firstName}</p>}
                       </div>
                     </div>
 
@@ -106,9 +139,12 @@ export default function RendezVous() {
                           type="tel" 
                           id="telephone" 
                           required
-                          className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm"
+                          value={data.phone}
+                          onChange={(e) => setData('phone', e.target.value)}
+                          className={`w-full bg-slate-50 border ${errors.phone ? 'border-red-500' : 'border-slate-200'} text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm`}
                           placeholder="+243..."
                         />
+                        {errors.phone && <p className="text-red-500 text-xs mt-1 ml-1">{errors.phone}</p>}
                       </div>
                       
                       {/* Email */}
@@ -119,9 +155,12 @@ export default function RendezVous() {
                         <input 
                           type="email" 
                           id="email" 
-                          className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm"
+                          value={data.email}
+                          onChange={(e) => setData('email', e.target.value)}
+                          className={`w-full bg-slate-50 border ${errors.email ? 'border-red-500' : 'border-slate-200'} text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm`}
                           placeholder="votre@email.com"
                         />
+                        {errors.email && <p className="text-red-500 text-xs mt-1 ml-1">{errors.email}</p>}
                       </div>
                     </div>
 
@@ -136,12 +175,12 @@ export default function RendezVous() {
                           required
                           value={motif}
                           onChange={(e) => setMotif(e.target.value)}
-                          className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm appearance-none"
+                          className={`w-full bg-slate-50 border ${errors.reason ? 'border-red-500' : 'border-slate-200'} text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm appearance-none`}
                         >
                           <option value="">Sélectionnez un motif</option>
-                          <option value="priere">Prière et Soutien spirituel</option>
-                          <option value="conseil">Conseils pastoraux</option>
-                          <option value="delivrance">Délivrance et Accompagnement</option>
+                          <option value="Prière et Soutien spirituel">Prière et Soutien spirituel</option>
+                          <option value="Conseils pastoraux">Conseils pastoraux</option>
+                          <option value="Délivrance et Accompagnement">Délivrance et Accompagnement</option>
                           <option value="autre">Autre</option>
                         </select>
                         {motif === 'autre' && (
@@ -149,10 +188,13 @@ export default function RendezVous() {
                             type="text" 
                             id="autreMotif" 
                             required
+                            value={autreMotif}
+                            onChange={(e) => setAutreMotif(e.target.value)}
                             placeholder="Précisez votre motif..."
                             className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm mt-3 animate-in fade-in slide-in-from-top-2"
                           />
                         )}
+                        {errors.reason && <p className="text-red-500 text-xs mt-1 ml-1">{errors.reason}</p>}
                       </div>
                       
                       {/* Format */}
@@ -163,13 +205,16 @@ export default function RendezVous() {
                         <select 
                           id="format" 
                           required
-                          className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm appearance-none"
+                          value={data.format}
+                          onChange={(e) => setData('format', e.target.value)}
+                          className={`w-full bg-slate-50 border ${errors.format ? 'border-red-500' : 'border-slate-200'} text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm appearance-none`}
                         >
                           <option value="">Sélectionnez le format</option>
                           <option value="presentiel">En présentiel</option>
                           <option value="enligne">En ligne (Appel vidéo)</option>
                           <option value="enligne_vocal">En ligne (Appel vocal)</option>
                         </select>
+                        {errors.format && <p className="text-red-500 text-xs mt-1 ml-1">{errors.format}</p>}
                       </div>
                     </div>
 
@@ -183,8 +228,11 @@ export default function RendezVous() {
                           type="date" 
                           id="jour" 
                           required
-                          className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm"
+                          value={data.appointmentDate}
+                          onChange={(e) => setData('appointmentDate', e.target.value)}
+                          className={`w-full bg-slate-50 border ${errors.appointmentDate ? 'border-red-500' : 'border-slate-200'} text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm`}
                         />
+                        {errors.appointmentDate && <p className="text-red-500 text-xs mt-1 ml-1">{errors.appointmentDate}</p>}
                       </div>
                       
                       {/* Heure */}
@@ -196,17 +244,21 @@ export default function RendezVous() {
                           type="time" 
                           id="heure" 
                           required
-                          className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm"
+                          value={data.appointmentTime}
+                          onChange={(e) => setData('appointmentTime', e.target.value)}
+                          className={`w-full bg-slate-50 border ${errors.appointmentTime ? 'border-red-500' : 'border-slate-200'} text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block px-4 py-3.5 outline-none transition-all shadow-sm`}
                         />
+                        {errors.appointmentTime && <p className="text-red-500 text-xs mt-1 ml-1">{errors.appointmentTime}</p>}
                       </div>
                     </div>
 
                     <div className="pt-8">
                       <button 
                         type="submit"
-                        className="w-full bg-primary hover:bg-primary-dark text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
+                        disabled={processing}
+                        className="w-full bg-primary hover:bg-primary-dark disabled:bg-primary/50 text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
                       >
-                        Soumettre la demande
+                        {processing ? 'Traitement en cours...' : 'Soumettre la demande'}
                       </button>
                       <p className="text-center text-xs text-slate-400 mt-4">
                         Vos informations seront traitées en toute confidentialité.

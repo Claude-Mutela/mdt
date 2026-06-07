@@ -23,7 +23,8 @@ router.get('/evenements/:slug', [() => import('#controllers/events_controller'),
 router.get('/agenda', [() => import('#controllers/agenda_controller'), 'index']).as('agenda')
 router.get('/cellules', [() => import('#controllers/cellules_controller'), 'index']).as('cellules')
 router.on('/contact').renderInertia('contact', {}).as('contact')
-router.on('/rendez-vous').renderInertia('rendez-vous', {}).as('rendez-vous')
+router.get('/rendez-vous', [() => import('#controllers/appointments_controller'), 'index']).as('rendez-vous.index')
+router.post('/rendez-vous', [() => import('#controllers/appointments_controller'), 'store']).as('rendez-vous.store')
 router.on('/donation').renderInertia('donation', {}).as('donation')
 router.on('/intercession-priere').renderInertia('intercession-priere', {}).as('intercession')
 
@@ -65,7 +66,9 @@ router
         router.put('/agenda/categories/:id', [() => import('#controllers/admin_agenda_controller'), 'updateCategory']).as('admin.agenda.categories.update')
         router.delete('/agenda/categories/:id', [() => import('#controllers/admin_agenda_controller'), 'destroyCategory']).as('admin.agenda.categories.destroy')
         
-        router.on('/rendez-vous').renderInertia('admin/rendez-vous', {}).as('admin.rendez-vous')
+        router.get('/rendez-vous', [() => import('#controllers/admin_appointments_controller'), 'index']).as('admin.rendez-vous')
+        router.put('/rendez-vous/:id', [() => import('#controllers/admin_appointments_controller'), 'update']).as('admin.rendez-vous.update')
+        router.delete('/rendez-vous/:id', [() => import('#controllers/admin_appointments_controller'), 'destroy']).as('admin.rendez-vous.destroy')
         router.get('/assets', [() => import('#controllers/admin_assets_controller'), 'index']).as('admin.assets')
         router.post('/assets', [() => import('#controllers/admin_assets_controller'), 'store']).as('admin.assets.store')
         router.patch('/assets/:id/activate', [() => import('#controllers/admin_assets_controller'), 'activate']).as('admin.assets.activate')

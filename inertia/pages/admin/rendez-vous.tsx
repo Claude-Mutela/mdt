@@ -1,16 +1,17 @@
-import { Head } from '@inertiajs/react'
-import { useState } from 'react'
+import { Head, router } from '@inertiajs/react'
+import { useState, useEffect } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
 import { 
-  Search, Filter, Calendar, Printer, 
-  MoreVertical, CheckCircle2, Clock, 
-  XCircle, User, Mail, Phone, MessageSquare
+  Search, Calendar, Printer, 
+  CheckCircle2, XCircle, Mail, Phone, Trash2
 } from 'lucide-react'
 
 interface Appointment {
   id: number
   clientName: string
+  firstName: string
+  lastName: string
   email: string
   phone: string
   date: string
@@ -19,27 +20,68 @@ interface Appointment {
   status: 'pending' | 'confirmed' | 'cancelled'
 }
 
-const initialAppointments: Appointment[] = [
-  { id: 1, clientName: 'Alice Johnson', email: 'alice@example.com', phone: '0812345678', date: '2024-05-12', time: '10:00', subject: 'Conseil pastoral', status: 'confirmed' },
-  { id: 2, clientName: 'Bob Smith', email: 'bob@example.com', phone: '0823456789', date: '2024-05-12', time: '14:30', subject: 'Demande de baptême', status: 'pending' },
-  { id: 3, clientName: 'Charlie Brown', email: 'charlie@example.com', phone: '0898765432', date: '2024-05-13', time: '09:00', subject: 'Entretien mariage', status: 'pending' },
-  { id: 4, clientName: 'Diana Ross', email: 'diana@example.com', phone: '0912345678', date: '2024-05-14', time: '11:15', subject: 'Visite à domicile', status: 'cancelled' },
-]
+interface Props {
+  appointments: Appointment[]
+}
 
-export default function AdminAppointments() {
+export default function AdminAppointments({ appointments: initialAppointments = [] }: Props) {
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments)
   const [search, setSearch] = useState('')
   const [filterDate, setFilterDate] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
   const perPage = 15
 
-  const filtered = appointments.filter(app => 
-    app.clientName.toLowerCase().includes(search.toLowerCase()) ||
-    app.subject.toLowerCase().includes(search.toLowerCase())
-  )
+  // Sync state with props when data updates
+  useEffect(() => {
+    setAppointments(initialAppointments)
+  }, [initialAppointments])
+
+  const handleConfirm = (id: number) => {
+    if (confirm('Voulez-vous vraiment confirmer ce rendez-vous ?')) {
+      router.put(`/admin/rendez-vous/${id}`, { status: 'confirmed' })
+    }
+  }
+
+  const handleCancel = (id: number) => {
+    if (confirm('Voulez-vous vraiment marquer ce rendez-vous comme annulé ?')) {
+      router.put(`/admin/rendez-vous/${id}`, { status: 'cancelled' })
+    }
+  }
+
+  const handleDelete = (id: number) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer définitivement cette demande de rendez-vous ?')) {
+      router.delete(`/admin/rendez-vous/${id}`)
+    }
+  }
+
+  const filtered = appointments.filter(app => {
+    // Search matching client name, subject, email or phone
+    const matchesSearch = 
+      app.clientName.toLowerCase().includes(search.toLowerCase()) ||
+      app.subject.toLowerCase().includes(search.toLowerCase()) ||
+      app.email.toLowerCase().includes(search.toLowerCase()) ||
+      app.phone.includes(search)
+
+    if (filterDate === 'all') return matchesSearch
+
+    const appDateStr = app.date // YYYY-MM-DD
+    const todayStr = new Date().toISOString().split('T')[0]
+    
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    const tomorrowStr = tomorrow.toISOString().split('T')[0]
+
+    if (filterDate === 'today') {
+      return matchesSearch && appDateStr === todayStr
+    }
+    if (filterDate === 'tomorrow') {
+      return matchesSearch && appDateStr === tomorrowStr
+    }
+    return matchesSearch
+  })
 
   const total = filtered.length
-  const lastPage = Math.ceil(total / perPage)
+  const lastPage = Math.ceil(total / perPage) || 1
   const paginatedData = filtered.slice((currentPage - 1) * perPage, currentPage * perPage)
 
   const meta = {
@@ -76,8 +118,11 @@ export default function AdminAppointments() {
               <input
                 type="text"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Rechercher un rendez-vous (nom, sujet)..."
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1) // Reset to first page on search
+                }}
+                placeholder="Rechercher (nom, motif, email, téléphone)..."
                 className="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors"
               />
             </div>
@@ -85,13 +130,15 @@ export default function AdminAppointments() {
               <Calendar size={16} className="text-slate-400" />
               <select 
                 value={filterDate}
-                onChange={(e) => setFilterDate(e.target.value)}
-                className="bg-transparent border-none text-sm text-slate-300 focus:ring-0 py-2 capitalize"
+                onChange={(e) => {
+                  setFilterDate(e.target.value)
+                  setCurrentPage(1) // Reset page on filter
+                }}
+                className="bg-transparent border-none text-sm text-slate-300 focus:ring-0 py-2 capitalize outline-none"
               >
                 <option value="all">Toutes les dates</option>
                 <option value="today">Aujourd'hui</option>
                 <option value="tomorrow">Demain</option>
-                <option value="range">Plage personnalisée</option>
               </select>
             </div>
           </div>
@@ -113,57 +160,91 @@ export default function AdminAppointments() {
             </h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead>
-                <tr className="bg-slate-900/50 border-b border-slate-800">
-                  <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Client</th>
-                  <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Date & Heure</th>
-                  <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Sujet</th>
-                  <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Statut</th>
-                  <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px] print:hidden">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/50">
-                {paginatedData.map((app) => (
-                  <tr key={app.id} className="hover:bg-slate-800/30 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-white font-semibold">{app.clientName}</span>
-                        <span className="text-slate-500 text-xs flex items-center gap-1">
-                          <Mail size={10} /> {app.email}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col text-slate-300">
-                        <span className="font-medium">{new Date(app.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}</span>
-                        <span className="text-primary text-xs font-bold">{app.time}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-slate-400 italic">"{app.subject}"</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter ${getStatusBadge(app.status)}`}>
-                        {app.status === 'confirmed' ? 'Confirmé' : app.status === 'pending' ? 'En attente' : 'Annulé'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 print:hidden">
-                      <div className="flex items-center gap-2">
-                        <button className="p-1.5 rounded-lg text-slate-500 hover:text-green-400 hover:bg-green-400/10 transition-all">
-                          <CheckCircle2 size={16} />
-                        </button>
-                        <button className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-all">
-                          <XCircle size={16} />
-                        </button>
-                      </div>
-                    </td>
+            {paginatedData.length === 0 ? (
+              <div className="p-12 text-center text-slate-500">
+                Aucun rendez-vous trouvé.
+              </div>
+            ) : (
+              <table className="w-full text-sm text-left">
+                <thead>
+                  <tr className="bg-slate-900/50 border-b border-slate-800">
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Client</th>
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Date & Heure</th>
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Motif</th>
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Statut</th>
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px] print:hidden">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-800/50">
+                  {paginatedData.map((app) => (
+                    <tr key={app.id} className="hover:bg-slate-800/30 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          <span className="text-white font-semibold">{app.clientName}</span>
+                          <span className="text-slate-500 text-xs flex items-center gap-1 mt-0.5">
+                            <Phone size={10} /> {app.phone}
+                          </span>
+                          {app.email && (
+                            <span className="text-slate-500 text-xs flex items-center gap-1 mt-0.5">
+                              <Mail size={10} /> {app.email}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col text-slate-300">
+                          <span className="font-medium">
+                            {new Date(app.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
+                          </span>
+                          <span className="text-primary text-xs font-bold">{app.time}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-slate-400 italic">"{app.subject}"</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter ${getStatusBadge(app.status)}`}>
+                          {app.status === 'confirmed' ? 'Confirmé' : app.status === 'pending' ? 'En attente' : 'Annulé'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 print:hidden">
+                        <div className="flex items-center gap-2">
+                          {app.status === 'pending' && (
+                            <>
+                              <button 
+                                onClick={() => handleConfirm(app.id)}
+                                className="p-1.5 rounded-lg text-slate-500 hover:text-green-400 hover:bg-green-400/10 transition-all"
+                                title="Confirmer le rendez-vous"
+                              >
+                                <CheckCircle2 size={16} />
+                              </button>
+                              <button 
+                                onClick={() => handleCancel(app.id)}
+                                className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                                title="Annuler le rendez-vous"
+                              >
+                                <XCircle size={16} />
+                              </button>
+                            </>
+                          )}
+                          <button 
+                            onClick={() => handleDelete(app.id)}
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                            title="Supprimer la demande"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
-          <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
+          {lastPage > 1 && (
+            <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
+          )}
         </div>
 
       </AdminLayout>

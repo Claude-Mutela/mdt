@@ -50,7 +50,7 @@ export const contactValidator = vine.compile(
 
     email: vine.string().trim().minLength(5).maxLength(150).email(),
 
-    subject: vine.string().trim().in(ALLOWED_SUBJECTS),
+    subject: vine.string().trim().in([...ALLOWED_SUBJECTS]),
 
     message: vine.string().trim().minLength(10).maxLength(2000),
   })

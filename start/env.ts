@@ -31,9 +31,15 @@ export default await Env.create(new URL('../', import.meta.url), {
   CLOUDINARY_API_SECRET: Env.schema.string(),
   CLOUDINARY_URL: Env.schema.string.optional(),
   
-  // Brevo
-  BREVO_API_KEY: Env.schema.string.optional(),
-  BREVO_SENDER_EMAIL: Env.schema.string.optional(),
-  BREVO_SENDER_NAME: Env.schema.string.optional(),
-  PASTOR_EMAIL: Env.schema.string.optional(),
+  // Brevo — Rendez-vous pastoral (inchangé, ne pas modifier)
+  BREVO_API_KEY: Env.schema.string(),
+  BREVO_SENDER_EMAIL: Env.schema.string({ format: 'email' }),
+  BREVO_SENDER_NAME: Env.schema.string(),
+  PASTOR_EMAIL: Env.schema.string({ format: 'email' }),
+
+  // Brevo — Formulaire de contact (variables séparées)
+  CONTACT_BREVO_API_KEY: Env.schema.string(),
+  CONTACT_SENDER_EMAIL: Env.schema.string({ format: 'email' }),
+  CONTACT_SENDER_NAME: Env.schema.string(),
+  SECRETARIAT_EMAIL: Env.schema.string({ format: 'email' }),
 })

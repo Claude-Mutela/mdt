@@ -144,6 +144,132 @@ export class BrevoService {
   }
 
   /**
+   * Envoie un e-mail via la configuration Brevo dédiée au formulaire de contact
+   * (CONTACT_BREVO_API_KEY / CONTACT_SENDER_EMAIL / CONTACT_SENDER_NAME).
+   * Complètement séparé du circuit rendez-vous.
+   */
+  private static async sendContact(
+    toEmail: string,
+    toName: string,
+    subject: string,
+    htmlContent: string
+  ) {
+    const apiKey = env.get('CONTACT_BREVO_API_KEY')
+    const senderEmail = env.get('CONTACT_SENDER_EMAIL')
+    const senderName = env.get('CONTACT_SENDER_NAME')
+
+    if (!apiKey || !senderEmail || !senderName) {
+      console.warn('[BrevoService/Contact] Configuration Brevo contact incomplète (CONTACT_BREVO_API_KEY, CONTACT_SENDER_EMAIL, CONTACT_SENDER_NAME). Envoi ignoré.')
+      return
+    }
+
+    try {
+      const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': apiKey,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          sender: { name: senderName, email: senderEmail },
+          to: [{ email: toEmail, name: toName }],
+          subject,
+          htmlContent,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`[BrevoService/Contact] Échec envoi à ${toEmail}. Status: ${response.status}. Erreur: ${errorText}`)
+      } else {
+        console.log(`[BrevoService/Contact] E-mail envoyé avec succès à ${toEmail} (Sujet: "${subject}")`)
+      }
+    } catch (error) {
+      console.error('[BrevoService/Contact] Erreur lors de l\'envoi:', error)
+    }
+  }
+
+  /**
+   * Notifie le secrétariat (SECRETARIAT_EMAIL) d'un nouveau message de contact.
+   * Utilise la clé Brevo Contact (CONTACT_BREVO_API_KEY).
+   */
+  static async sendContactMessageToChurch(
+    senderName: string,
+    senderEmail: string,
+    subject: string,
+    message: string
+  ) {
+    const recipientEmail = env.get('SECRETARIAT_EMAIL')
+    if (!recipientEmail) {
+      console.warn('[BrevoService/Contact] SECRETARIAT_EMAIL non défini. Notification ignorée.')
+      return
+    }
+
+    const emailSubject = `[Contact MDT] ${subject} — ${senderName}`
+    const htmlContent = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #ea580c; border-bottom: 2px solid #ea580c; padding-bottom: 10px;">Nouveau message depuis le formulaire de contact</h2>
+        <p>Bonjour,</p>
+        <p>Un visiteur a envoyé un message via le formulaire de contact du site Phila MDT.</p>
+
+        <div style="background-color: #fff7ed; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ea580c;">
+          <h3 style="margin-top: 0; color: #9a3412;">Détails du message :</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 6px 0; font-weight: bold; width: 120px; color: #57534e;">Nom :</td>
+              <td style="padding: 6px 0;">${senderName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; font-weight: bold; color: #57534e;">Email :</td>
+              <td style="padding: 6px 0;"><a href="mailto:${senderEmail}" style="color: #ea580c;">${senderEmail}</a></td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; font-weight: bold; color: #57534e;">Sujet :</td>
+              <td style="padding: 6px 0;">${subject}</td>
+            </tr>
+          </table>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fed7aa;">
+            <p style="font-weight: bold; color: #57534e; margin-bottom: 6px;">Message :</p>
+            <p style="background: #fff; padding: 12px; border-radius: 6px; line-height: 1.6; white-space: pre-wrap;">${message}</p>
+          </div>
+        </div>
+
+        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
+          Ceci est une notification automatique de votre site web.<br>
+          <strong>Phila MDT</strong>
+        </p>
+      </div>
+    `
+    await this.sendContact(recipientEmail, 'Équipe Phila MDT', emailSubject, htmlContent)
+  }
+
+  /**
+   * Envoie un accusé de réception au visiteur via la clé Brevo Contact.
+   */
+  static async sendContactAcknowledgement(
+    senderName: string,
+    senderEmail: string,
+    subject: string
+  ) {
+    const emailSubject = 'Votre message a bien été reçu — Phila MDT'
+    const htmlContent = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #ea580c; border-bottom: 2px solid #ea580c; padding-bottom: 10px;">Message bien reçu !</h2>
+        <p>Bonjour <strong>${senderName}</strong>,</p>
+        <p>Nous avons bien reçu votre message concernant : <strong>${subject}</strong>.</p>
+        <p>Notre équipe en prendra connaissance et vous répondra dans les meilleurs délais.</p>
+
+        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
+          Que Dieu vous bénisse,<br>
+          <strong>L'équipe Phila MDT</strong>
+        </p>
+      </div>
+    `
+    await this.sendContact(senderEmail, senderName, emailSubject, htmlContent)
+  }
+
+  /**
    * Envoie un e-mail de notification au pasteur concernant un nouveau rendez-vous confirmé.
    */
   static async sendAppointmentConfirmedToPastor(

@@ -102,6 +102,8 @@ router
         router.post('/galerie/categories', [() => import('#controllers/admin_galeries_controller'), 'storeCategory']).as('admin.galerie.categories.store')
         router.put('/galerie/categories/:id', [() => import('#controllers/admin_galeries_controller'), 'updateCategory']).as('admin.galerie.categories.update')
         router.delete('/galerie/categories/:id', [() => import('#controllers/admin_galeries_controller'), 'destroyCategory']).as('admin.galerie.categories.destroy')
+        
+        router.on('/finances').renderInertia('admin/finances', {}).as('admin.finances')
       })
       .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur'] }))
 

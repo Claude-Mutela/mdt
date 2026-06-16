@@ -17,6 +17,7 @@ import {
   HeartHandshake,
   UserCog,
   Grid3X3,
+  Coins,
 } from 'lucide-react'
 
 const navItems = [
@@ -32,6 +33,7 @@ const navItems = [
   { label: 'Médias',      href: '/admin/medias',      icon: PlayCircle },
   { label: 'Galerie',     href: '/admin/galerie',     icon: Image },
   { label: 'Dons',        href: '/admin/donations',   icon: HeartHandshake },
+  { label: 'Finances',    href: '/admin/finances',    icon: Coins },
 ]
 
 interface User {

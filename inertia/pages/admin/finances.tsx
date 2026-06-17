@@ -1,5 +1,5 @@
-import { Head } from '@inertiajs/react'
-import { useState, useMemo } from 'react'
+import { Head, useForm, router } from '@inertiajs/react'
+import { useState, useMemo, useEffect } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
 import { 
@@ -32,27 +32,19 @@ interface Operation {
   moyen_paiement: string
 }
 
+interface FinanceCategory {
+  id: number
+  name: string
+  type: 'entrée' | 'sortie'
+}
+
+interface AdminFinancesProps {
+  operations: Operation[]
+  categories: FinanceCategory[]
+  exchangeRates: { CDF: number; EUR: number }
+}
+
 type PeriodFilter = 'today' | 'week' | 'month' | 'year' | 'all'
-
-const CATEGORIES_ENTREE = [
-  'Donation',
-  'Dîme',
-  'Action de grâce',
-  'Offrande',
-  'Partenariat',
-  'Autre entrée'
-]
-
-const CATEGORIES_SORTIE = [
-  'Loyer',
-  'Électricité',
-  'Achat matériel',
-  'Transports',
-  'Salaires / Soutiens',
-  'Événementiel',
-  'Social / Entraide',
-  'Autre dépense'
-]
 
 const DEVISES = ['USD', 'CDF', 'EUR'] as const
 
@@ -65,99 +57,105 @@ const MOYENS_PAIEMENT = [
   'FlexPay'
 ] as const
 
-// Mock data spanning different times around June 16, 2026
-const initialOperations: Operation[] = [
-  { id: 1, date: '2026-06-16', montant: 500, devise: 'USD', type: 'entrée', categorie: 'Donation', description: 'Donation anonyme pour travaux de rénovation', moyen_paiement: 'espèce' },
-  { id: 2, date: '2026-06-16', montant: 150000, devise: 'CDF', type: 'sortie', categorie: 'Transports', description: 'Frais de transport pour la chorale', moyen_paiement: 'virement bancaire' },
-  { id: 3, date: '2026-06-15', montant: 1200, devise: 'USD', type: 'entrée', categorie: 'Dîme', description: 'Dîme mensuelle membre fidèle', moyen_paiement: 'virement bancaire' },
-  { id: 4, date: '2026-06-14', montant: 450, devise: 'EUR', type: 'sortie', categorie: 'Achat matériel', description: 'Achat de nouveaux microphones sans fil', moyen_paiement: 'terminal' },
-  { id: 5, date: '2026-06-12', montant: 350000, devise: 'CDF', type: 'entrée', categorie: 'Action de grâce', description: 'Action de grâce culte du dimanche', moyen_paiement: 'espèce' },
-  { id: 6, date: '2026-06-10', montant: 800, devise: 'USD', type: 'sortie', categorie: 'Loyer', description: 'Paiement loyer mensuel bureau', moyen_paiement: 'virement bancaire' },
-  { id: 7, date: '2026-06-05', montant: 250, devise: 'USD', type: 'entrée', categorie: 'Offrande', description: 'Offrandes récoltées lors de la veillée', moyen_paiement: 'FlexPay' },
-  { id: 8, date: '2026-05-28', montant: 1500, devise: 'USD', type: 'entrée', categorie: 'Partenariat', description: 'Partenariat trimestriel projet social', moyen_paiement: 'virement bancaire' },
-  { id: 9, date: '2026-05-15', montant: 600, devise: 'USD', type: 'sortie', categorie: 'Salaires / Soutiens', description: 'Indemnités mensuelles secrétariat', moyen_paiement: 'mobile money' },
-  { id: 10, date: '2026-01-10', montant: 2000, devise: 'USD', type: 'entrée', categorie: 'Donation', description: 'Donation annuelle de début d\'année', moyen_paiement: 'chèque' }
-]
-
-// exchange rates config
-
-const emptyForm: Omit<Operation, 'id'> = {
-  date: '2026-06-16',
-  montant: 0,
-  devise: 'USD',
-  type: 'entrée',
-  categorie: 'Donation',
-  description: '',
-  moyen_paiement: 'espèce'
-}
-
-export default function AdminFinances() {
-  const [operations, setOperations] = useState<Operation[]>(initialOperations)
+export default function AdminFinances({
+  operations = [],
+  categories = [],
+  exchangeRates: initialRates = { CDF: 2800, EUR: 1.08 }
+}: AdminFinancesProps) {
   const [search, setSearch] = useState('')
   const [period, setPeriod] = useState<PeriodFilter>('month')
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<'tous' | 'entrée' | 'sortie'>('tous')
   const [selectedMoyenFilter, setSelectedMoyenFilter] = useState<string>('tous')
   const [modal, setModal] = useState<'encaisser' | 'decaisser' | 'edit' | 'delete' | 'categories' | null>(null)
   const [selectedOp, setSelectedOp] = useState<Operation | null>(null)
-  const [form, setForm] = useState<Omit<Operation, 'id'>>(emptyForm)
-  
-  // Dynamic categories states
-  const [categoriesEntree, setCategoriesEntree] = useState<string[]>(CATEGORIES_ENTREE)
-  const [categoriesSortie, setCategoriesSortie] = useState<string[]>(CATEGORIES_SORTIE)
-  
-  // Dynamic exchange rates
-  const [exchangeRates, setExchangeRates] = useState({
-    CDF: 2800,
-    EUR: 1.08
-  })
-  
-  // State for new category additions
-  const [newCatName, setNewCatName] = useState('')
-  const [newCatType, setNewCatType] = useState<'entrée' | 'sortie'>('entrée')
   
   const [currentPage, setCurrentPage] = useState(1)
   const perPage = 8
 
-  // Helper date function
-  const parseDate = (dateStr: string) => new Date(dateStr)
+  // Synchronisation locale du taux de change courant
+  const [rates, setRates] = useState(initialRates)
+  useEffect(() => {
+    setRates(initialRates)
+  }, [initialRates])
 
-  // Filter operations based on period and search and type
+  // Formulaire d'opérations financières
+  const operationForm = useForm({
+    date: '',
+    montant: 0,
+    devise: 'USD' as 'USD' | 'CDF' | 'EUR',
+    type: 'entrée' as 'entrée' | 'sortie',
+    financeCategoryId: '' as string | number,
+    description: '',
+    moyenPaiement: 'espèce' as any,
+  })
+
+  // Formulaire de création de nature d'opération
+  const categoryForm = useForm({
+    name: '',
+    type: 'entrée' as 'entrée' | 'sortie',
+  })
+
+  // États locaux pour la modification des catégories (Natures d'opérations)
+  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(null)
+  const [editingCategoryName, setEditingCategoryName] = useState('')
+
+  // Groupement des catégories par type pour l'affichage
+  const categoriesEntree = useMemo(() => categories.filter(c => c.type === 'entrée'), [categories])
+  const categoriesSortie = useMemo(() => categories.filter(c => c.type === 'sortie'), [categories])
+
+  // Filtrage local pour les filtres rapides de l'interface
   const filteredOperations = useMemo(() => {
-    const today = new Date('2026-06-16')
-    
+    // Construction robuste de la date locale (évite les décalages UTC/timezone)
+    // new Date() en UTC peut décaler la date si on est en soirée (ex: +02:00 → UTC -1 jour)
+    const now = new Date()
+    const yyyy = now.getFullYear()
+    const mm = String(now.getMonth() + 1).padStart(2, '0')
+    const dd = String(now.getDate()).padStart(2, '0')
+    const todayISO = `${yyyy}-${mm}-${dd}` // YYYY-MM-DD local, sans dépendance à la locale
+    const currentYear = yyyy
+    const currentMonth = now.getMonth()
+
     return operations.filter(op => {
-      // 1. Period filter
-      const opDate = parseDate(op.date)
+      // 1. Filtre par période
+      // op.date est une chaîne YYYY-MM-DD venant de la base
       let matchPeriod = true
 
       if (period === 'today') {
-        matchPeriod = op.date === '2026-06-16'
+        // Comparaison directe de chaînes YYYY-MM-DD (fiable, sans parsing)
+        matchPeriod = op.date === todayISO
       } else if (period === 'week') {
-        const diffTime = today.getTime() - opDate.getTime()
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+        // Parse YYYY-MM-DD manuellement pour éviter le décalage UTC de new Date("YYYY-MM-DD")
+        const [opY, opM, opD] = op.date.split('-').map(Number)
+        const opMidnight = new Date(opY, opM - 1, opD) // date locale, pas UTC
+        const todayMidnight = new Date(yyyy, now.getMonth(), now.getDate())
+        const diffMs = todayMidnight.getTime() - opMidnight.getTime()
+        const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24))
         matchPeriod = diffDays >= 0 && diffDays <= 7
       } else if (period === 'month') {
-        matchPeriod = opDate.getFullYear() === 2026 && opDate.getMonth() === 5 // June (5 in JS)
+        // Parse YYYY-MM-DD manuellement
+        const [opY, opM] = op.date.split('-').map(Number)
+        matchPeriod = opY === currentYear && (opM - 1) === currentMonth
       } else if (period === 'year') {
-        matchPeriod = opDate.getFullYear() === 2026
+        const [opY] = op.date.split('-').map(Number)
+        matchPeriod = opY === currentYear
       }
 
-      // 2. Search filter
-      const matchSearch = op.description.toLowerCase().includes(search.toLowerCase()) || 
+      // 2. Filtre par barre de recherche
+      const matchSearch = op.description.toLowerCase().includes(search.toLowerCase()) ||
                           op.categorie.toLowerCase().includes(search.toLowerCase()) ||
                           op.montant.toString().includes(search)
 
-      // 3. Type filter
+      // 3. Filtre par flux (Entrée / Sortie)
       const matchType = selectedTypeFilter === 'tous' || op.type === selectedTypeFilter
 
-      // 4. Moyen de paiement filter
+      // 4. Filtre par moyen de paiement
       const matchMoyen = selectedMoyenFilter === 'tous' || op.moyen_paiement === selectedMoyenFilter
 
       return matchPeriod && matchSearch && matchType && matchMoyen
     })
   }, [operations, period, search, selectedTypeFilter, selectedMoyenFilter])
 
-  // Aggregate stats based on filtered operations
+  // Calcul des statistiques
   const stats = useMemo(() => {
     let entreesUSD = 0, entreesCDF = 0, entreesEUR = 0
     let sortiesUSD = 0, sortiesCDF = 0, sortiesEUR = 0
@@ -174,14 +172,13 @@ export default function AdminFinances() {
       }
     })
 
-    // Unified total values converted to USD for graphical representation
     const totalEntreesEquivalent = entreesUSD + 
-                                   (exchangeRates.CDF > 0 ? (entreesCDF / exchangeRates.CDF) : 0) + 
-                                   (entreesEUR * exchangeRates.EUR)
+                                   (rates.CDF > 0 ? (entreesCDF / rates.CDF) : 0) + 
+                                   (entreesEUR * rates.EUR)
 
     const totalSortiesEquivalent = sortiesUSD + 
-                                   (exchangeRates.CDF > 0 ? (sortiesCDF / exchangeRates.CDF) : 0) + 
-                                   (sortiesEUR * exchangeRates.EUR)
+                                   (rates.CDF > 0 ? (sortiesCDF / rates.CDF) : 0) + 
+                                   (sortiesEUR * rates.EUR)
 
     const soldeEquivalent = totalEntreesEquivalent - totalSortiesEquivalent
 
@@ -205,9 +202,9 @@ export default function AdminFinances() {
         EUR: entreesEUR - sortiesEUR
       }
     }
-  }, [filteredOperations, exchangeRates])
+  }, [filteredOperations, rates])
 
-  // Pagination calculations
+  // Pagination locale
   const total = filteredOperations.length
   const lastPage = Math.ceil(total / perPage)
   const paginatedData = useMemo(() => {
@@ -223,36 +220,58 @@ export default function AdminFinances() {
     firstPage: 1
   }
 
-  // Modals operations
+  // Fonctions d'ouverture des formulaires
   const openEncaisser = () => {
-    setForm({
-      ...emptyForm,
+    const defaultCat = categoriesEntree[0]
+    const todayStr = new Date().toLocaleDateString('en-CA')
+    
+    operationForm.reset()
+    operationForm.clearErrors()
+    operationForm.setData({
+      date: todayStr,
+      montant: 0,
+      devise: 'USD',
       type: 'entrée',
-      categorie: categoriesEntree[0] || ''
+      financeCategoryId: defaultCat ? defaultCat.id : '',
+      description: '',
+      moyenPaiement: 'espèce',
     })
     setModal('encaisser')
   }
 
   const openDecaisser = () => {
-    setForm({
-      ...emptyForm,
+    const defaultCat = categoriesSortie[0]
+    const todayStr = new Date().toLocaleDateString('en-CA')
+    
+    operationForm.reset()
+    operationForm.clearErrors()
+    operationForm.setData({
+      date: todayStr,
+      montant: 0,
+      devise: 'USD',
       type: 'sortie',
-      categorie: categoriesSortie[0] || ''
+      financeCategoryId: defaultCat ? defaultCat.id : '',
+      description: '',
+      moyenPaiement: 'espèce',
     })
     setModal('decaisser')
   }
 
   const openEdit = (op: Operation) => {
-    setSelectedOp(op)
-    setForm({
+    const category = categories.find(c => c.name === op.categorie)
+    
+    operationForm.reset()
+    operationForm.clearErrors()
+    operationForm.setData({
       date: op.date,
       montant: op.montant,
       devise: op.devise,
       type: op.type,
-      categorie: op.categorie,
+      financeCategoryId: category ? category.id : '',
       description: op.description,
-      moyen_paiement: op.moyen_paiement
+      moyenPaiement: op.moyen_paiement as any,
     })
+    setSelectedOp(op)
     setModal('edit')
   }
 
@@ -266,46 +285,110 @@ export default function AdminFinances() {
     setSelectedOp(null)
   }
 
+  // Traitement d'envoi du formulaire d'opération
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault()
-    if (form.montant <= 0) {
+    if (operationForm.data.montant <= 0) {
       alert('Veuillez entrer un montant valide supérieur à 0')
+      return
+    }
+    if (!operationForm.data.financeCategoryId) {
+      alert('Veuillez sélectionner une catégorie')
       return
     }
 
     if (modal === 'encaisser' || modal === 'decaisser') {
-      const newOp: Operation = {
-        id: Date.now(),
-        ...form
-      }
-      setOperations([newOp, ...operations])
+      operationForm.post('/admin/finances/operations', {
+        onSuccess: () => {
+          closeModal()
+          setCurrentPage(1)
+        }
+      })
     } else if (modal === 'edit' && selectedOp) {
-      setOperations(
-        operations.map(op => (op.id === selectedOp.id ? { ...op, ...form } : op))
-      )
+      operationForm.put(`/admin/finances/operations/${selectedOp.id}`, {
+        onSuccess: () => {
+          closeModal()
+        }
+      })
     }
-    closeModal()
-    setCurrentPage(1)
   }
 
+  // Suppression d'opération
   const handleDelete = () => {
     if (selectedOp) {
-      setOperations(operations.filter(op => op.id !== selectedOp.id))
+      router.delete(`/admin/finances/operations/${selectedOp.id}`, {
+        onSuccess: () => {
+          closeModal()
+          setCurrentPage(1)
+        }
+      })
     }
-    closeModal()
-    setCurrentPage(1)
   }
 
   const handlePrint = () => {
     window.print()
   }
 
-  // Helper formatting currencies
+  // Ajout de catégorie
+  const handleAddCategory = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!categoryForm.data.name.trim()) return
+
+    categoryForm.post('/admin/finances/categories', {
+      preserveScroll: true,
+      onSuccess: () => {
+        categoryForm.reset('name')
+      }
+    })
+  }
+
+  // Lancement de l'édition en ligne d'une catégorie
+  const startEditingCategory = (id: number, currentName: string) => {
+    setEditingCategoryId(id)
+    setEditingCategoryName(currentName)
+  }
+
+  // Sauvegarde de l'édition d'une catégorie
+  const handleUpdateCategory = (id: number, type: 'entrée' | 'sortie') => {
+    const nameTrimmed = editingCategoryName.trim()
+    if (!nameTrimmed) return
+
+    router.put(`/admin/finances/categories/${id}`, {
+      name: nameTrimmed,
+      type: type
+    }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setEditingCategoryId(null)
+        setEditingCategoryName('')
+      }
+    })
+  }
+
+  // Suppression de catégorie
+  const handleDeleteCategory = (id: number) => {
+    if (confirm('Voulez-vous vraiment supprimer cette nature d\'opération ?')) {
+      router.delete(`/admin/finances/categories/${id}`, {
+        preserveScroll: true,
+      })
+    }
+  }
+
+  // Sauvegarde des taux de change lors du blur (taux journalier d'aujourd'hui)
+  const saveExchangeRates = (cdf: number, eur: number) => {
+    router.post('/admin/finances/rates', { CDF: cdf, EUR: eur }, {
+      preserveScroll: true,
+    })
+  }
+
   const formatCurrency = (val: number, devise: 'USD' | 'CDF' | 'EUR') => {
     if (devise === 'USD') return `$${val.toLocaleString('fr-FR')}`
     if (devise === 'EUR') return `${val.toLocaleString('fr-FR')} €`
     return `${val.toLocaleString('fr-FR')} CDF`
   }
+
+  const inputClass = (err?: string) =>
+    `w-full px-4 py-2.5 bg-slate-800 border ${err ? 'border-red-500' : 'border-slate-700'} rounded-xl text-xs text-white focus:outline-none focus:border-primary transition-all`
 
   return (
     <>
@@ -317,13 +400,11 @@ export default function AdminFinances() {
           .print-section { position: absolute; left: 0; top: 0; width: 100%; }
           .no-print { display: none !important; }
         }
-        /* Hide spin buttons in chrome/safari/opera/edge */
         .rate-input::-webkit-outer-spin-button,
         .rate-input::-webkit-inner-spin-button {
           -webkit-appearance: none;
           margin: 0;
         }
-        /* Hide spin buttons in firefox */
         .rate-input {
           -moz-appearance: textfield;
         }
@@ -366,7 +447,7 @@ export default function AdminFinances() {
             <div className="flex items-center gap-3 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-300">
               <span className="font-bold text-[10px] uppercase tracking-wider text-slate-500 flex items-center gap-1">
                 <Coins size={12} className="text-slate-400" />
-                Taux de change
+                Taux journalier (aujourd'hui)
               </span>
               <div className="h-4 w-px bg-slate-800" />
               
@@ -376,8 +457,9 @@ export default function AdminFinances() {
                   type="number" 
                   min="1"
                   step="any"
-                  value={exchangeRates.CDF} 
-                  onChange={e => setExchangeRates({ ...exchangeRates, CDF: parseFloat(e.target.value) || 0 })}
+                  value={rates.CDF} 
+                  onChange={e => setRates({ ...rates, CDF: parseFloat(e.target.value) || 0 })}
+                  onBlur={() => saveExchangeRates(rates.CDF, rates.EUR)}
                   className="rate-input w-20 bg-slate-800 border border-slate-700 rounded-lg px-2 py-0.5 text-center text-white font-bold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all text-xs"
                 />
                 <span className="text-slate-400 text-[10px] font-medium">FC</span>
@@ -391,8 +473,9 @@ export default function AdminFinances() {
                   type="number" 
                   min="0.01"
                   step="any"
-                  value={exchangeRates.EUR} 
-                  onChange={e => setExchangeRates({ ...exchangeRates, EUR: parseFloat(e.target.value) || 0 })}
+                  value={rates.EUR} 
+                  onChange={e => setRates({ ...rates, EUR: parseFloat(e.target.value) || 0 })}
+                  onBlur={() => saveExchangeRates(rates.CDF, rates.EUR)}
                   className="rate-input w-16 bg-slate-800 border border-slate-700 rounded-lg px-2 py-0.5 text-center text-white font-bold focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all text-xs"
                 />
                 <span className="text-slate-400 text-[10px] font-medium">$</span>
@@ -529,7 +612,7 @@ export default function AdminFinances() {
 
           <div className="flex flex-wrap items-center gap-3 self-end md:self-auto">
             <button 
-              onClick={() => { setModal('categories'); setNewCatName(''); setNewCatType('entrée') }}
+              onClick={() => { setModal('categories'); categoryForm.reset(); categoryForm.clearErrors(); setEditingCategoryId(null) }}
               className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold transition-all hover:scale-[1.02]"
             >
               <Tag size={14} className="text-slate-400" />
@@ -554,7 +637,7 @@ export default function AdminFinances() {
 
         {/* ── Tableau des opérations ── */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden print-section shadow-xl">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-850 bg-slate-900/50">
             <h3 className="text-white text-sm font-bold flex items-center gap-2">
               <Coins size={16} className="text-primary" />
               Journal des Opérations
@@ -707,10 +790,16 @@ export default function AdminFinances() {
                       <input
                         type="date"
                         required
-                        value={form.date}
-                        onChange={e => setForm({ ...form, date: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-primary"
+                        value={operationForm.data.date}
+                        onChange={e => operationForm.setData('date', e.target.value)}
+                        className={inputClass(operationForm.errors.date)}
                       />
+                      {operationForm.errors.date && (
+                        <p className="text-red-400 text-[10px] mt-1 flex items-center gap-1">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                          {operationForm.errors.date}
+                        </p>
+                      )}
                     </div>
 
                     <div>
@@ -723,10 +812,16 @@ export default function AdminFinances() {
                         step="any"
                         required
                         placeholder="Ex: 500"
-                        value={form.montant || ''}
-                        onChange={e => setForm({ ...form, montant: parseFloat(e.target.value) || 0 })}
-                        className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-primary font-bold"
+                        value={operationForm.data.montant || ''}
+                        onChange={e => operationForm.setData('montant', parseFloat(e.target.value) || 0)}
+                        className={inputClass(operationForm.errors.montant) + " font-bold"}
                       />
+                      {operationForm.errors.montant && (
+                        <p className="text-red-400 text-[10px] mt-1 flex items-center gap-1">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                          {operationForm.errors.montant}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -737,14 +832,20 @@ export default function AdminFinances() {
                         Devise
                       </label>
                       <select
-                        value={form.devise}
-                        onChange={e => setForm({ ...form, devise: e.target.value as any })}
-                        className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-[11px] text-white focus:outline-none focus:border-primary font-semibold"
+                        value={operationForm.data.devise}
+                        onChange={e => operationForm.setData('devise', e.target.value as any)}
+                        className={inputClass(operationForm.errors.devise) + " text-[11px] font-semibold"}
                       >
                         {DEVISES.map(dev => (
                           <option key={dev} value={dev}>{dev}</option>
                         ))}
                       </select>
+                      {operationForm.errors.devise && (
+                        <p className="text-red-400 text-[10px] mt-1 flex items-center gap-1">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                          {operationForm.errors.devise}
+                        </p>
+                      )}
                     </div>
 
                     <div>
@@ -752,14 +853,20 @@ export default function AdminFinances() {
                         Moyen de paiement
                       </label>
                       <select
-                        value={form.moyen_paiement}
-                        onChange={e => setForm({ ...form, moyen_paiement: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-[11px] text-white focus:outline-none focus:border-primary font-semibold"
+                        value={operationForm.data.moyenPaiement}
+                        onChange={e => operationForm.setData('moyenPaiement', e.target.value as any)}
+                        className={inputClass(operationForm.errors.moyenPaiement) + " text-[11px] font-semibold"}
                       >
                         {MOYENS_PAIEMENT.map(mp => (
                           <option key={mp} value={mp}>{mp}</option>
                         ))}
                       </select>
+                      {operationForm.errors.moyenPaiement && (
+                        <p className="text-red-400 text-[10px] mt-1 flex items-center gap-1">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                          {operationForm.errors.moyenPaiement}
+                        </p>
+                      )}
                     </div>
 
                     <div>
@@ -767,15 +874,22 @@ export default function AdminFinances() {
                         Catégorie
                       </label>
                       <select
-                        value={form.categorie}
-                        onChange={e => setForm({ ...form, categorie: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-[11px] text-white focus:outline-none focus:border-primary font-medium"
+                        value={operationForm.data.financeCategoryId}
+                        onChange={e => operationForm.setData('financeCategoryId', Number(e.target.value))}
+                        className={inputClass(operationForm.errors.financeCategoryId) + " text-[11px] font-medium"}
                       >
-                        {form.type === 'entrée' 
-                          ? categoriesEntree.map(cat => <option key={cat} value={cat}>{cat}</option>)
-                          : categoriesSortie.map(cat => <option key={cat} value={cat}>{cat}</option>)
+                        <option value="">Sélectionner</option>
+                        {operationForm.data.type === 'entrée' 
+                          ? categoriesEntree.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)
+                          : categoriesSortie.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)
                         }
                       </select>
+                      {operationForm.errors.financeCategoryId && (
+                        <p className="text-red-400 text-[10px] mt-1 flex items-center gap-1">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                          {operationForm.errors.financeCategoryId}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -788,10 +902,16 @@ export default function AdminFinances() {
                       rows={3}
                       required
                       placeholder="Indiquez le motif précis de l'opération..."
-                      value={form.description}
-                      onChange={e => setForm({ ...form, description: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary resize-none"
+                      value={operationForm.data.description}
+                      onChange={e => operationForm.setData('description', e.target.value)}
+                      className={inputClass(operationForm.errors.description) + " resize-none"}
                     />
+                    {operationForm.errors.description && (
+                      <p className="text-red-400 text-[10px] mt-1 flex items-center gap-1">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                        {operationForm.errors.description}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -805,7 +925,8 @@ export default function AdminFinances() {
                   </button>
                   <button 
                     type="submit" 
-                    className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs bg-primary hover:bg-primary/90 text-white font-bold transition-all shadow-md shadow-primary/10"
+                    disabled={operationForm.processing}
+                    className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs bg-primary hover:bg-primary/90 text-white font-bold transition-all shadow-md shadow-primary/10 disabled:opacity-50"
                   >
                     <Check size={14} />
                     {modal === 'edit' ? 'Enregistrer les modifications' : 'Confirmer l\'opération'}
@@ -868,9 +989,9 @@ export default function AdminFinances() {
               </div>
 
               <div className="p-6 space-y-6">
-                {/* Columns: Entry / Exit */}
+                {/* Colonnes : Entrées / Sorties */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Left Column: Entrées */}
+                  {/* Colonne Gauche : Entrées */}
                   <div className="space-y-3">
                     <h4 className="text-emerald-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-slate-850">
                       <TrendingUp size={14} /> Natures d'Entrées
@@ -880,25 +1001,63 @@ export default function AdminFinances() {
                         <p className="text-slate-500 text-xs italic py-2">Aucune nature configurée</p>
                       ) : (
                         categoriesEntree.map(cat => (
-                          <div key={cat} className="flex items-center justify-between bg-slate-950 border border-slate-850/50 rounded-xl px-3 py-2">
-                            <span className="text-slate-200 text-xs font-medium">{cat}</span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setCategoriesEntree(categoriesEntree.filter(c => c !== cat))
-                              }}
-                              className="text-slate-500 hover:text-rose-400 p-1 rounded-lg hover:bg-rose-500/10 transition-colors"
-                              title="Supprimer la nature"
-                            >
-                              <Trash2 size={12} />
-                            </button>
+                          <div key={cat.id} className="flex items-center justify-between bg-slate-950 border border-slate-850/50 rounded-xl px-3 py-2 gap-2 min-h-[46px]">
+                            {editingCategoryId === cat.id ? (
+                              <div className="flex items-center gap-1.5 flex-1">
+                                <input
+                                  type="text"
+                                  value={editingCategoryName}
+                                  onChange={e => setEditingCategoryName(e.target.value)}
+                                  className="flex-1 px-2.5 py-1 bg-slate-900 border border-primary rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none"
+                                  required
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateCategory(cat.id, 'entrée')}
+                                  className="text-emerald-400 hover:text-emerald-300 p-1 rounded-lg hover:bg-emerald-500/10 transition-colors"
+                                  title="Confirmer"
+                                >
+                                  <Check size={12} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingCategoryId(null)}
+                                  className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                                  title="Annuler"
+                                >
+                                  <X size={12} />
+                                </button>
+                              </div>
+                            ) : (
+                              <>
+                                <span className="text-slate-200 text-xs font-medium">{cat.name}</span>
+                                <div className="flex items-center gap-1 shrink-0">
+                                  <button
+                                    type="button"
+                                    onClick={() => startEditingCategory(cat.id, cat.name)}
+                                    className="text-slate-500 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                                    title="Modifier la nature"
+                                  >
+                                    <Pencil size={12} />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteCategory(cat.id)}
+                                    className="text-slate-500 hover:text-rose-400 p-1 rounded-lg hover:bg-rose-500/10 transition-colors"
+                                    title="Supprimer la nature"
+                                  >
+                                    <Trash2 size={12} />
+                                  </button>
+                                </div>
+                              </>
+                            )}
                           </div>
                         ))
                       )}
                     </div>
                   </div>
 
-                  {/* Right Column: Sorties */}
+                  {/* Colonne Droite : Sorties */}
                   <div className="space-y-3">
                     <h4 className="text-rose-400 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-slate-850">
                       <TrendingDown size={14} /> Natures de Sorties
@@ -908,18 +1067,56 @@ export default function AdminFinances() {
                         <p className="text-slate-500 text-xs italic py-2">Aucune nature configurée</p>
                       ) : (
                         categoriesSortie.map(cat => (
-                          <div key={cat} className="flex items-center justify-between bg-slate-950 border border-slate-850/50 rounded-xl px-3 py-2">
-                            <span className="text-slate-200 text-xs font-medium">{cat}</span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setCategoriesSortie(categoriesSortie.filter(c => c !== cat))
-                              }}
-                              className="text-slate-500 hover:text-rose-400 p-1 rounded-lg hover:bg-rose-500/10 transition-colors"
-                              title="Supprimer la nature"
-                            >
-                              <Trash2 size={12} />
-                            </button>
+                          <div key={cat.id} className="flex items-center justify-between bg-slate-950 border border-slate-850/50 rounded-xl px-3 py-2 gap-2 min-h-[46px]">
+                            {editingCategoryId === cat.id ? (
+                              <div className="flex items-center gap-1.5 flex-1">
+                                <input
+                                  type="text"
+                                  value={editingCategoryName}
+                                  onChange={e => setEditingCategoryName(e.target.value)}
+                                  className="flex-1 px-2.5 py-1 bg-slate-900 border border-primary rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none"
+                                  required
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateCategory(cat.id, 'sortie')}
+                                  className="text-emerald-400 hover:text-emerald-300 p-1 rounded-lg hover:bg-emerald-500/10 transition-colors"
+                                  title="Confirmer"
+                                >
+                                  <Check size={12} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingCategoryId(null)}
+                                  className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                                  title="Annuler"
+                                >
+                                  <X size={12} />
+                                </button>
+                              </div>
+                            ) : (
+                              <>
+                                <span className="text-slate-200 text-xs font-medium">{cat.name}</span>
+                                <div className="flex items-center gap-1 shrink-0">
+                                  <button
+                                    type="button"
+                                    onClick={() => startEditingCategory(cat.id, cat.name)}
+                                    className="text-slate-500 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                                    title="Modifier la nature"
+                                  >
+                                    <Pencil size={12} />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteCategory(cat.id)}
+                                    className="text-slate-500 hover:text-rose-400 p-1 rounded-lg hover:bg-rose-500/10 transition-colors"
+                                    title="Supprimer la nature"
+                                  >
+                                    <Trash2 size={12} />
+                                  </button>
+                                </div>
+                              </>
+                            )}
                           </div>
                         ))
                       )}
@@ -928,7 +1125,7 @@ export default function AdminFinances() {
                 </div>
 
                 {/* Section: Ajouter une nature */}
-                <div className="bg-slate-950 border border-slate-850 rounded-2xl p-4 space-y-3">
+                <form onSubmit={handleAddCategory} className="bg-slate-950 border border-slate-850 rounded-2xl p-4 space-y-3">
                   <h5 className="text-white font-bold text-xs">Créer une nouvelle nature</h5>
                   
                   <div className="flex flex-col sm:flex-row gap-3">
@@ -936,15 +1133,21 @@ export default function AdminFinances() {
                       <input
                         type="text"
                         placeholder="Ex: Sponsoring, Événements, Bureau..."
-                        value={newCatName}
-                        onChange={e => setNewCatName(e.target.value)}
-                        className="w-full px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary"
+                        value={categoryForm.data.name}
+                        onChange={e => categoryForm.setData('name', e.target.value)}
+                        className={`w-full px-4 py-2 bg-slate-900 border ${categoryForm.errors.name ? 'border-red-500' : 'border-slate-800'} rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary`}
                       />
+                      {categoryForm.errors.name && (
+                        <p className="text-red-400 text-[10px] mt-1 flex items-center gap-1">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                          {categoryForm.errors.name}
+                        </p>
+                      )}
                     </div>
                     <div className="flex gap-2">
                       <select
-                        value={newCatType}
-                        onChange={e => setNewCatType(e.target.value as any)}
+                        value={categoryForm.data.type}
+                        onChange={e => categoryForm.setData('type', e.target.value as any)}
                         className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white font-semibold focus:outline-none focus:border-primary cursor-pointer font-bold"
                       >
                         <option value="entrée">Entrée (Revenu)</option>
@@ -952,33 +1155,16 @@ export default function AdminFinances() {
                       </select>
 
                       <button
-                        type="button"
-                        onClick={() => {
-                          const nameTrimmed = newCatName.trim()
-                          if (!nameTrimmed) return
-                          if (newCatType === 'entrée') {
-                            if (categoriesEntree.includes(nameTrimmed)) {
-                              alert('Cette nature d\'entrée existe déjà')
-                              return
-                            }
-                            setCategoriesEntree([...categoriesEntree, nameTrimmed])
-                          } else {
-                            if (categoriesSortie.includes(nameTrimmed)) {
-                              alert('Cette nature de sortie existe déjà')
-                              return
-                            }
-                            setCategoriesSortie([...categoriesSortie, nameTrimmed])
-                          }
-                          setNewCatName('')
-                        }}
-                        className="px-4 py-2 bg-primary hover:bg-primary/95 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shrink-0 transition-colors shadow-md shadow-primary/10"
+                        type="submit"
+                        disabled={categoryForm.processing}
+                        className="px-4 py-2 bg-primary hover:bg-primary/95 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shrink-0 transition-colors shadow-md shadow-primary/10 disabled:opacity-50"
                       >
                         <Plus size={12} />
                         Ajouter
                       </button>
                     </div>
                   </div>
-                </div>
+                </form>
               </div>
 
               <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-900/30">

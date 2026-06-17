@@ -103,7 +103,14 @@ router
         router.put('/galerie/categories/:id', [() => import('#controllers/admin_galeries_controller'), 'updateCategory']).as('admin.galerie.categories.update')
         router.delete('/galerie/categories/:id', [() => import('#controllers/admin_galeries_controller'), 'destroyCategory']).as('admin.galerie.categories.destroy')
         
-        router.on('/finances').renderInertia('admin/finances', {}).as('admin.finances')
+        router.get('/finances', [() => import('#controllers/admin_finances_controller'), 'index']).as('admin.finances')
+        router.post('/finances/operations', [() => import('#controllers/admin_finances_controller'), 'store']).as('admin.finances.operations.store')
+        router.put('/finances/operations/:id', [() => import('#controllers/admin_finances_controller'), 'update']).as('admin.finances.operations.update')
+        router.delete('/finances/operations/:id', [() => import('#controllers/admin_finances_controller'), 'destroy']).as('admin.finances.operations.destroy')
+        router.post('/finances/categories', [() => import('#controllers/admin_finances_controller'), 'storeCategory']).as('admin.finances.categories.store')
+        router.put('/finances/categories/:id', [() => import('#controllers/admin_finances_controller'), 'updateCategory']).as('admin.finances.categories.update')
+        router.delete('/finances/categories/:id', [() => import('#controllers/admin_finances_controller'), 'destroyCategory']).as('admin.finances.categories.destroy')
+        router.post('/finances/rates', [() => import('#controllers/admin_finances_controller'), 'updateRates']).as('admin.finances.rates.update')
       })
       .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur'] }))
 

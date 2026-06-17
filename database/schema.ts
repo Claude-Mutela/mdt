@@ -222,6 +222,90 @@ export class EventSchema extends BaseModel {
   declare urlImg: string | null
 }
 
+export class ExchangeRateSchema extends BaseModel {
+  static $columns = ['createdAt', 'date', 'deviseCible', 'deviseSource', 'id', 'taux', 'updatedAt'] as const
+  $columns = ExchangeRateSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column.date()
+  declare date: DateTime
+  @column()
+  declare deviseCible: string
+  @column()
+  declare deviseSource: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare taux: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class FinanceCategorySchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'name', 'type', 'updatedAt'] as const
+  $columns = FinanceCategorySchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare type: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class FinanceOperationSchema extends BaseModel {
+  static $columns = ['createdAt', 'createdBy', 'date', 'description', 'devise', 'financeCategoryId', 'id', 'montant', 'moyenPaiement', 'tauxCdfUsd', 'tauxEurUsd', 'type', 'updatedAt'] as const
+  $columns = FinanceOperationSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare createdBy: number | null
+  @column.date()
+  declare date: DateTime
+  @column()
+  declare description: string
+  @column()
+  declare devise: string
+  @column()
+  declare financeCategoryId: number
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare montant: string
+  @column()
+  declare moyenPaiement: string
+  @column()
+  declare tauxCdfUsd: string
+  @column()
+  declare tauxEurUsd: string
+  @column()
+  declare type: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class FinanceOperationsHistorySchema extends BaseModel {
+  static $columns = ['action', 'changedAt', 'changedBy', 'id', 'newValues', 'oldValues', 'operationId'] as const
+  $columns = FinanceOperationsHistorySchema.$columns
+  @column()
+  declare action: string
+  @column.dateTime()
+  declare changedAt: DateTime
+  @column()
+  declare changedBy: number | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare newValues: any | null
+  @column()
+  declare oldValues: any | null
+  @column()
+  declare operationId: number
+}
+
 export class GalerySchema extends BaseModel {
   static $columns = ['catGaleryId', 'coverImg', 'createdAt', 'id', 'imgNber', 'title', 'updatedAt', 'urlImg'] as const
   $columns = GalerySchema.$columns
@@ -279,6 +363,35 @@ export class ImageSchema extends BaseModel {
   declare updatedAt: DateTime | null
   @column()
   declare url: string
+}
+
+export class IntegrationSchema extends BaseModel {
+  static $columns = ['adresse', 'createdAt', 'dateVisite', 'egliseAttache', 'email', 'id', 'nom', 'notes', 'prenom', 'sexe', 'telephone', 'updatedAt'] as const
+  $columns = IntegrationSchema.$columns
+  @column()
+  declare adresse: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column.date()
+  declare dateVisite: DateTime
+  @column()
+  declare egliseAttache: string | null
+  @column()
+  declare email: string | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare nom: string
+  @column()
+  declare notes: string | null
+  @column()
+  declare prenom: string
+  @column()
+  declare sexe: string
+  @column()
+  declare telephone: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
 }
 
 export class MediaSchema extends BaseModel {

@@ -1,6 +1,7 @@
 import { Head, useForm, router } from '@inertiajs/react'
 import { useState, useMemo, useEffect } from 'react'
 import AdminLayout from '../../layouts/admin'
+import FinanceReportPrint from '../../components/FinanceReportPrint'
 import Pagination from '../../components/Pagination'
 import { 
   Plus, 
@@ -46,6 +47,9 @@ interface AdminFinancesProps {
 
 type PeriodFilter = 'today' | 'week' | 'month' | 'year' | 'all'
 
+// Noms des mois en français pour l'affichage
+const MOIS_FR_LONG  = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+
 const DEVISES = ['USD', 'CDF', 'EUR'] as const
 
 const MOYENS_PAIEMENT = [
@@ -66,9 +70,9 @@ export default function AdminFinances({
   const [period, setPeriod] = useState<PeriodFilter>('month')
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<'tous' | 'entrée' | 'sortie'>('tous')
   const [selectedMoyenFilter, setSelectedMoyenFilter] = useState<string>('tous')
-  const [modal, setModal] = useState<'encaisser' | 'decaisser' | 'edit' | 'delete' | 'categories' | null>(null)
+  const [modal, setModal] = useState<'encaisser' | 'decaisser' | 'edit' | 'delete' | 'categories' | 'rapport' | null>(null)
   const [selectedOp, setSelectedOp] = useState<Operation | null>(null)
-  
+
   const [currentPage, setCurrentPage] = useState(1)
   const perPage = 8
 
@@ -77,6 +81,45 @@ export default function AdminFinances({
   useEffect(() => {
     setRates(initialRates)
   }, [initialRates])
+
+  // ── États pour la modale de rapport PDF ──────────────────────────────────
+  // Type de filtre du rapport
+  type RptFilter = 'today' | 'week' | 'month-year' | 'year'
+  const [rptFilter, setRptFilter] = useState<RptFilter>('month-year')
+
+  // Années disponibles extraites des opérations (desc)
+  const availableYears = useMemo(() => {
+    const years = new Set(operations.map(op => Number(op.date.split('-')[0])))
+    return Array.from(years).sort((a, b) => b - a)
+  }, [operations])
+
+  const currentYear = new Date().getFullYear()
+  const [rptYear, setRptYear] = useState<number>(availableYears[0] ?? currentYear)
+
+  // Mois disponibles pour l'année sélectionnée
+  const availableMonths = useMemo(() => {
+    const months = new Set(
+      operations
+        .filter(op => Number(op.date.split('-')[0]) === rptYear)
+        .map(op => Number(op.date.split('-')[1]))
+    )
+    return Array.from(months).sort((a, b) => a - b)
+  }, [operations, rptYear])
+
+  // Mois sélectionné : null = toute l'année
+  const [rptMonth, setRptMonth] = useState<number | null>(null)
+
+  // Quand l'année change, réinitialiser le mois
+  useEffect(() => {
+    setRptMonth(null)
+  }, [rptYear])
+
+  // Quand les années disponibles changent (chargement initial), caler sur la première
+  useEffect(() => {
+    if (availableYears.length > 0) {
+      setRptYear(availableYears[0])
+    }
+  }, [availableYears.join(',')])
 
   // Formulaire d'opérations financières
   const operationForm = useForm({
@@ -325,8 +368,83 @@ export default function AdminFinances({
     }
   }
 
-  const handlePrint = () => {
-    window.print()
+  // Ouvre la modale de configuration du rapport
+  const handlePrint = () => setModal('rapport')
+
+  // Calcule les opérations filtrées selon les critères du rapport PDF
+  const reportOperations = useMemo(() => {
+    const now = new Date()
+    const yyyy = now.getFullYear()
+    const todayStr = `${yyyy}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+
+    return operations.filter(op => {
+      const [opY, opM] = op.date.split('-').map(Number)
+
+      if (rptFilter === 'today') {
+        return op.date === todayStr
+      } else if (rptFilter === 'week') {
+        const opMidnight = new Date(opY, opM - 1, Number(op.date.split('-')[2]))
+        const todayMidnight = new Date(yyyy, now.getMonth(), now.getDate())
+        const diffDays = Math.round((todayMidnight.getTime() - opMidnight.getTime()) / 86400000)
+        return diffDays >= 0 && diffDays <= 7
+      } else if (rptFilter === 'month-year') {
+        if (rptMonth === null) {
+          // Toute l'année sélectionnée
+          return opY === rptYear
+        }
+        return opY === rptYear && opM === rptMonth
+      } else if (rptFilter === 'year') {
+        return opY === rptYear
+      }
+      return true
+    })
+  }, [operations, rptFilter, rptYear, rptMonth])
+
+  // Statistiques calculées pour le rapport PDF
+  const reportStats = useMemo(() => {
+    let entreesUSD = 0, entreesCDF = 0, entreesEUR = 0
+    let sortiesUSD = 0, sortiesCDF = 0, sortiesEUR = 0
+    reportOperations.forEach(op => {
+      if (op.type === 'entrée') {
+        if (op.devise === 'USD') entreesUSD += op.montant
+        else if (op.devise === 'CDF') entreesCDF += op.montant
+        else entreesEUR += op.montant
+      } else {
+        if (op.devise === 'USD') sortiesUSD += op.montant
+        else if (op.devise === 'CDF') sortiesCDF += op.montant
+        else sortiesEUR += op.montant
+      }
+    })
+    const totE = entreesUSD + (rates.CDF > 0 ? entreesCDF / rates.CDF : 0) + entreesEUR * rates.EUR
+    const totS = sortiesUSD + (rates.CDF > 0 ? sortiesCDF / rates.CDF : 0) + sortiesEUR * rates.EUR
+    return {
+      entrees: { USD: entreesUSD, CDF: entreesCDF, EUR: entreesEUR, equivalent: totE },
+      sorties: { USD: sortiesUSD, CDF: sortiesCDF, EUR: sortiesEUR, equivalent: totS },
+      solde:   { USD: entreesUSD - sortiesUSD, CDF: entreesCDF - sortiesCDF, EUR: entreesEUR - sortiesEUR, equivalent: totE - totS },
+    }
+  }, [reportOperations, rates])
+
+  // Libellé lisible de la période du rapport
+  const reportPeriodLabel = useMemo(() => {
+    const now = new Date()
+    if (rptFilter === 'today') {
+      const d = now.getDate(), m = now.getMonth(), y = now.getFullYear()
+      return `${String(d).padStart(2, '0')} ${MOIS_FR_LONG[m]} ${y}`
+    }
+    if (rptFilter === 'week') return '7 derniers jours'
+    if (rptFilter === 'month-year') {
+      if (rptMonth === null) return `Toute l'année ${rptYear}`
+      return `${MOIS_FR_LONG[rptMonth - 1]} ${rptYear}`
+    }
+    if (rptFilter === 'year') return `Année ${rptYear}`
+    return ''
+  }, [rptFilter, rptYear, rptMonth])
+
+  // Déclenche l'impression après fermeture de la modale
+  const launchPrint = () => {
+    setModal(null)
+    // Laisser le DOM se mettre à jour avant d'imprimer
+    setTimeout(() => window.print(), 150)
   }
 
   // Ajout de catégorie
@@ -392,7 +510,7 @@ export default function AdminFinances({
 
   return (
     <>
-      <Head title="Finances — Admin Phila MDT" />
+      <Head title="Finances — Administration Phila MDT" />
       <style>{`
         @media print {
           body * { visibility: hidden; }
@@ -648,7 +766,7 @@ export default function AdminFinances({
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="bg-slate-900/80 border-b border-slate-800 text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                <tr className="bg-gray-900 border-b border-slate-800 text-[10px] uppercase tracking-wider text-slate-500 font-bold">
                   <th className="text-left px-6 py-4">Date</th>
                   <th className="text-left px-6 py-4">Désignation / Description</th>
                   <th className="text-left px-6 py-4">Type / Flux</th>
@@ -1180,6 +1298,134 @@ export default function AdminFinances({
           </div>
         )}
       </AdminLayout>
+
+      {/* ── Modale de configuration du rapport PDF ── */}
+      {modal === 'rapport' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}>
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+
+            {/* En-tête modale */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Printer size={18} className="text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-sm">Générer un rapport PDF</h3>
+                  <p className="text-slate-400 text-[11px]">Choisissez la période à inclure</p>
+                </div>
+              </div>
+              <button onClick={closeModal} className="text-slate-500 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors">
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Corps de la modale */}
+            <div className="px-6 py-5 space-y-4">
+
+              {/* SELECT : Type de période */}
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                  Type de période
+                </label>
+                <select
+                  value={rptFilter}
+                  onChange={e => setRptFilter(e.target.value as any)}
+                  className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white font-semibold focus:outline-none focus:border-primary cursor-pointer"
+                >
+                  <option value="today">Aujourd'hui</option>
+                  <option value="week">7 derniers jours</option>
+                  <option value="month-year">Mois / Année</option>
+                  <option value="year">Année entière</option>
+                </select>
+              </div>
+
+              {/* SELECT : Année (visible pour month-year et year) */}
+              {(rptFilter === 'month-year' || rptFilter === 'year') && (
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Année
+                  </label>
+                  {availableYears.length === 0 ? (
+                    <p className="text-slate-500 text-xs italic">Aucune opération en base</p>
+                  ) : (
+                    <select
+                      value={rptYear}
+                      onChange={e => setRptYear(Number(e.target.value))}
+                      className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white font-semibold focus:outline-none focus:border-primary cursor-pointer"
+                    >
+                      {availableYears.map(yr => (
+                        <option key={yr} value={yr}>{yr}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              )}
+
+              {/* SELECT : Mois (visible seulement pour month-year) */}
+              {rptFilter === 'month-year' && (
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Mois
+                  </label>
+                  {availableMonths.length === 0 ? (
+                    <p className="text-slate-500 text-xs italic">Aucune opération pour {rptYear}</p>
+                  ) : (
+                    <select
+                      value={rptMonth ?? ''}
+                      onChange={e => setRptMonth(e.target.value === '' ? null : Number(e.target.value))}
+                      className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white font-semibold focus:outline-none focus:border-primary cursor-pointer"
+                    >
+                      <option value="">— Toute l'année {rptYear} —</option>
+                      {availableMonths.map(m => (
+                        <option key={m} value={m}>{MOIS_FR_LONG[m - 1]} {rptYear}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              )}
+
+              {/* Aperçu rapide */}
+              <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3">
+                <p className="text-[11px] text-slate-400 mb-1 font-semibold uppercase tracking-wider">Aperçu du rapport</p>
+                <p className="text-white text-sm font-bold">{reportPeriodLabel}</p>
+                <p className="text-slate-400 text-xs mt-1">
+                  {reportOperations.length} opération{reportOperations.length > 1 ? 's' : ''} &nbsp;·&nbsp;
+                  <span className="text-emerald-400">Entrées : ${Math.round(reportStats.entrees.equivalent).toLocaleString('fr-FR')}</span>
+                  &nbsp;·&nbsp;
+                  <span className="text-rose-400">Sorties : ${Math.round(reportStats.sorties.equivalent).toLocaleString('fr-FR')}</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Pied modale */}
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-900/30">
+              <button
+                onClick={closeModal}
+                className="px-5 py-2.5 rounded-xl text-xs bg-slate-800 hover:bg-slate-700 text-white font-bold transition-colors border border-slate-700"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={launchPrint}
+                disabled={reportOperations.length === 0}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs bg-primary hover:bg-primary/90 text-white font-bold transition-colors shadow-md shadow-primary/20 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Printer size={13} />
+                Imprimer / PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Composant d'impression PDF (masqué à l'écran, visible lors de window.print()) ── */}
+      <FinanceReportPrint
+        operations={reportOperations}
+        stats={reportStats}
+        periodLabel={reportPeriodLabel}
+        rates={rates}
+      />
     </>
   )
 }

@@ -12,6 +12,9 @@ export default class AdminEventsController {
     const search = request.input('search', '')
     const status = request.input('status', 'all')
 
+    // Mettre à jour les statuts des événements obsolètes par rapport à la date actuelle
+    await Event.syncStatuses()
+
     const query = Event.query().preload('catEvent').orderBy('date', 'desc')
 
     if (status && status !== 'all') {

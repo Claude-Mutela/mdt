@@ -40,6 +40,9 @@ const formatDate = (event: Event) => {
 
 export default class EventsController {
   public async index({ inertia }: HttpContext) {
+    // Mettre à jour les statuts des événements obsolètes par rapport à la date actuelle
+    await Event.syncStatuses()
+
     const [events, categories] = await Promise.all([
       Event.query().orderBy('date', 'desc').preload('catEvent'),
       CatEvent.query().orderBy('name', 'asc'),

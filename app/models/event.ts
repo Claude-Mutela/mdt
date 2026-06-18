@@ -53,4 +53,31 @@ export default class Event extends BaseModel {
 
   @belongsTo(() => CatEvent)
   declare catEvent: BelongsTo<typeof CatEvent>
+
+  /**
+   * Synchronise les statuts des événements en base de données en fonction de la date courante.
+   */
+  public static async syncStatuses() {
+    const today = DateTime.now().toSQLDate()!
+
+    // 1. Passer à 'termine' les événements dont la date de fin (ou date) est passée
+    await this.query()
+      .whereNot('status', 'annule')
+      .whereNot('status', 'termine')
+      .andWhere(q => {
+        q.whereNotNull('date_fin')
+          .andWhere('date_fin', '<', today)
+          .orWhere(q2 => q2.whereNull('date_fin').andWhere('date', '<', today))
+      })
+      .update({ status: 'termine' })
+
+    // 2. Passer à 'en_cours' les événements qui ont commencé et ne sont pas encore terminés
+    await this.query()
+      .where('status', 'a_venir')
+      .andWhere('date', '<=', today)
+      .andWhere(q => {
+        q.whereNull('date_fin').orWhere('date_fin', '>=', today)
+      })
+      .update({ status: 'en_cours' })
+  }
 }

@@ -30,7 +30,17 @@ export default class AuthController {
       // 3. Connecter l'utilisateur
       await auth.use('web').login(user, !!remember)
 
-      // 4. Rediriger vers le dashboard
+      // 4. Rediriger vers la page appropriée selon le rôle
+      if (user.role === 'tresorier' || user.role === 'financier') {
+        return response.redirect().toPath('/admin/finances')
+      } else if (user.role === 'mdtcom') {
+        return response.redirect().toPath('/admin/agenda')
+      } else if (user.role === 'administration' || user.role === 'user') {
+        return response.redirect().toPath('/admin/membres')
+      } else if (user.role === 'porte_integration') {
+        return response.redirect().toPath('/admin/nouveaux-venus')
+      }
+
       return response.redirect().toPath('/admin')
     } catch (error) {
       session.flash('inputErrorsBag', {

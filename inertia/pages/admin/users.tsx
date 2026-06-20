@@ -4,7 +4,7 @@ import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
 import { Plus, Search, Filter, Pencil, Trash2, X, Check, ShieldCheck } from 'lucide-react'
 
-type Role = 'admin' | 'superadmin' | 'user' | 'pasteur'
+type Role = 'admin' | 'superadmin' | 'user' | 'pasteur' | 'tresorier' | 'financier' | 'mdtcom' | 'administration' | 'porte_integration'
 type Statut = 'actif' | 'inactif' | 'suspendu'
 
 interface Utilisateur {
@@ -24,7 +24,7 @@ interface UsersProps {
   }
 }
 
-const ROLES = ['Tous', 'admin', 'user', 'pasteur', 'superadmin']
+const ROLES = ['Tous', 'admin', 'user', 'pasteur', 'superadmin', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration']
 const STATUTS = ['Tous', 'actif', 'inactif', 'suspendu']
 
 export default function AdminUsers({ users }: UsersProps) {
@@ -111,6 +111,11 @@ export default function AdminUsers({ users }: UsersProps) {
       case 'admin': return 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
       case 'pasteur': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
       case 'superadmin': return 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+      case 'tresorier': return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+      case 'financier': return 'bg-teal-500/10 text-teal-400 border border-teal-500/20'
+      case 'mdtcom': return 'bg-pink-500/10 text-pink-400 border border-pink-500/20'
+      case 'administration': return 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+      case 'porte_integration': return 'bg-orange-500/10 text-orange-400 border border-orange-500/20'
       case 'user': return 'bg-slate-700 text-slate-300 border border-slate-600'
       default: return 'bg-slate-700 text-slate-300 border border-slate-600'
     }

@@ -23,7 +23,20 @@ export default class GuestMiddleware {
     for (let guard of options.guards || [ctx.auth.defaultGuard]) {
       if (await ctx.auth.use(guard).check()) {
         ctx.session.reflash()
-        return ctx.response.redirect(this.redirectTo, true)
+        const user = ctx.auth.user
+        let path = this.redirectTo
+        if (user) {
+          if (user.role === 'tresorier' || user.role === 'financier') {
+            path = '/admin/finances'
+          } else if (user.role === 'mdtcom') {
+            path = '/admin/agenda'
+          } else if (user.role === 'administration' || user.role === 'user') {
+            path = '/admin/membres'
+          } else if (user.role === 'porte_integration') {
+            path = '/admin/nouveaux-venus'
+          }
+        }
+        return ctx.response.redirect(path, true)
       }
     }
 

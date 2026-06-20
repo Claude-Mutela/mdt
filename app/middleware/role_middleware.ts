@@ -20,7 +20,7 @@ export default class RoleMiddleware {
     }
 
     // Vérifier si le rôle de l'utilisateur est dans la liste des rôles autorisés
-    if (options.allowedRoles.includes(user.role)) {
+    if (user.role && options.allowedRoles.includes(user.role)) {
       return next()
     }
 

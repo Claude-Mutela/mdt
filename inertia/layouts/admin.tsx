@@ -42,7 +42,7 @@ interface User {
   id: number
   fullName: string
   email: string
-  role: 'superadmin' | 'admin' | 'pasteur' | 'user'
+  role: 'superadmin' | 'admin' | 'pasteur' | 'user' | 'tresorier' | 'financier' | 'mdtcom' | 'administration' | 'porte_integration'
   initials: string
 }
 
@@ -69,15 +69,52 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
   // Fonction pour vérifier si l'utilisateur peut voir un item de navigation
   const canAccess = (href: string) => {
     if (!user) return false
-    if (user.role === 'superadmin') return true
-
-    if (user.role === 'admin' || user.role === 'pasteur') {
-      return href !== '/admin/users' // Voit tout sauf Utilisateurs
+    
+    // Le superadmin et le pasteur ont accès à absolument tout
+    if (user.role === 'superadmin' || user.role === 'pasteur') {
+      return true
     }
 
+    // L'admin a accès à tout sauf la gestion des utilisateurs
+    if (user.role === 'admin') {
+      return href !== '/admin/users'
+    }
+
+    // Trésorier ou Financier : seulement les finances et dons
+    if (user.role === 'tresorier' || user.role === 'financier') {
+      const allowed = ['/admin/donations', '/admin/finances']
+      return allowed.includes(href)
+    }
+
+    // MDTCom : seulement assets, galeries, media, agenda, cellules, ministères, événements
+    if (user.role === 'mdtcom') {
+      const allowed = [
+        '/admin/assets',
+        '/admin/galerie',
+        '/admin/medias',
+        '/admin/agenda',
+        '/admin/cellules',
+        '/admin/ministeres',
+        '/admin/evenements',
+      ]
+      return allowed.includes(href)
+    }
+
+    // Administration : seulement nouveaux venus, membres, rendez-vous
+    if (user.role === 'administration') {
+      const allowed = ['/admin/nouveaux-venus', '/admin/membres', '/admin/rendez-vous']
+      return allowed.includes(href)
+    }
+
+    // Porte intégration : seulement nouveaux venus
+    if (user.role === 'porte_integration') {
+      const allowed = ['/admin/nouveaux-venus']
+      return allowed.includes(href)
+    }
+
+    // Rôle "user" standard (hérité/fallback)
     if (user.role === 'user') {
-      // Voit seulement Dashboard, Membres, Nouveaux Venus, Ministères, Cellules et Dons
-      const allowed = ['/admin', '/admin/membres', '/admin/nouveaux-venus', '/admin/ministeres', '/admin/cellules', '/admin/donations']
+      const allowed = ['/admin/membres', '/admin/nouveaux-venus', '/admin/ministeres', '/admin/cellules', '/admin/donations']
       return allowed.includes(href)
     }
 

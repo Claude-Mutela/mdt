@@ -481,6 +481,53 @@ export class MinistrySchema extends BaseModel {
   declare urlImg: string | null
 }
 
+export class NewcomerSchema extends BaseModel {
+  static $columns = ['address', 'baptized', 'city', 'comeBack', 'createdAt', 'date', 'email', 'firstname', 'gender', 'heardAbout', 'id', 'joinCell', 'lastname', 'maritalStatus', 'phone', 'profession', 'receiveJesus', 'serve', 'spiritualFollowup', 'suggestions', 'updatedAt'] as const
+  $columns = NewcomerSchema.$columns
+  @column()
+  declare address: string | null
+  @column()
+  declare baptized: boolean
+  @column()
+  declare city: string | null
+  @column()
+  declare comeBack: boolean
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.date()
+  declare date: DateTime
+  @column()
+  declare email: string | null
+  @column()
+  declare firstname: string
+  @column()
+  declare gender: string
+  @column()
+  declare heardAbout: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare joinCell: boolean
+  @column()
+  declare lastname: string
+  @column()
+  declare maritalStatus: string | null
+  @column()
+  declare phone: string | null
+  @column()
+  declare profession: string | null
+  @column()
+  declare receiveJesus: boolean
+  @column()
+  declare serve: boolean
+  @column()
+  declare spiritualFollowup: boolean
+  @column()
+  declare suggestions: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['createdAt', 'email', 'firstname', 'fullName', 'id', 'lastname', 'password', 'role', 'status', 'updatedAt'] as const
   $columns = UserSchema.$columns

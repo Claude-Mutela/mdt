@@ -122,6 +122,13 @@ router
         router.post('/members', [() => import('#controllers/admin_members_controller'), 'store']).as('admin.members.store')
         router.put('/members/:id', [() => import('#controllers/admin_members_controller'), 'update']).as('admin.members.update')
         router.delete('/members/:id', [() => import('#controllers/admin_members_controller'), 'destroy']).as('admin.members.destroy')
+
+        // Nouveaux venus routes
+        router.get('/nouveaux-venus/print', [() => import('#controllers/admin_newcomers_controller'), 'print']).as('admin.nouveaux_venus.print')
+        router.get('/nouveaux-venus', [() => import('#controllers/admin_newcomers_controller'), 'index']).as('admin.nouveaux_venus')
+        router.post('/newcomers', [() => import('#controllers/admin_newcomers_controller'), 'store']).as('admin.newcomers.store')
+        router.put('/newcomers/:id', [() => import('#controllers/admin_newcomers_controller'), 'update']).as('admin.newcomers.update')
+        router.delete('/newcomers/:id', [() => import('#controllers/admin_newcomers_controller'), 'destroy']).as('admin.newcomers.destroy')
         
         router.get('/ministeres', [() => import('#controllers/admin_ministries_controller'), 'index']).as('admin.ministeres')
         router.post('/ministeres', [() => import('#controllers/admin_ministries_controller'), 'storeMinistry']).as('admin.ministeres.store')

@@ -18,12 +18,14 @@ import {
   UserCog,
   Grid3X3,
   Coins,
+  UserPlus,
 } from 'lucide-react'
 
 const navItems = [
   { label: 'Dashboard',   href: '/admin',            icon: LayoutDashboard },
   { label: 'Utilisateurs',href: '/admin/users',      icon: UserCog },
   { label: 'Membres',     href: '/admin/membres',     icon: Users },
+  { label: 'Nouveaux Venus', href: '/admin/nouveaux-venus', icon: UserPlus },
   { label: 'Agenda',      href: '/admin/agenda',      icon: CalendarDays },
   { label: 'Rendez-vous',  href: '/admin/rendez-vous', icon: CalendarDays },
   { label: 'Assets',      href: '/admin/assets',      icon: Image },
@@ -74,8 +76,8 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
     }
 
     if (user.role === 'user') {
-      // Voit seulement Dashboard, Membres, Ministères, Cellules et Dons
-      const allowed = ['/admin', '/admin/membres', '/admin/ministeres', '/admin/cellules', '/admin/donations']
+      // Voit seulement Dashboard, Membres, Nouveaux Venus, Ministères, Cellules et Dons
+      const allowed = ['/admin', '/admin/membres', '/admin/nouveaux-venus', '/admin/ministeres', '/admin/cellules', '/admin/donations']
       return allowed.includes(href)
     }
 

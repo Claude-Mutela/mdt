@@ -7,7 +7,7 @@ import { Eye, Globe, Heart, ArrowRight, ExternalLink } from 'lucide-react'
 const pastoralCouple = {
   nom: 'Blonsky & Lydia Mbala',
   role: 'Couple Pastoral',
-  photo: '/couple_blonsky_mbala.jpg',
+  photo: '/couple_blonsky_mbala.jpeg',
 }
 
 const faqs = [
@@ -105,7 +105,7 @@ export default function About() {
                       </div>
 
                       <p className="text-slate-600 text-sm leading-relaxed">
-                        L'histoire commence au Centre Missionnaire Philadelphie (CMP), sous l'impulsion spirituelle du Pasteur Roland Dalo. C'est l'église fondatrice de la vision, où les fondements et la doctrine d'impact ont été plantés.
+                        L'histoire commence au Centre Missionnaire Philadelphie (CMP), sous l'impulsion spirituelle de l'Apôtre Roland Dalo. C'est l'église fondatrice de la vision, où les fondements et la doctrine d'impact ont été plantés.
                       </p>
                     </div>
                   </div>
@@ -212,7 +212,7 @@ export default function About() {
                     {/* Image Header */}
                     <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
                       <img 
-                        src="/couple_blonsky_mbala.jpg" 
+                        src="/Couple_Bonsky_mbala.jpeg" 
                         alt="Couple Blonsky et Lydia Mbala" 
                         className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" 
                       />

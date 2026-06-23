@@ -19,7 +19,7 @@ const faqs = [
   {
     question: 'À quelle fréquence ont lieu les cultes ?',
     reponse:
-      'Nous tenons des cultes chaque dimanche matin à 9h30, ainsi que des réunions de prière le mercredi soir à 19h. Des groupes de maison se réunissent également en semaine dans différents quartiers.',
+      'Nous tenons des cultes chaque dimanche matin à 8h00, ainsi que des réunions de d\'Enseignement MALAKISI mardi à partir de 17h30, prière le jeudi soir à 17h30. Des groupes de maison (Cellules) se réunissent également en semaine dans différents quartiers.',
   },
   {
     question: 'Y a-t-il des activités pour les enfants et les jeunes ?',
@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "Comment faire un don à l'église ?",
     reponse:
-      "Vous pouvez contribuer lors de nos cultes via les quêtes habituelles, ou nous contacter directement pour les dons en ligne ou par virement bancaire. Chaque contribution soutient notre mission et nos actions communautaires.",
+      "Vous pouvez contribuer lors de nos cultes via les quêtes habituelles, Mobile Money, virement bancaire, le don en ligne à partir du site sur la page contact ou nous contacter directement pour les dons en nature. Chaque contribution soutient notre mission et nos actions communautaires.",
   },
 ]
 

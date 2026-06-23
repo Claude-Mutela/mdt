@@ -121,7 +121,7 @@ export default function DetailEvenement({ event }: Props) {
                       href="/contact" 
                       className="w-full h-14 bg-primary text-white font-bold rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary-light transition-all flex items-center justify-center gap-2 group"
                    >
-                      S'inscrire / Participer
+                      Nous Contacter
                       <ArrowLeft className="rotate-180 group-hover:translate-x-1 transition-transform" size={18} />
                    </Link>
                    <p className="text-[10px] text-center text-slate-400 font-medium uppercase tracking-widest">
@@ -134,7 +134,7 @@ export default function DetailEvenement({ event }: Props) {
         </section>
 
         {/* Map Placeholder Section */}
-        <section className="bg-slate-50 border-y border-slate-100 overflow-hidden">
+        {/* <section className="bg-slate-50 border-y border-slate-100 overflow-hidden">
           <div className="max-w-5xl mx-auto py-20 px-6 space-y-10">
              <div className="flex justify-between items-end">
                 <div className="space-y-2">
@@ -148,7 +148,7 @@ export default function DetailEvenement({ event }: Props) {
                 Plan interactif indisponible
              </div>
           </div>
-        </section>
+        </section> */}
       </main>
     </>
   )

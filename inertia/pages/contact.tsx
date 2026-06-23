@@ -220,7 +220,7 @@ const Contact: React.FC = () => {
                 icon={<Phone size={24} />}
                 title="Contact Direct"
                 desc="+243 9 999 51 032"
-                sub="contact@phila-mdt.org"
+                sub="contact@philamdt.chrurch"
               />
               <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
                 <div className="flex items-center gap-4 text-primary">

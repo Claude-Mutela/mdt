@@ -390,10 +390,10 @@ const Home: FC<{
               <h2 className="text-slate-900 text-4xl font-black font-serif">Programme des cultes</h2>
               <p className="text-slate-500">Rejoignez-nous pour nos temps de célébration et d'enseignement.</p>
             </div>
-            <Link href="/agenda" className="flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-primary/20 text-primary font-bold hover:bg-primary hover:text-white transition-all">
+            {/* <Link href="/agenda" className="flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-primary/20 text-primary font-bold hover:bg-primary hover:text-white transition-all">
               Voir tout l'agenda
               <Calendar size={18} />
-            </Link>
+            </Link> */}
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <CulteCard

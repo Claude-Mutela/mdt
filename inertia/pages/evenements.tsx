@@ -65,9 +65,9 @@ export default function Evenements({ events }: Props) {
           </div>
           
           <div className="relative z-10 max-w-4xl space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <span className="inline-block bg-primary/20 backdrop-blur-md text-white border border-primary/30 text-xs uppercase tracking-widest px-4 py-2 rounded-full font-bold">
+            {/* <span className="inline-block bg-primary/20 backdrop-blur-md text-white border border-primary/30 text-xs uppercase tracking-widest px-4 py-2 rounded-full font-bold">
               Agenda de l'Église
-            </span>
+            </span> */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-serif text-white leading-tight">
               Nos Événements &<br /> Rassemblements
             </h1>

@@ -9,9 +9,9 @@ export default function HeroAbout() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-[#7a3218]/35 to-[#5b2010]/75" />
 
         <div className="relative z-10 max-w-6xl px-6 sm:px-8 lg:px-12">
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
             <span className="inline-block bg-white/10 text-white/90 uppercase text-xs tracking-widest px-4 py-2 rounded-full">Qui sommes-nous</span>
-          </div>
+          </div> */}
 
           <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-black leading-tight">
             L'Église PHILA —

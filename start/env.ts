@@ -42,4 +42,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   CONTACT_SENDER_EMAIL: Env.schema.string({ format: 'email' }),
   CONTACT_SENDER_NAME: Env.schema.string(),
   SECRETARIAT_EMAIL: Env.schema.string({ format: 'email' }),
+
+  // reCAPTCHA
+  RECAPTCHA_SITE_KEY: Env.schema.string.optional(),
+  RECAPTCHA_SECRET_KEY: Env.schema.string.optional(),
 })

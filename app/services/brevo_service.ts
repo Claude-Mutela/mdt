@@ -252,6 +252,7 @@ export class BrevoService {
     senderEmail: string,
     subject: string
   ) {
+    const logoUrl = 'https://res.cloudinary.com/philamdt/image/upload/v1782237514/mdt/logo_orange_suite.png'
     const emailSubject = 'Votre message a bien été reçu — Phila MDT'
     const htmlContent = `
 <!DOCTYPE html>
@@ -271,13 +272,10 @@ export class BrevoService {
 
           <!-- ── HEADER ── -->
           <tr>
-            <td style="background:linear-gradient(135deg,#1C1613 0%,#3b1f0e 60%,#ea580c 100%);padding:40px 40px 36px;text-align:center;">
-              <!-- Logo text -->
-              <div style="display:inline-block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:6px 20px;margin-bottom:20px;">
-                <span style="color:#f97316;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">Phila MDT</span>
-              </div>
-              <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;">Phila Maison de Témoignages</h1>
-              <p style="margin:8px 0 0;color:rgba(255,255,255,0.6);font-size:13px;font-style:italic;">Votre message a bien été reçu ✓</p>
+            <td style="background-color:#ffffff;padding:40px 40px 24px;text-align:center;border-top:6px solid #ea580c;">
+              <img src="${logoUrl}" alt="Phila MDT Logo" style="display:inline-block;max-width:240px;width:100%;height:auto;margin-bottom:15px;border:0;" />
+              <h1 style="margin:0;color:#0f172a;font-size:24px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;">Phila Maison de Témoignages</h1>
+              <p style="margin:6px 0 0;color:#ea580c;font-size:13px;font-style:italic;font-weight:600;">Votre message a bien été reçu ✓</p>
             </td>
           </tr>
 
@@ -351,16 +349,28 @@ export class BrevoService {
               <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 20px;">
                 <tr>
                   <!-- Facebook -->
-                  <td style="padding:0 6px;">
-                    <a href="https://www.facebook.com/philamdt" style="display:inline-block;width:36px;height:36px;background-color:#1877f2;border-radius:50%;text-decoration:none;line-height:36px;text-align:center;font-size:16px;color:#ffffff;font-weight:700;">f</a>
+                  <td style="padding:0 8px;">
+                    <a href="https://www.facebook.com/share/17vAiAWYwp/?mibextid=wwXIfr" target="_blank" style="display:inline-block;text-decoration:none;">
+                      <img src="https://img.icons8.com/color/48/facebook-new.png" alt="Facebook" style="width:28px;height:28px;display:block;border:0;" />
+                    </a>
                   </td>
                   <!-- YouTube -->
-                  <td style="padding:0 6px;">
-                    <a href="https://www.youtube.com/@philamdt" style="display:inline-block;width:36px;height:36px;background-color:#ff0000;border-radius:50%;text-decoration:none;line-height:36px;text-align:center;font-size:16px;color:#ffffff;font-weight:700;">▶</a>
+                  <td style="padding:0 8px;">
+                    <a href="http://www.youtube.com/@phila_maison_de_temoignages" target="_blank" style="display:inline-block;text-decoration:none;">
+                      <img src="https://img.icons8.com/color/48/youtube-play.png" alt="YouTube" style="width:28px;height:28px;display:block;border:0;" />
+                    </a>
                   </td>
                   <!-- Instagram -->
-                  <td style="padding:0 6px;">
-                    <a href="https://www.instagram.com/philamdt" style="display:inline-block;width:36px;height:36px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-radius:50%;text-decoration:none;line-height:36px;text-align:center;font-size:14px;color:#ffffff;font-weight:700;">✿</a>
+                  <td style="padding:0 8px;">
+                    <a href="https://www.instagram.com/phila_maison_de_temoignages?igsh=aWU5Z3hiMGpydjJv" target="_blank" style="display:inline-block;text-decoration:none;">
+                      <img src="https://img.icons8.com/color/48/instagram-new.png" alt="Instagram" style="width:28px;height:28px;display:block;border:0;" />
+                    </a>
+                  </td>
+                  <!-- TikTok -->
+                  <td style="padding:0 8px;">
+                    <a href="https://www.tiktok.com/@philamdt" target="_blank" style="display:inline-block;text-decoration:none;">
+                      <img src="https://img.icons8.com/color/48/tiktok.png" alt="TikTok" style="width:28px;height:28px;display:block;border:0;" />
+                    </a>
                   </td>
                 </tr>
               </table>

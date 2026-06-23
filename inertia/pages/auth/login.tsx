@@ -1,23 +1,83 @@
 import { Head, useForm } from '@inertiajs/react'
-import { useState } from 'react'
-import { Eye, EyeOff, Lock, Mail, Loader2, LogIn } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Eye, EyeOff, Lock, Mail, Loader2, LogIn, AlertCircle } from 'lucide-react'
 
-export default function Login() {
+export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: string }) {
   const [showPassword, setShowPassword] = useState(false)
+  const recaptchaContainerRef = useRef<HTMLDivElement>(null)
+  const widgetIdRef = useRef<number | null>(null)
+  const scriptLoadedRef = useRef(false)
+
   const { data, setData, post, processing, errors } = useForm({
     email: '',
     password: '',
     remember: false,
+    recaptchaToken: '',
   } as {
     email: string;
     password: string;
     remember: boolean;
+    recaptchaToken: string;
     auth?: string;
   })
 
+  /* ── Chargement dynamique du script reCAPTCHA ── */
+  const renderWidget = useCallback(() => {
+    if (!recaptchaContainerRef.current || !recaptchaSiteKey || widgetIdRef.current !== null) return
+
+    widgetIdRef.current = window.grecaptcha.render(recaptchaContainerRef.current, {
+      sitekey: recaptchaSiteKey,
+      callback: (token: string) => {
+        setData('recaptchaToken', token)
+      },
+      'expired-callback': () => {
+        setData('recaptchaToken', '')
+      },
+      'error-callback': () => {
+        setData('recaptchaToken', '')
+      },
+      theme: 'dark', // Thème sombre pour s'intégrer harmonieusement à la page
+      size: 'normal',
+    })
+  }, [recaptchaSiteKey, setData])
+
+  useEffect(() => {
+    if (!recaptchaSiteKey) return
+
+    if (widgetIdRef.current !== null) return
+
+    if (window.grecaptcha) {
+      renderWidget()
+      return
+    }
+
+    if (scriptLoadedRef.current) return
+    scriptLoadedRef.current = true
+
+    window.onRecaptchaLoad = renderWidget
+
+    const script = document.createElement('script')
+    script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit'
+    script.async = true
+    script.defer = true
+    document.head.appendChild(script)
+
+    return () => {
+      delete (window as any).onRecaptchaLoad
+    }
+  }, [recaptchaSiteKey, renderWidget])
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    post('/login')
+    post('/login', {
+      onError: () => {
+        // En cas d'erreur de connexion ou reCAPTCHA, réinitialiser le widget
+        if (widgetIdRef.current !== null && window.grecaptcha) {
+          window.grecaptcha.reset(widgetIdRef.current)
+        }
+        setData('recaptchaToken', '')
+      }
+    })
   }
 
   return (
@@ -87,6 +147,19 @@ export default function Login() {
               {errors.password && <p className="text-red-400 text-xs mt-1 ml-1">{errors.password}</p>}
             </div>
 
+            {/* reCAPTCHA Widget */}
+            {recaptchaSiteKey && (
+              <div className="flex flex-col items-center justify-center py-2">
+                <div ref={recaptchaContainerRef} className="mx-auto" />
+                {errors.recaptchaToken && (
+                  <p className="flex items-center gap-1.5 text-red-400 text-xs mt-2 font-medium">
+                    <AlertCircle size={12} className="shrink-0" />
+                    {errors.recaptchaToken}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Error Message Global */}
             {errors.auth && (
               <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl">
@@ -113,7 +186,7 @@ export default function Login() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={processing}
+              disabled={processing || (!!recaptchaSiteKey && !data.recaptchaToken)}
               className="w-full bg-primary hover:bg-primary-dark disabled:bg-primary/50 text-white font-bold py-4 rounded-2xl shadow-xl shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
             >
               {processing ? (

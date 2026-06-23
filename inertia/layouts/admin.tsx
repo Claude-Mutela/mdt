@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, usePage } from '@inertiajs/react'
 import toast, { Toaster } from 'react-hot-toast'
+import SettingsModal from '../components/SettingsModal'
 import {
   LayoutDashboard,
   Users,
@@ -55,6 +56,8 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const { url, props } = usePage()
   const flash = props.flash as { success?: string, error?: string }
   const user = props.user as User
@@ -212,27 +215,60 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
               <Bell size={18} />
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full" />
             </button>
-            <div className="flex items-center gap-2 pl-3 border-l border-slate-700">
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-black text-white shadow-lg shadow-primary/20">
-                {user?.initials || '??'}
-              </div>
-              <div className="text-xs">
-                <p className="text-white font-bold leading-none mb-0.5">
-                  {user?.firstname && user?.lastname ? `${user.firstname} ${user.lastname}` : (user?.fullName || 'Utilisateur')}
-                </p>
-                <p className="text-slate-500 uppercase text-[9px] tracking-widest font-black">
-                  {user?.role === 'superadmin' && 'Super Administrateur'}
-                  {user?.role === 'admin' && 'Administrateur'}
-                  {user?.role === 'pasteur' && 'Pasteur'}
-                  {user?.role === 'tresorier' && 'Trésorier'}
-                  {user?.role === 'financier' && 'Financier'}
-                  {user?.role === 'mdtcom' && 'Communication MDT'}
-                  {user?.role === 'administration' && 'Administration'}
-                  {user?.role === 'porte_integration' && 'Porte d\'Intégration'}
-                  {user?.role === 'user' && 'Utilisateur'}
-                  {!['superadmin', 'admin', 'pasteur', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration', 'user'].includes(user?.role || '') && (user?.role || 'Inconnu')}
-                </p>
-              </div>
+            <div className="relative">
+              <button 
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center gap-2 pl-3 border-l border-slate-700 hover:opacity-80 transition-opacity text-left focus:outline-none"
+              >
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-black text-white shadow-lg shadow-primary/20">
+                  {user?.initials || '??'}
+                </div>
+                <div className="text-xs hidden sm:block">
+                  <p className="text-white font-bold leading-none mb-0.5">
+                    {user?.firstname && user?.lastname ? `${user.firstname} ${user.lastname}` : (user?.fullName || 'Utilisateur')}
+                  </p>
+                  <p className="text-slate-500 uppercase text-[9px] tracking-widest font-black">
+                    {user?.role === 'superadmin' && 'Super Administrateur'}
+                    {user?.role === 'admin' && 'Administrateur'}
+                    {user?.role === 'pasteur' && 'Pasteur'}
+                    {user?.role === 'tresorier' && 'Trésorier'}
+                    {user?.role === 'financier' && 'Financier'}
+                    {user?.role === 'mdtcom' && 'Communication MDT'}
+                    {user?.role === 'administration' && 'Administration'}
+                    {user?.role === 'porte_integration' && 'Porte d\'Intégration'}
+                    {user?.role === 'user' && 'Utilisateur'}
+                    {!['superadmin', 'admin', 'pasteur', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration', 'user'].includes(user?.role || '') && (user?.role || 'Inconnu')}
+                  </p>
+                </div>
+              </button>
+
+              {/* Dropdown Menu */}
+              {dropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
+                  <div className="absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-xl py-1.5 z-20 animate-in fade-in slide-in-from-top-2 duration-150">
+                    <button
+                      onClick={() => {
+                        setDropdownOpen(false)
+                        setSettingsOpen(true)
+                      }}
+                      className="flex items-center gap-2 w-full px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                    >
+                      <UserCog size={16} />
+                      <span>Mon Profil</span>
+                    </button>
+                    <Link
+                      href="/logout"
+                      method="post"
+                      as="button"
+                      className="flex items-center gap-2 w-full px-4 py-2 text-sm text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors border-t border-slate-800/50 mt-1"
+                    >
+                      <LogOut size={16} />
+                      <span>Déconnexion</span>
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </header>
@@ -242,6 +278,11 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
           {children}
         </main>
       </div>
+      <SettingsModal 
+        isOpen={settingsOpen} 
+        onClose={() => setSettingsOpen(false)} 
+        user={user} 
+      />
     </div>
   )
 }

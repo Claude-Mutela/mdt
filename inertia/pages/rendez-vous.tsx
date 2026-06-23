@@ -1,6 +1,19 @@
 import { Head, useForm } from '@inertiajs/react'
-import { CalendarDays, Clock, User, Phone, Mail, CheckCircle2, MessageSquare, Video, AlertCircle } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { CalendarDays, Clock, User, Phone, Mail, CheckCircle2, MessageSquare, Video, AlertCircle, ShieldCheck } from 'lucide-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+
+/* ── Types globaux reCAPTCHA ─────────────────────────────────────── */
+declare global {
+  interface Window {
+    grecaptcha: {
+      render: (container: HTMLElement | string, params: object) => number
+      reset: (widgetId?: number) => void
+      getResponse: (widgetId?: number) => string
+      execute: (widgetId?: number) => void
+    }
+    onRecaptchaLoad: () => void
+  }
+}
 
 /** Composant d'affichage d'erreur sous un champ */
 function FieldError({ message }: { message?: string }) {
@@ -18,10 +31,14 @@ function inputClass(hasError?: string) {
   return `w-full bg-slate-50 border ${hasError ? 'border-red-400 bg-red-50/30 focus:border-red-500 focus:ring-2 focus:ring-red-200' : 'border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/10'} text-slate-900 text-sm rounded-xl block px-4 py-3.5 outline-none transition-all shadow-sm`
 }
 
-export default function RendezVous() {
+export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: string }) {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [motif, setMotif] = useState('')
   const [autreMotif, setAutreMotif] = useState('')
+
+  const recaptchaContainerRef = useRef<HTMLDivElement>(null)
+  const widgetIdRef = useRef<number | null>(null)
+  const scriptLoadedRef = useRef(false)
 
   const { data, setData, post, processing, errors, reset } = useForm({
     lastName: '',
@@ -32,6 +49,7 @@ export default function RendezVous() {
     format: '',
     appointmentDate: '',
     appointmentTime: '',
+    recaptchaToken: '',
   })
 
   // Synchronise le motif sélectionné et l'autre motif avec le champ "reason"
@@ -43,6 +61,58 @@ export default function RendezVous() {
     }
   }, [motif, autreMotif])
 
+  /* ── Chargement dynamique du script reCAPTCHA ── */
+  const renderWidget = useCallback(() => {
+    if (!recaptchaContainerRef.current || !recaptchaSiteKey || widgetIdRef.current !== null) return
+
+    widgetIdRef.current = window.grecaptcha.render(recaptchaContainerRef.current, {
+      sitekey: recaptchaSiteKey,
+      callback: (token: string) => {
+        setData('recaptchaToken', token)
+      },
+      'expired-callback': () => {
+        setData('recaptchaToken', '')
+      },
+      'error-callback': () => {
+        setData('recaptchaToken', '')
+      },
+      theme: 'light',
+      size: 'normal',
+    })
+  }, [recaptchaSiteKey, setData])
+
+  useEffect(() => {
+    // Lorsque la modale de succès est affichée, le formulaire est démonté — rien à faire
+    if (isSubmitted || !recaptchaSiteKey) return
+
+    // Si le widget est déjà monté, ne pas le recréer
+    if (widgetIdRef.current !== null) return
+
+    // Le script Google est déjà chargé (page rechargée ou "Faire une autre demande")
+    if (window.grecaptcha) {
+      renderWidget()
+      return
+    }
+
+    // Première visite : charger le script une seule fois
+    if (scriptLoadedRef.current) return
+    scriptLoadedRef.current = true
+
+    // Callback global appelé par l'API Google une fois le script prêt
+    window.onRecaptchaLoad = renderWidget
+
+    const script = document.createElement('script')
+    script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit'
+    script.async = true
+    script.defer = true
+    document.head.appendChild(script)
+
+    return () => {
+      // Nettoyage du callback global quand le composant est démonté
+      delete (window as any).onRecaptchaLoad
+    }
+  }, [isSubmitted, recaptchaSiteKey, renderWidget])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     post('/rendez-vous', {
@@ -51,6 +121,17 @@ export default function RendezVous() {
         reset()
         setMotif('')
         setAutreMotif('')
+        // Vider le widgetId : quand l'utilisateur clique "Faire une autre demande",
+        // le div reCAPTCHA sera remonté vide et l'effect le re-rendra automatiquement.
+        widgetIdRef.current = null
+      },
+      onError: () => {
+        // Erreur VineJS ou reCAPTCHA — réinitialiser le widget pour que l'utilisateur
+        // re-coche la case (le token précédent a peut-être été consommé par Google)
+        if (widgetIdRef.current !== null && window.grecaptcha) {
+          window.grecaptcha.reset(widgetIdRef.current)
+        }
+        setData('recaptchaToken', '')
       },
     })
   }
@@ -276,12 +357,38 @@ export default function RendezVous() {
                       </div>
                     </div>
 
+                    {/* ── Widget reCAPTCHA ── */}
+                    {recaptchaSiteKey && (
+                      <div className="flex flex-col gap-2 pt-2">
+                        <div
+                          ref={recaptchaContainerRef}
+                          id="rdv-recaptcha-widget"
+                          aria-label="Vérification anti-robot reCAPTCHA"
+                        />
+                        {/* Erreur serveur reCAPTCHA (422 via E_VALIDATION_ERROR) */}
+                        {errors.recaptchaToken && (
+                          <p className="flex items-center gap-1.5 text-red-500 text-xs font-medium animate-in fade-in slide-in-from-top-1 duration-200">
+                            <AlertCircle size={12} className="shrink-0" />
+                            {errors.recaptchaToken}
+                          </p>
+                        )}
+                        {/* Indication avant la première coche */}
+                        {!data.recaptchaToken && !errors.recaptchaToken && (
+                          <p className="flex items-center gap-1.5 text-slate-400 text-xs font-medium">
+                            <ShieldCheck size={13} className="shrink-0" />
+                            Veuillez cocher la case ci-dessus pour confirmer que vous n'êtes pas un robot.
+                          </p>
+                        )}
+                      </div>
+                    )}
+
                     {/* ── Bouton de soumission ── */}
-                    <div className="pt-6">
+                    <div className="pt-4">
                       <button
                         type="submit"
-                        disabled={processing}
-                        className="w-full bg-primary hover:bg-primary-dark disabled:bg-primary/50 text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
+                        id="rdv-submit"
+                        disabled={processing || (!!recaptchaSiteKey && !data.recaptchaToken)}
+                        className="w-full bg-primary hover:bg-primary-dark disabled:bg-primary/50 disabled:cursor-not-allowed text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
                       >
                         {processing ? 'Traitement en cours...' : 'Soumettre la demande'}
                       </button>

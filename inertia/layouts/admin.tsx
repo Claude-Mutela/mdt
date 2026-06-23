@@ -41,6 +41,8 @@ const navItems = [
 interface User {
   id: number
   fullName: string
+  firstname?: string
+  lastname?: string
   email: string
   role: 'superadmin' | 'admin' | 'pasteur' | 'user' | 'tresorier' | 'financier' | 'mdtcom' | 'administration' | 'porte_integration'
   initials: string
@@ -215,8 +217,21 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
                 {user?.initials || '??'}
               </div>
               <div className="text-xs">
-                <p className="text-white font-bold leading-none mb-0.5">{user?.fullName || 'Utilisateur'}</p>
-                <p className="text-slate-500 uppercase text-[9px] tracking-widest font-black">{user?.role || 'Inconnu'}</p>
+                <p className="text-white font-bold leading-none mb-0.5">
+                  {user?.firstname && user?.lastname ? `${user.firstname} ${user.lastname}` : (user?.fullName || 'Utilisateur')}
+                </p>
+                <p className="text-slate-500 uppercase text-[9px] tracking-widest font-black">
+                  {user?.role === 'superadmin' && 'Super Administrateur'}
+                  {user?.role === 'admin' && 'Administrateur'}
+                  {user?.role === 'pasteur' && 'Pasteur'}
+                  {user?.role === 'tresorier' && 'Trésorier'}
+                  {user?.role === 'financier' && 'Financier'}
+                  {user?.role === 'mdtcom' && 'Communication MDT'}
+                  {user?.role === 'administration' && 'Administration'}
+                  {user?.role === 'porte_integration' && 'Porte d\'Intégration'}
+                  {user?.role === 'user' && 'Utilisateur'}
+                  {!['superadmin', 'admin', 'pasteur', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration', 'user'].includes(user?.role || '') && (user?.role || 'Inconnu')}
+                </p>
               </div>
             </div>
           </div>

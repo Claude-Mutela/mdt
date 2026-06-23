@@ -254,20 +254,137 @@ export class BrevoService {
   ) {
     const emailSubject = 'Votre message a bien été reçu — Phila MDT'
     const htmlContent = `
-      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #ea580c; border-bottom: 2px solid #ea580c; padding-bottom: 10px;">Message bien reçu !</h2>
-        <p>Bonjour <strong>${senderName}</strong>,</p>
-        <p>Nous avons bien reçu votre message concernant : <strong>${subject}</strong>.</p>
-        <p>Notre équipe en prendra connaissance et vous répondra dans les meilleurs délais.</p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message reçu — Phila MDT</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
 
-        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
-          Que Dieu vous bénisse,<br>
-          <strong>L'équipe Phila MDT</strong>
-        </p>
-      </div>
+  <!-- Wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f5;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+          <!-- ── HEADER ── -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#1C1613 0%,#3b1f0e 60%,#ea580c 100%);padding:40px 40px 36px;text-align:center;">
+              <!-- Logo text -->
+              <div style="display:inline-block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:100px;padding:6px 20px;margin-bottom:20px;">
+                <span style="color:#f97316;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">Phila MDT</span>
+              </div>
+              <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;">Phila Maison de Témoignages</h1>
+              <p style="margin:8px 0 0;color:rgba(255,255,255,0.6);font-size:13px;font-style:italic;">Votre message a bien été reçu ✓</p>
+            </td>
+          </tr>
+
+          <!-- ── BODY ── -->
+          <tr>
+            <td style="padding:40px 40px 32px;">
+
+              <p style="margin:0 0 8px;color:#64748b;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;">Bonjour,</p>
+              <h2 style="margin:0 0 24px;color:#0f172a;font-size:22px;font-weight:800;">${senderName} 👋</h2>
+
+              <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.7;">
+                Nous avons bien reçu votre message et nous vous en remercions. Notre équipe en prendra connaissance très prochainement et vous répondra dans les meilleurs délais.
+              </p>
+
+              <!-- Recap card -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fff7ed;border-left:4px solid #ea580c;border-radius:0 8px 8px 0;margin:24px 0;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 6px;color:#9a3412;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Votre demande</p>
+                    <p style="margin:0;color:#1c1613;font-size:15px;font-weight:700;">${subject}</p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.7;">
+                En attendant notre réponse, nous vous invitons à consulter notre site pour découvrir nos activités, nos cultes hebdomadaires et nos événements à venir.
+              </p>
+
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0;">
+                <tr>
+                  <td align="center">
+                    <a href="https://www.philamdt.church"
+                       style="display:inline-block;background:linear-gradient(135deg,#ea580c,#c2410c);color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:100px;letter-spacing:0.3px;box-shadow:0 4px 14px rgba(234,88,12,0.35);">
+                      Visiter notre site ↗
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0;color:#374151;font-size:15px;line-height:1.7;">
+                Que Dieu vous bénisse abondamment,<br />
+                <strong style="color:#0f172a;">L'équipe Phila MDT</strong>
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- ── DIVIDER ── -->
+          <tr>
+            <td style="padding:0 40px;">
+              <hr style="border:none;border-top:1px solid #e2e8f0;margin:0;" />
+            </td>
+          </tr>
+
+          <!-- ── FOOTER ── -->
+          <tr>
+            <td style="padding:28px 40px 36px;text-align:center;background-color:#fafafa;">
+
+              <!-- Church name -->
+              <p style="margin:0 0 4px;color:#0f172a;font-size:15px;font-weight:800;letter-spacing:-0.3px;">Phila Maison de Témoignages</p>
+              <p style="margin:0 0 16px;color:#64748b;font-size:12px;">Église chrétienne évangélique — Kinshasa, R.D. Congo</p>
+
+              <!-- Address -->
+              <p style="margin:0 0 20px;color:#94a3b8;font-size:12px;line-height:1.7;">
+                Zoao N°25, Q/ Matonge 1, Blvd Sendwe<br />
+                Entrée hôtel Sendwe — BP: 6270, Kinshasa
+              </p>
+
+              <!-- Social links -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 20px;">
+                <tr>
+                  <!-- Facebook -->
+                  <td style="padding:0 6px;">
+                    <a href="https://www.facebook.com/philamdt" style="display:inline-block;width:36px;height:36px;background-color:#1877f2;border-radius:50%;text-decoration:none;line-height:36px;text-align:center;font-size:16px;color:#ffffff;font-weight:700;">f</a>
+                  </td>
+                  <!-- YouTube -->
+                  <td style="padding:0 6px;">
+                    <a href="https://www.youtube.com/@philamdt" style="display:inline-block;width:36px;height:36px;background-color:#ff0000;border-radius:50%;text-decoration:none;line-height:36px;text-align:center;font-size:16px;color:#ffffff;font-weight:700;">▶</a>
+                  </td>
+                  <!-- Instagram -->
+                  <td style="padding:0 6px;">
+                    <a href="https://www.instagram.com/philamdt" style="display:inline-block;width:36px;height:36px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-radius:50%;text-decoration:none;line-height:36px;text-align:center;font-size:14px;color:#ffffff;font-weight:700;">✿</a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Legal notice -->
+              <p style="margin:0;color:#cbd5e1;font-size:11px;line-height:1.6;">
+                Vous recevez cet e-mail car vous avez rempli le formulaire de contact sur notre site.<br />
+                © ${new Date().getFullYear()} Phila Maison de Témoignages. Tous droits réservés.
+              </p>
+
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
     `
     await this.sendContact(senderEmail, senderName, emailSubject, htmlContent)
   }
+
 
   /**
    * Envoie un e-mail de notification au pasteur concernant un nouveau rendez-vous confirmé.

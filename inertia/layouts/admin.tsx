@@ -20,6 +20,7 @@ import {
   Grid3X3,
   Coins,
   UserPlus,
+  MailCheck,
 } from 'lucide-react'
 
 const navItems = [
@@ -37,6 +38,7 @@ const navItems = [
   { label: 'Galerie',     href: '/admin/galerie',     icon: Image },
   { label: 'Dons',        href: '/admin/donations',   icon: HeartHandshake },
   { label: 'Finances',    href: '/admin/finances',    icon: Coins },
+  { label: 'Newsletter',  href: '/admin/newsletter',  icon: MailCheck },
 ]
 
 interface User {
@@ -91,7 +93,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
       return allowed.includes(href)
     }
 
-    // MDTCom : seulement assets, galeries, media, agenda, cellules, ministères, événements
+    // MDTCom : seulement assets, galeries, media, agenda, cellules, ministères, événements, newsletter
     if (user.role === 'mdtcom') {
       const allowed = [
         '/admin/assets',
@@ -101,6 +103,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
         '/admin/cellules',
         '/admin/ministeres',
         '/admin/evenements',
+        '/admin/newsletter',
       ]
       return allowed.includes(href)
     }

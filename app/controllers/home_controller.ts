@@ -71,6 +71,7 @@ export default class HomeController {
         category: a.catActivity ? { id: a.catActivity.id, name: a.catActivity.name } : null,
       })),
       currentWeekLabel: `Semaine du ${startOfWeek.setLocale('fr').toFormat('d MMMM')} au ${endOfWeek.setLocale('fr').toFormat('d MMMM yyyy')}`,
+      recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY ?? '',
     } as never)
   }
 }

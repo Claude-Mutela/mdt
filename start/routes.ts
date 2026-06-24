@@ -112,6 +112,8 @@ router
         router.post('/cellules', [() => import('#controllers/admin_cellules_controller'), 'store']).as('admin.cellules.store')
         router.put('/cellules/:id', [() => import('#controllers/admin_cellules_controller'), 'update']).as('admin.cellules.update')
         router.delete('/cellules/:id', [() => import('#controllers/admin_cellules_controller'), 'destroy']).as('admin.cellules.destroy')
+
+        router.on('/newsletter').renderInertia('admin/newsletter', {}).as('admin.newsletter')
       })
       .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur', 'mdtcom'] }))
 

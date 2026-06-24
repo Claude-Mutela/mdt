@@ -1,6 +1,18 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Head, Link } from '@inertiajs/react'
 import { ArrowRight, Calendar, Clock, MapPin, Mail, Play } from 'lucide-react'
+
+/* ── Types globaux reCAPTCHA ─────────────────────────────────────── */
+declare global {
+  interface Window {
+    grecaptcha: {
+      render: (container: HTMLElement, params: object) => number
+      reset: (widgetId: number) => void
+      getResponse: (widgetId: number) => string
+    }
+    onRecaptchaLoad: () => void
+  }
+}
 
 const CulteCard = ({ day, title, description, time, location, highlight = false, tag = 'EN DIRECT' }: any) => {
   return (
@@ -117,8 +129,52 @@ const Home: FC<{
   weekAgendas: AgendaItem[]
   allMinistries: Ministry[]
   currentWeekLabel: string
-}> = ({ activeHero, lastPreach, weekAgendas, allMinistries, currentWeekLabel }) => {
+  recaptchaSiteKey?: string
+}> = ({ activeHero, lastPreach, weekAgendas, allMinistries, currentWeekLabel, recaptchaSiteKey = '' }) => {
   const sliderRef = useRef<HTMLDivElement>(null)
+
+  /* ── Newsletter reCAPTCHA ── */
+  const newsletterRecaptchaRef = useRef<HTMLDivElement>(null)
+  const newsletterWidgetRef    = useRef<number | null>(null)
+  const [newsletterToken, setNewsletterToken]   = useState('')
+  const [newsletterEmail, setNewsletterEmail]   = useState('')
+  const [newsletterSent,  setNewsletterSent]    = useState(false)
+
+  const renderNewsletterWidget = useCallback(() => {
+    if (!newsletterRecaptchaRef.current || !recaptchaSiteKey || newsletterWidgetRef.current !== null) return
+    newsletterWidgetRef.current = window.grecaptcha.render(newsletterRecaptchaRef.current, {
+      sitekey: recaptchaSiteKey,
+      theme: 'light',
+      callback:        (token: string) => setNewsletterToken(token),
+      'expired-callback': ()           => setNewsletterToken(''),
+      'error-callback':   ()           => setNewsletterToken(''),
+    })
+  }, [recaptchaSiteKey])
+
+  useEffect(() => {
+    if (newsletterSent || !recaptchaSiteKey) return
+    if (window.grecaptcha) {
+      renderNewsletterWidget()
+      return
+    }
+    window.onRecaptchaLoad = renderNewsletterWidget
+    const existing = document.querySelector('script[src*="recaptcha"]')
+    if (!existing) {
+      const script = document.createElement('script')
+      script.src   = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit'
+      script.async = true
+      script.defer = true
+      document.head.appendChild(script)
+    }
+    return () => { delete (window as any).onRecaptchaLoad }
+  }, [newsletterSent, recaptchaSiteKey, renderNewsletterWidget])
+
+  function handleNewsletterSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!newsletterEmail) return
+    // TODO: brancher le vrai appel backend
+    setNewsletterSent(true)
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -728,21 +784,63 @@ const Home: FC<{
             </div>
             
             <div className="w-full max-w-md md:ml-auto">
-              <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
-                <input 
-                  type="email" 
-                  placeholder="Votre adresse e-mail..." 
-                  className="w-full px-6 py-4 rounded-xl text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all font-medium border-0"
-                  required
-                />
-                <button 
-                  type="submit" 
-                  className="w-full px-6 py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors shadow-lg"
-                >
-                  S'inscrire
-                </button>
-                <p className="text-xs text-white/60 text-center mt-2">Nous respectons votre vie privée. Vous pouvez vous désabonner à tout moment.</p>
-              </form>
+              {newsletterSent ? (
+                /* ── Confirmation ── */
+                <div className="flex flex-col items-center gap-4 py-6 text-center">
+                  <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
+                    <Mail size={32} className="text-white" />
+                  </div>
+                  <p className="text-xl font-black text-white">Merci !</p>
+                  <p className="text-white/80 text-sm leading-relaxed">
+                    Votre abonnement a bien été enregistré. Vous recevrez bientôt nos nouvelles.
+                  </p>
+                </div>
+              ) : (
+                /* ── Formulaire ── */
+                <form className="flex flex-col gap-4" onSubmit={handleNewsletterSubmit}>
+                  <input
+                    id="newsletter-email"
+                    type="email"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    placeholder="Votre adresse e-mail…"
+                    required
+                    className="w-full px-6 py-4 rounded-xl text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all font-medium border-0"
+                  />
+
+                  {/* ── Widget reCAPTCHA ── */}
+                  {recaptchaSiteKey && (
+                    <div className="flex justify-start sm:justify-start">
+                      <div
+                        ref={newsletterRecaptchaRef}
+                        id="newsletter-recaptcha-widget"
+                        aria-label="Vérification anti-robot reCAPTCHA"
+                        /* Le widget Google fait ~300px de large ; on le laisse s'adapter naturellement */
+                        className="overflow-hidden rounded-xl"
+                      />
+                    </div>
+                  )}
+
+                  {/* Hint quand le reCAPTCHA n'est pas encore coché */}
+                  {recaptchaSiteKey && !newsletterToken && (
+                    <p className="text-xs text-white/60">
+                      Veuillez cocher la case ci-dessus avant de vous inscrire.
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={!!recaptchaSiteKey && !newsletterToken}
+                    className="w-full px-6 py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    S'inscrire
+                  </button>
+
+                  <p className="text-xs text-white/60 text-center">
+                    Nous respectons votre vie privée. Vous pouvez vous désabonner à tout moment.
+                  </p>
+                </form>
+              )}
             </div>
           </div>
         </div>

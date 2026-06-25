@@ -30,7 +30,10 @@ export default class AdminDashboardController {
     const newMembersCount = Number(newMembersThisMonthCountResult[0].$extras.total || 0)
 
     const totalActiveBeforeThisMonth = activeMembersCount - newMembersCount
-    const membersPercent = totalActiveBeforeThisMonth > 0 ? Math.round((newMembersCount / totalActiveBeforeThisMonth) * 100) : 0
+    const membersPercent =
+      totalActiveBeforeThisMonth > 0
+        ? Math.round((newMembersCount / totalActiveBeforeThisMonth) * 100)
+        : 0
     const membersDelta = membersPercent > 0 ? `+${membersPercent}%` : 'stable'
 
     // 2. Événements à venir
@@ -80,10 +83,9 @@ export default class AdminDashboardController {
     let cultesCountResult = await Agenda.query()
       .whereBetween('day', [startOfMonth.toSQLDate()!, endOfMonth.toSQLDate()!])
       .where((q) => {
-        q.where('title', 'like', '%culte%')
-          .orWhereHas('catActivity', (builder) => {
-            builder.where('name', 'like', '%culte%')
-          })
+        q.where('title', 'like', '%culte%').orWhereHas('catActivity', (builder) => {
+          builder.where('name', 'like', '%culte%')
+        })
       })
       .count('* as total')
     let cultesVal = Number(cultesCountResult[0].$extras.total || 0)
@@ -100,10 +102,9 @@ export default class AdminDashboardController {
     let lastMonthCultesCountResult = await Agenda.query()
       .whereBetween('day', [lastMonthStart, lastMonthEnd])
       .where((q) => {
-        q.where('title', 'like', '%culte%')
-          .orWhereHas('catActivity', (builder) => {
-            builder.where('name', 'like', '%culte%')
-          })
+        q.where('title', 'like', '%culte%').orWhereHas('catActivity', (builder) => {
+          builder.where('name', 'like', '%culte%')
+        })
       })
       .count('* as total')
     let lastMonthCultesVal = Number(lastMonthCultesCountResult[0].$extras.total || 0)
@@ -115,7 +116,8 @@ export default class AdminDashboardController {
     }
 
     const cultesDiff = cultesVal - lastMonthCultesVal
-    const cultesDelta = cultesDiff > 0 ? `+${cultesDiff}` : (cultesDiff < 0 ? `${cultesDiff}` : 'stable')
+    const cultesDelta =
+      cultesDiff > 0 ? `+${cultesDiff}` : cultesDiff < 0 ? `${cultesDiff}` : 'stable'
 
     // 7. Recent Members
     const recentMembersDb = await Member.query()
@@ -145,7 +147,7 @@ export default class AdminDashboardController {
 
     // 9. Calcul du solde net des finances et des statistiques des nouveaux venus
     const { netUsd, netCdf } = await this.getNetFinanceBalances()
-    const { newNewcomersCount, newcomersDelta, monthlyBars, annualGrowthStr } = 
+    const { newNewcomersCount, newcomersDelta, monthlyBars, annualGrowthStr, allYearsData, availableYears } =
       await this.getNewcomersStats(now, startOfYear, endOfYear)
 
     const stats = [
@@ -168,6 +170,8 @@ export default class AdminDashboardController {
       monthlyBars,
       annualGrowthStr,
       currentYear: now.year,
+      allYearsData,
+      availableYears,
     })
   }
 
@@ -196,52 +200,64 @@ export default class AdminDashboardController {
 
   /**
    * Récupère le nombre total de nouveaux venus pour le mois en cours,
-   * calcule la croissance des nouveaux venus pour le graphique mensuel,
+   * calcule la croissance des nouveaux venus pour le graphique mensuel pour TOUTES les années,
    * ainsi que le pourcentage de croissance annuelle.
    */
   private async getNewcomersStats(now: DateTime, startOfYear: DateTime, endOfYear: DateTime) {
     const startOfMonth = now.startOf('month')
+    const endOfMonth = now.endOf('month')
     const startOfPreviousMonth = now.minus({ months: 1 }).startOf('month')
     const endOfPreviousMonth = now.minus({ months: 1 }).endOf('month')
-    const lastYearEnd = now.minus({ years: 1 }).endOf('year').toSQL()!
+    const lastYearEnd = now.minus({ years: 1 }).endOf('year').toSQLDate()!
 
     // Nouveaux venus ce mois
     const newcomersThisMonthCountResult = await Newcomer.query()
-      .where('createdAt', '>=', startOfMonth.toSQL()!)
+      .where('date', '>=', startOfMonth.toSQLDate()!)
+      .andWhere('date', '<=', endOfMonth.toSQLDate()!)
       .count('* as total')
     const newNewcomersCount = Number(newcomersThisMonthCountResult[0].$extras.total || 0)
 
     // Nouveaux venus le mois dernier (pour le delta)
     const newcomersLastMonthCountResult = await Newcomer.query()
-      .where('createdAt', '>=', startOfPreviousMonth.toSQL()!)
-      .andWhere('createdAt', '<=', endOfPreviousMonth.toSQL()!)
+      .where('date', '>=', startOfPreviousMonth.toSQLDate()!)
+      .andWhere('date', '<=', endOfPreviousMonth.toSQLDate()!)
       .count('* as total')
     const lastMonthNewcomersCount = Number(newcomersLastMonthCountResult[0].$extras.total || 0)
 
     const newcomersDiff = newNewcomersCount - lastMonthNewcomersCount
-    const newcomersDelta = newcomersDiff > 0 ? `+${newcomersDiff}` : (newcomersDiff < 0 ? `${newcomersDiff}` : 'stable')
+    const newcomersDelta =
+      newcomersDiff > 0 ? `+${newcomersDiff}` : newcomersDiff < 0 ? `${newcomersDiff}` : 'stable'
 
-    // Tableau mensuel de croissance pour les nouveaux venus
-    const monthlyBars = Array(12).fill(0)
-    const newcomersThisYear = await Newcomer.query()
-      .where('createdAt', '>=', startOfYear.toSQL()!)
-      .andWhere('createdAt', '<=', endOfYear.toSQL()!)
+    // ── Construction des données mensuelles pour TOUTES les années en un seul passage ──
+    const allNewcomers = await Newcomer.query().orderBy('date', 'asc').select('date')
+    const yearDataMap: Record<number, number[]> = {}
 
-    for (const newcomer of newcomersThisYear) {
-      const monthIdx = newcomer.createdAt.month - 1
-      if (monthIdx >= 0 && monthIdx < 12) {
-        monthlyBars[monthIdx]++
-      }
+    for (const newcomer of allNewcomers) {
+      const year = newcomer.date.year
+      const monthIdx = newcomer.date.month - 1
+      if (!yearDataMap[year]) yearDataMap[year] = Array(12).fill(0)
+      if (monthIdx >= 0 && monthIdx < 12) yearDataMap[year][monthIdx]++
     }
+
+    // Toujours garantir que l'année courante existe dans la map
+    if (!yearDataMap[now.year]) yearDataMap[now.year] = Array(12).fill(0)
+
+    const availableYears = Object.keys(yearDataMap)
+      .map(Number)
+      .sort((a, b) => a - b)
+
+    const monthlyBars = yearDataMap[now.year]
 
     // Pourcentage de croissance annuelle des nouveaux venus
     const totalNewcomersCountResult = await Newcomer.query().count('* as total')
     const totalNewcomersCount = Number(totalNewcomersCountResult[0].$extras.total || 0)
 
     const totalCountLastYearNewcomersResult = await Newcomer.query()
-      .where('createdAt', '<=', lastYearEnd)
+      .where('date', '<=', lastYearEnd)
       .count('* as total')
-    const totalCountLastYearNewcomers = Number(totalCountLastYearNewcomersResult[0].$extras.total || 0)
+    const totalCountLastYearNewcomers = Number(
+      totalCountLastYearNewcomersResult[0].$extras.total || 0
+    )
 
     let annualGrowth = 0
     if (totalCountLastYearNewcomers > 0) {
@@ -255,6 +271,8 @@ export default class AdminDashboardController {
       newcomersDelta,
       monthlyBars,
       annualGrowthStr,
+      allYearsData: yearDataMap,
+      availableYears,
     }
   }
 }

@@ -5,6 +5,8 @@ import Ministry from '#models/ministry'
 import Media from '#models/media'
 import Image from '#models/image'
 import Agenda from '#models/agenda'
+import Newcomer from '#models/newcomer'
+import FinanceOperation from '#models/finance_operation'
 import { DateTime } from 'luxon'
 
 export default class AdminDashboardController {
@@ -141,43 +143,22 @@ export default class AdminDashboardController {
       statut: e.status,
     }))
 
-    // 9. Monthly Member registrations for the growth chart
-    const monthlyBars = Array(12).fill(0)
-    const membersThisYear = await Member.query()
-      .where('createdAt', '>=', startOfYear.toSQL()!)
-      .andWhere('createdAt', '<=', endOfYear.toSQL()!)
-
-    for (const member of membersThisYear) {
-      const monthIdx = member.createdAt.month - 1
-      if (monthIdx >= 0 && monthIdx < 12) {
-        monthlyBars[monthIdx]++
-      }
-    }
-
-    // 10. Annual Growth Percentage
-    const totalCountResult = await Member.query().count('* as total')
-    const totalCount = Number(totalCountResult[0].$extras.total || 0)
-
-    const lastYearEnd = now.minus({ years: 1 }).endOf('year').toSQL()!
-    const totalCountLastYearResult = await Member.query()
-      .where('createdAt', '<=', lastYearEnd)
-      .count('* as total')
-    const totalCountLastYear = Number(totalCountLastYearResult[0].$extras.total || 0)
-
-    let annualGrowth = 0
-    if (totalCountLastYear > 0) {
-      const newMembersThisYear = totalCount - totalCountLastYear
-      annualGrowth = Math.round((newMembersThisYear / totalCountLastYear) * 100)
-    }
-    const annualGrowthStr = annualGrowth > 0 ? `+${annualGrowth}% annuel` : 'stable annuel'
+    // 9. Calcul du solde net des finances et des statistiques des nouveaux venus
+    const { netUsd, netCdf } = await this.getNetFinanceBalances()
+    const { newNewcomersCount, newcomersDelta, monthlyBars, annualGrowthStr } = 
+      await this.getNewcomersStats(now, startOfYear, endOfYear)
 
     const stats = [
       { label: 'Membres actifs', value: activeMembersCount.toLocaleString('fr-FR'), delta: membersDelta },
       { label: 'Événements à venir', value: upcomingEventsCount.toString(), delta: eventsDelta },
       { label: 'Ministères actifs', value: ministriesCount.toString(), delta: ministriesDelta },
+      { label: 'Cultes ce mois', value: cultesVal.toString(), delta: cultesDelta },
+      { label: 'Solde Net (USD)', value: `${netUsd.toLocaleString('fr-FR')} $`, delta: 'stable' },
+      { label: 'Solde Net (CDF)', value: `${netCdf.toLocaleString('fr-FR')} FC`, delta: 'stable' },
+      { label: 'Nouveaux venus', value: newNewcomersCount.toString(), delta: newcomersDelta },
+      // Laissés pour la compatibilité mais exclus côté front
       { label: 'Médias publiés', value: mediaCount.toString(), delta: mediaDelta },
       { label: 'Photos galerie', value: photosCount.toString(), delta: photosDelta },
-      { label: 'Cultes ce mois', value: cultesVal.toString(), delta: cultesDelta },
     ]
 
     return inertia.render('admin/dashboard' as any, {
@@ -188,5 +169,92 @@ export default class AdminDashboardController {
       annualGrowthStr,
       currentYear: now.year,
     })
+  }
+
+  /**
+   * Calcule le solde net des finances pour les devises USD et CDF.
+   */
+  private async getNetFinanceBalances() {
+    const entries = await FinanceOperation.query().where('type', 'entrée')
+    const exits = await FinanceOperation.query().where('type', 'sortie')
+
+    let netUsd = 0
+    let netCdf = 0
+
+    entries.forEach((op) => {
+      if (op.devise === 'USD') netUsd += Number(op.montant)
+      else if (op.devise === 'CDF') netCdf += Number(op.montant)
+    })
+
+    exits.forEach((op) => {
+      if (op.devise === 'USD') netUsd -= Number(op.montant)
+      else if (op.devise === 'CDF') netCdf -= Number(op.montant)
+    })
+
+    return { netUsd, netCdf }
+  }
+
+  /**
+   * Récupère le nombre total de nouveaux venus pour le mois en cours,
+   * calcule la croissance des nouveaux venus pour le graphique mensuel,
+   * ainsi que le pourcentage de croissance annuelle.
+   */
+  private async getNewcomersStats(now: DateTime, startOfYear: DateTime, endOfYear: DateTime) {
+    const startOfMonth = now.startOf('month')
+    const startOfPreviousMonth = now.minus({ months: 1 }).startOf('month')
+    const endOfPreviousMonth = now.minus({ months: 1 }).endOf('month')
+    const lastYearEnd = now.minus({ years: 1 }).endOf('year').toSQL()!
+
+    // Nouveaux venus ce mois
+    const newcomersThisMonthCountResult = await Newcomer.query()
+      .where('createdAt', '>=', startOfMonth.toSQL()!)
+      .count('* as total')
+    const newNewcomersCount = Number(newcomersThisMonthCountResult[0].$extras.total || 0)
+
+    // Nouveaux venus le mois dernier (pour le delta)
+    const newcomersLastMonthCountResult = await Newcomer.query()
+      .where('createdAt', '>=', startOfPreviousMonth.toSQL()!)
+      .andWhere('createdAt', '<=', endOfPreviousMonth.toSQL()!)
+      .count('* as total')
+    const lastMonthNewcomersCount = Number(newcomersLastMonthCountResult[0].$extras.total || 0)
+
+    const newcomersDiff = newNewcomersCount - lastMonthNewcomersCount
+    const newcomersDelta = newcomersDiff > 0 ? `+${newcomersDiff}` : (newcomersDiff < 0 ? `${newcomersDiff}` : 'stable')
+
+    // Tableau mensuel de croissance pour les nouveaux venus
+    const monthlyBars = Array(12).fill(0)
+    const newcomersThisYear = await Newcomer.query()
+      .where('createdAt', '>=', startOfYear.toSQL()!)
+      .andWhere('createdAt', '<=', endOfYear.toSQL()!)
+
+    for (const newcomer of newcomersThisYear) {
+      const monthIdx = newcomer.createdAt.month - 1
+      if (monthIdx >= 0 && monthIdx < 12) {
+        monthlyBars[monthIdx]++
+      }
+    }
+
+    // Pourcentage de croissance annuelle des nouveaux venus
+    const totalNewcomersCountResult = await Newcomer.query().count('* as total')
+    const totalNewcomersCount = Number(totalNewcomersCountResult[0].$extras.total || 0)
+
+    const totalCountLastYearNewcomersResult = await Newcomer.query()
+      .where('createdAt', '<=', lastYearEnd)
+      .count('* as total')
+    const totalCountLastYearNewcomers = Number(totalCountLastYearNewcomersResult[0].$extras.total || 0)
+
+    let annualGrowth = 0
+    if (totalCountLastYearNewcomers > 0) {
+      const newNewcomersThisYear = totalNewcomersCount - totalCountLastYearNewcomers
+      annualGrowth = Math.round((newNewcomersThisYear / totalCountLastYearNewcomers) * 100)
+    }
+    const annualGrowthStr = annualGrowth > 0 ? `+${annualGrowth}% annuel` : 'stable annuel'
+
+    return {
+      newNewcomersCount,
+      newcomersDelta,
+      monthlyBars,
+      annualGrowthStr,
+    }
   }
 }

@@ -10,6 +10,7 @@ import {
   Church,
   Ticket,
   Image,
+  Coins,
 } from 'lucide-react'
 
 const months      = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
@@ -38,12 +39,18 @@ export default function AdminDashboard({
     'Médias publiés': { icon: PlayCircle, color: 'bg-green-500/10 text-green-400', border: 'border-green-500/20' },
     'Photos galerie': { icon: Image, color: 'bg-pink-500/10 text-pink-400', border: 'border-pink-500/20' },
     'Cultes ce mois': { icon: CalendarDays, color: 'bg-cyan-500/10 text-cyan-400', border: 'border-cyan-500/20' },
+    'Solde Net (USD)': { icon: Coins, color: 'bg-emerald-500/10 text-emerald-400', border: 'border-emerald-500/20' },
+    'Solde Net (CDF)': { icon: Coins, color: 'bg-amber-500/10 text-amber-400', border: 'border-amber-500/20' },
+    'Nouveaux venus': { icon: Users, color: 'bg-indigo-500/10 text-indigo-400', border: 'border-indigo-500/20' },
   }
 
-  const mappedStats = stats.map((s) => {
-    const config = statConfig[s.label] || { icon: Users, color: 'bg-slate-500/10 text-slate-400', border: 'border-slate-500/20' }
-    return { ...s, ...config }
-  })
+  // Filtrer/Masquer les médias publiés et les photos de galerie conformément aux ajustements demandés
+  const mappedStats = stats
+    .filter((s) => s.label !== 'Médias publiés' && s.label !== 'Photos galerie')
+    .map((s) => {
+      const config = statConfig[s.label] || { icon: Users, color: 'bg-slate-500/10 text-slate-400', border: 'border-slate-500/20' }
+      return { ...s, ...config }
+    })
 
   return (
     <>
@@ -70,12 +77,12 @@ export default function AdminDashboard({
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* ── Graphique membres ── */}
+          {/* ── Graphique nouveaux venus ── */}
           <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-white font-bold">Croissance des membres</h2>
-                <p className="text-slate-400 text-sm">Inscriptions mensuelles {currentYear}</p>
+                <h2 className="text-white font-bold">Croissance des nouveaux venus</h2>
+                <p className="text-slate-400 text-sm">Nouveaux venus mensuels {currentYear}</p>
               </div>
               <span className="text-xs px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full">
                 {annualGrowthStr}

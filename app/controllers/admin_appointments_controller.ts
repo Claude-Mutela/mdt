@@ -20,11 +20,86 @@ export default class AdminAppointmentsController {
         lastName: a.lastName,
         email: a.email || '',
         phone: a.phone,
-        date: a.appointmentDate.toISODate() as string, // "YYYY-MM-DD"
+        date: a.appointmentDate.toISODate() as string,
         time: a.appointmentTime,
         subject: a.reason,
         status: a.status as 'pending' | 'confirmed' | 'cancelled',
       })),
+    })
+  }
+
+  /**
+   * GET /admin/rendez-vous/print?period=jour|semaine|mois|annee&ref=YYYY-MM-DD|YYYY
+   * Renvoie la page d'impression filtrée.
+   */
+  async print({ inertia, request }: HttpContext) {
+    const period = request.input('period', 'mois') as 'jour' | 'semaine' | 'mois' | 'annee'
+    const ref    = request.input('ref', DateTime.now().toISODate()) as string
+    const status = request.input('status', 'all') as 'all' | 'confirmed' | 'pending' | 'cancelled'
+
+    const statusLabel: Record<string, string> = {
+      all: '',
+      confirmed: ' — Confirmés',
+      pending:   ' — En attente',
+      cancelled: ' — Annulés',
+    }
+
+    const now = DateTime.now()
+    let start: DateTime
+    let end: DateTime
+    let filterTitle: string
+
+    if (period === 'jour') {
+      const day = DateTime.fromISO(ref).isValid ? DateTime.fromISO(ref) : now
+      start = day.startOf('day')
+      end   = day.endOf('day')
+      filterTitle = `Rendez-vous du ${day.setLocale('fr').toFormat('EEEE dd MMMM yyyy')}${statusLabel[status]}`
+
+    } else if (period === 'semaine') {
+      const day = DateTime.fromISO(ref).isValid ? DateTime.fromISO(ref) : now
+      start = day.startOf('week')
+      end   = day.endOf('week')
+      filterTitle = `Rendez-vous de la semaine du ${start.setLocale('fr').toFormat('dd MMM')} au ${end.setLocale('fr').toFormat('dd MMM yyyy')}${statusLabel[status]}`
+
+    } else if (period === 'mois') {
+      // ref peut être "YYYY-MM" ou "YYYY-MM-DD"
+      const day = DateTime.fromISO(ref.length === 7 ? ref + '-01' : ref).isValid
+        ? DateTime.fromISO(ref.length === 7 ? ref + '-01' : ref)
+        : now
+      start = day.startOf('month')
+      end   = day.endOf('month')
+      filterTitle = `Rendez-vous de ${start.setLocale('fr').toFormat('MMMM yyyy')}${statusLabel[status]}`
+
+    } else {
+      // annee
+      const year = parseInt(ref, 10) || now.year
+      start = DateTime.fromObject({ year }).startOf('year')
+      end   = DateTime.fromObject({ year }).endOf('year')
+      filterTitle = `Rendez-vous de l'année ${year}${statusLabel[status]}`
+    }
+
+    const rows = await Appointment.query()
+      .whereBetween('appointment_date', [start.toSQLDate()!, end.toSQLDate()!])
+      .if(status !== 'all', (q) => q.where('status', status))
+      .orderBy('appointment_date', 'asc')
+      .orderBy('appointment_time', 'asc')
+
+    const printDate = now.setLocale('fr').toFormat('dd MMMM yyyy à HH:mm')
+
+    return inertia.render('admin/rendez_vous_print' as any, {
+      appointments: rows.map((a) => ({
+        id: a.id,
+        firstName: a.firstName,
+        lastName: a.lastName,
+        email: a.email || '',
+        phone: a.phone,
+        date: a.appointmentDate.toISODate() as string,
+        time: a.appointmentTime,
+        subject: a.reason,
+        status: a.status as 'pending' | 'confirmed' | 'cancelled',
+      })),
+      filterTitle,
+      printDate,
     })
   }
 

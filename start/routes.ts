@@ -127,6 +127,7 @@ router
         router.delete('/members/:id', [() => import('#controllers/admin_members_controller'), 'destroy']).as('admin.members.destroy')
 
         router.get('/rendez-vous', [() => import('#controllers/admin_appointments_controller'), 'index']).as('admin.rendez-vous')
+        router.get('/rendez-vous/print', [() => import('#controllers/admin_appointments_controller'), 'print']).as('admin.rendez-vous.print')
         router.put('/rendez-vous/:id', [() => import('#controllers/admin_appointments_controller'), 'update']).as('admin.rendez-vous.update')
         router.patch('/rendez-vous/:id/reschedule', [() => import('#controllers/admin_appointments_controller'), 'reschedule']).as('admin.rendez-vous.reschedule')
         router.delete('/rendez-vous/:id', [() => import('#controllers/admin_appointments_controller'), 'destroy']).as('admin.rendez-vous.destroy')

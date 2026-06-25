@@ -32,6 +32,12 @@ export default function AdminAppointments({ appointments: initialAppointments = 
   const [currentPage, setCurrentPage] = useState(1)
   const perPage = 15
 
+  // ── Modal d'impression ─────────────────────────────────────
+  const [printModal, setPrintModal] = useState(false)
+  const [printPeriod, setPrintPeriod] = useState<'jour' | 'semaine' | 'mois' | 'annee'>('mois')
+  const [printRef, setPrintRef] = useState(() => new Date().toISOString().slice(0, 7))
+  const [printStatus, setPrintStatus] = useState<'all' | 'confirmed' | 'pending' | 'cancelled'>('all')
+
   // ── Reschedule modal ───────────────────────────────────────
   const [rescheduleTarget, setRescheduleTarget] = useState<Appointment | null>(null)
   const rescheduleForm = useForm({ appointmentDate: '', appointmentTime: '' })
@@ -139,7 +145,7 @@ export default function AdminAppointments({ appointments: initialAppointments = 
             </div>
           </div>
           <button
-            onClick={() => window.print()}
+            onClick={() => setPrintModal(true)}
             className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border border-slate-700 shadow-lg"
           >
             <Printer size={16} /> Imprimer la liste
@@ -252,6 +258,141 @@ export default function AdminAppointments({ appointments: initialAppointments = 
           )}
         </div>
       </AdminLayout>
+
+      {/* ══════════════════════════════════════════════════════
+          MODAL — FILTRE D'IMPRESSION
+      ══════════════════════════════════════════════════════ */}
+      {printModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+              <div>
+                <h3 className="text-white font-bold flex items-center gap-2">
+                  <Printer size={16} className="text-primary" /> Imprimer les rendez-vous
+                </h3>
+                <p className="text-slate-400 text-xs mt-0.5">Choisissez la période à imprimer</p>
+              </div>
+              <button
+                onClick={() => setPrintModal(false)}
+                className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-5">
+              {/* Sélection de la période */}
+              <div>
+                <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-2 block">
+                  Période
+                </label>
+                <div className="grid grid-cols-4 gap-2">
+                  {(['jour', 'semaine', 'mois', 'annee'] as const).map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => {
+                        setPrintPeriod(p)
+                        const today = new Date()
+                        if (p === 'jour')    setPrintRef(today.toISOString().slice(0, 10))
+                        if (p === 'semaine') setPrintRef(today.toISOString().slice(0, 10))
+                        if (p === 'mois')    setPrintRef(today.toISOString().slice(0, 7))
+                        if (p === 'annee')   setPrintRef(String(today.getFullYear()))
+                      }}
+                      className={`py-2 rounded-xl text-xs font-semibold capitalize transition-all border ${
+                        printPeriod === p
+                          ? 'bg-primary border-primary text-white'
+                          : 'bg-slate-800 border-slate-700 text-slate-300 hover:border-primary/50'
+                      }`}
+                    >
+                      {p === 'annee' ? 'Année' : p.charAt(0).toUpperCase() + p.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Input de référence dynamique selon la période */}
+              <div>
+                <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-2 block">
+                  {printPeriod === 'jour'    && 'Date'}
+                  {printPeriod === 'semaine' && 'N\'importe quel jour de la semaine'}
+                  {printPeriod === 'mois'    && 'Mois'}
+                  {printPeriod === 'annee'   && 'Année'}
+                </label>
+
+                {(printPeriod === 'jour' || printPeriod === 'semaine') && (
+                  <input
+                    type="date"
+                    value={printRef}
+                    onChange={(e) => setPrintRef(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors"
+                  />
+                )}
+
+                {printPeriod === 'mois' && (
+                  <input
+                    type="month"
+                    value={printRef}
+                    onChange={(e) => setPrintRef(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors"
+                  />
+                )}
+
+                {printPeriod === 'annee' && (
+                  <input
+                    type="number"
+                    min="2000"
+                    max="2100"
+                    value={printRef}
+                    onChange={(e) => setPrintRef(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors"
+                  />
+                )}
+              </div>
+
+              {/* Filtre par statut */}
+              <div>
+                <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-2 block">
+                  Statut
+                </label>
+                <select
+                  value={printStatus}
+                  onChange={(e) => setPrintStatus(e.target.value as any)}
+                  className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors cursor-pointer"
+                >
+                  <option value="all">Tous les rendez-vous</option>
+                  <option value="confirmed">Confirmés seulement</option>
+                  <option value="pending">En attente seulement</option>
+                  <option value="cancelled">Annulés seulement</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex gap-3 px-6 pb-6">
+              <button
+                type="button"
+                onClick={() => setPrintModal(false)}
+                className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-sm transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const url = `/admin/rendez-vous/print?period=${printPeriod}&ref=${encodeURIComponent(printRef)}&status=${printStatus}`
+                  window.open(url, '_blank')
+                  setPrintModal(false)
+                }}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition-colors"
+              >
+                <Printer size={14} /> Générer l'impression
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ══════════════════════════════════════════════════════
           MODAL — MODIFIER DATE & HEURE

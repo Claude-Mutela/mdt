@@ -90,7 +90,9 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
 
   return (
     <>
-      <Head title="Agenda des Cultes - Phila Maison de Témoignages" />
+      <Head title="Agenda des Cultes - Phila Maison de Témoignages">
+        <meta name="description" content="Consultez l'agenda et le programme de nos cultes, réunions de prière hebdomadaires et célébrations spéciales à la Phila Maison de Témoignages." />
+      </Head>
 
       <main className="min-h-screen bg-background-off pb-20">
         {/* Hero Section */}

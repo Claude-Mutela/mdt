@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, Head } from '@inertiajs/react';
 import { PlayCircle, ExternalLink } from 'lucide-react';
 
 interface Video {
@@ -67,7 +67,11 @@ const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
   return (
-    <div className="bg-background-off min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <>
+      <Head title="Médias — Phila MDT">
+        <meta name="description" content="Découvrez nos enseignements en vidéo, podcasts audio et reportages photo pour nourrir votre vie spirituelle." />
+      </Head>
+      <div className="bg-background-off min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
       <div className="bg-white pt-20 pb-12 border-b border-[#EAE5DF]">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
@@ -200,6 +204,7 @@ const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
         </div>
       )}
     </div>
+    </>
   );
 };
 

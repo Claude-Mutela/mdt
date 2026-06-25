@@ -128,7 +128,9 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
 
   return (
     <>
-      <Head title="Contactez-nous — Phila MDT" />
+      <Head title="Contactez-nous — Phila MDT">
+        <meta name="description" content="Une question, une suggestion ou besoin d'informations ? Contactez l'équipe de la Phila Maison de Témoignages (MDT)." />
+      </Head>
       <div className="bg-background-off min-h-screen animate-in fade-in slide-in-from-left-4 duration-700">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-20">
 

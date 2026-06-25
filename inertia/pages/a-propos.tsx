@@ -46,7 +46,9 @@ const faqs = [
 export default function About() {
   return (
     <>
-      <Head title="À propos - Phila Maison de Témoignages" />
+      <Head title="À propos - Phila Maison de Témoignages">
+        <meta name="description" content="Découvrez l'histoire, la vision, la mission et les valeurs fondamentales de la Phila Maison de Témoignages (MDT)." />
+      </Head>
       <main>
         <HeroAbout />
 

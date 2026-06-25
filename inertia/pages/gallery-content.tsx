@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, Head } from '@inertiajs/react';
 import { Maximize2, X, ChevronLeft, ChevronRight, ArrowLeft, Images } from 'lucide-react';
 
 interface GalleryImage {
@@ -35,7 +35,11 @@ const GalleryContent: React.FC<{ album?: Album }> = ({ album }) => {
     setSelectedIdx((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
 
   return (
-    <div className="min-h-screen bg-white animate-in fade-in duration-700">
+    <>
+      <Head title={`${album.title} — Galerie — Phila MDT`}>
+        <meta name="description" content={`Découvrez l'album photos "${album.title}" de la Phila Maison de Témoignages et parcourez les moments clés en images.`} />
+      </Head>
+      <div className="min-h-screen bg-white animate-in fade-in duration-700">
       {/* Header */}
       <section className="bg-primary text-white py-20 px-4">
         <div className="max-w-7xl mx-auto">
@@ -131,6 +135,7 @@ const GalleryContent: React.FC<{ album?: Album }> = ({ album }) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

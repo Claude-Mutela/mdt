@@ -1,6 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Search, Video, Image as ImageIcon, Music, FileText, Filter, ChevronRight, ExternalLink } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 import { MediaItem, MediaType } from '../../types';
 
 function isYoutubeUrl(url: string): boolean {
@@ -139,7 +140,11 @@ const AllContent: React.FC<{ items?: MediaItem[] }> = ({ items = [] }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-background-off animate-in fade-in duration-500">
+    <>
+      <Head title="Médiathèque — Phila MDT">
+        <meta name="description" content="Explorez l'ensemble de nos ressources spirituelles classées par catégorie : vidéos, audios, photos, et documents d'édification." />
+      </Head>
+      <div className="min-h-screen bg-background-off animate-in fade-in duration-500">
       <section className="bg-white border-b border-[#EAE5DF] pt-20 pb-12">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
@@ -300,6 +305,7 @@ const AllContent: React.FC<{ items?: MediaItem[] }> = ({ items = [] }) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

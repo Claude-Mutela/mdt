@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, Head } from '@inertiajs/react';
 import { Images, ChevronRight } from 'lucide-react';
 
 interface Album {
@@ -13,7 +13,11 @@ interface Album {
 
 const Gallery: React.FC<{ albums?: Album[] }> = ({ albums = [] }) => {
   return (
-    <div className="min-h-screen bg-white animate-in fade-in duration-700">
+    <>
+      <Head title="Galerie Photos — Phila MDT">
+        <meta name="description" content="Parcourez les témoignages visuels de la vie de notre église à travers nos albums photos." />
+      </Head>
+      <div className="min-h-screen bg-white animate-in fade-in duration-700">
       {/* Hero */}
       <section className="bg-primary text-white py-24 text-center px-4">
         <div className="max-w-3xl mx-auto space-y-6">
@@ -76,6 +80,7 @@ const Gallery: React.FC<{ albums?: Album[] }> = ({ albums = [] }) => {
         )}
       </section>
     </div>
+    </>
   );
 };
 

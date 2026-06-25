@@ -138,7 +138,9 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
 
   return (
     <>
-      <Head title="Rendez-vous Pastoral — Phila MDT" />
+      <Head title="Rendez-vous Pastoral — Phila MDT">
+        <meta name="description" content="Prenez rendez-vous avec votre pasteur à la Phila Maison de Témoignages pour un entretien pastoral, un accompagnement spirituel ou une prière." />
+      </Head>
       <main>
         {/* ── Hero Section ── */}
         <section className="relative pt-32 pb-24 overflow-hidden bg-[#1C1613]">

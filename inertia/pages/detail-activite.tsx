@@ -18,7 +18,9 @@ interface Props {
 export default function DetailActivite({ activity }: Props) {
   return (
     <>
-      <Head title={`${activity.name} - MDT`} />
+      <Head title={`${activity.name} — Phila MDT`}>
+        <meta name="description" content={activity.desc ? activity.desc.slice(0, 160) : `Découvrez le ministère "${activity.name}" de la Phila Maison de Témoignages.`} />
+      </Head>
       
       <main className="bg-white min-h-screen">
         {/* Banner / Hero */}

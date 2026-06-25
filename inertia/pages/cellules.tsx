@@ -146,7 +146,9 @@ export default function Cellules({ cellules = [] }: Props) {
 
   return (
     <>
-      <Head title="Nos Cellules de Maison — Phila MDT" />
+      <Head title="Nos Cellules de Maison — Phila MDT">
+        <meta name="description" content="Rejoignez une cellule de maison de la Phila MDT près de chez vous pour grandir dans la foi, la prière et la communion fraternelle." />
+      </Head>
       <main className="bg-background-off min-h-screen">
         {/* ── Hero Section ── */}
         <section className="relative pt-32 pb-24 overflow-hidden bg-[#1C1613]">

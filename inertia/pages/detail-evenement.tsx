@@ -26,7 +26,9 @@ export default function DetailEvenement({ event }: Props) {
 
   return (
     <>
-      <Head title={`${event.title} - Phila Maison de Témoignages`} />
+      <Head title={`${event.title} - Phila Maison de Témoignages`}>
+        <meta name="description" content={event.description ? event.description.slice(0, 160) : `Détails de l'événement "${event.title}" organisé par la Phila Maison de Témoignages.`} />
+      </Head>
       
       <main className="bg-white min-h-screen">
         {/* Banner Section */}

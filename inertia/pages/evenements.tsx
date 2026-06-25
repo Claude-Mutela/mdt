@@ -45,7 +45,9 @@ export default function Evenements({ events }: Props) {
 
   return (
     <>
-      <Head title="Événements - Phila Maison de Témoignages" />
+      <Head title="Événements - Phila Maison de Témoignages">
+        <meta name="description" content="Découvrez tous les événements, conférences, séminaires et célébrations organisés par la Phila Maison de Témoignages." />
+      </Head>
       
       <main className="min-h-screen bg-background-off">
         {/* Hero Section */}

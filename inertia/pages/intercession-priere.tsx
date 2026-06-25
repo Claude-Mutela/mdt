@@ -29,7 +29,9 @@ export default function IntercessionPriere() {
 
   return (
     <>
-      <Head title="Demande de Prière — Phila MDT" />
+      <Head title="Demande de Prière — Phila MDT">
+        <meta name="description" content="Soumettez votre demande de prière à l'équipe d'intercession de la Phila Maison de Témoignages. Nous prions avec vous." />
+      </Head>
       <main>
         {/* ── Hero Section ── */}
         <section className="relative pt-32 pb-24 overflow-hidden bg-[#1C1613]">

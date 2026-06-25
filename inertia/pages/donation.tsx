@@ -39,7 +39,9 @@ const Donation: React.FC = () => {
 
   return (
     <>
-      <Head title="Donation - Phila Maison de Témoignages" />
+      <Head title="Donation - Phila Maison de Témoignages">
+        <meta name="description" content="Soutenez l'œuvre de Dieu et les actions sociales de la Phila Maison de Témoignages en faisant un don en ligne sécurisé." />
+      </Head>
       <div className="bg-background-off min-h-screen animate-in fade-in slide-in-from-bottom-6 duration-700 pb-24">
         
         {/* Hero Section */}

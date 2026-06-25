@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, Head } from '@inertiajs/react';
 import { ArrowRight, User } from 'lucide-react';
 import CloudinaryImage from '~/components/CloudinaryImage';
 
@@ -33,7 +33,11 @@ interface Props {
 
 const Activities: React.FC<Props> = ({ ministries = [], responsibles = [] }) => {
   return (
-    <div className="bg-white min-h-screen animate-in fade-in slide-in-from-right-4 duration-700">
+    <>
+      <Head title="Nos Ministères — Phila MDT">
+        <meta name="description" content="Découvrez les différents ministères de la Phila Maison de Témoignages (MDT) et trouvez votre place pour servir et grandir dans la foi." />
+      </Head>
+      <div className="bg-white min-h-screen animate-in fade-in slide-in-from-right-4 duration-700">
       {/* Hero Banner */}
       <section className="relative h-[450px] flex items-center justify-center p-6 text-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -146,6 +150,7 @@ const Activities: React.FC<Props> = ({ ministries = [], responsibles = [] }) => 
         </section>
       )}
     </div>
+    </>
   );
 };
 

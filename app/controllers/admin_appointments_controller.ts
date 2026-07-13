@@ -146,9 +146,43 @@ export default class AdminAppointmentsController {
           appointment.appointmentTime
         )
 
-        session.flash('success', 'Rendez-vous confirmé. Les e-mails de notification ont été envoyés au client et au pasteur.')
-      } else if (payload.status === 'cancelled') {
-        session.flash('success', 'Le rendez-vous a été marqué comme annulé.')
+        // 3. Envoyer un e-mail de confirmation au secrétariat
+        await BrevoService.sendAppointmentConfirmedToSecretariat(
+          appointment.firstName,
+          appointment.lastName,
+          appointment.phone,
+          appointment.email,
+          appointment.reason,
+          appointment.format === 'presentiel' ? 'Présentiel' : 'En ligne',
+          dateStr,
+          appointment.appointmentTime
+        )
+
+        session.flash('success', 'Rendez-vous confirmé. Les e-mails de notification ont été envoyés au client, au pasteur et au secrétariat.')
+      } else if (payload.status === 'cancelled' && oldStatus !== 'cancelled') {
+        const dateStr = appointment.appointmentDate.toFormat('dd/MM/yyyy')
+
+        // 1. Envoyer un e-mail d'annulation au client si son e-mail est renseigné
+        if (appointment.email) {
+          await BrevoService.sendAppointmentCancelledToClient(
+            appointment.email,
+            appointment.firstName,
+            appointment.lastName,
+            dateStr,
+            appointment.appointmentTime
+          )
+        }
+
+        // 2. Envoyer un e-mail d'annulation au secrétariat
+        await BrevoService.sendAppointmentCancelledToSecretariat(
+          appointment.firstName,
+          appointment.lastName,
+          appointment.reason,
+          dateStr,
+          appointment.appointmentTime
+        )
+
+        session.flash('success', 'Le rendez-vous a été marqué comme annulé. Les e-mails de notification d\'annulation ont été envoyés.')
       } else {
         session.flash('success', 'Statut du rendez-vous mis à jour avec succès.')
       }

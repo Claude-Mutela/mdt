@@ -14,8 +14,6 @@ export default class AdminDashboardController {
     const now = DateTime.now()
     const startOfMonth = now.startOf('month')
     const endOfMonth = now.endOf('month')
-    const startOfYear = now.startOf('year')
-    const endOfYear = now.endOf('year')
 
     // 1. Membres actifs
     const activeMembersCountResult = await Member.query()
@@ -148,7 +146,7 @@ export default class AdminDashboardController {
     // 9. Calcul du solde net des finances et des statistiques des nouveaux venus
     const { netUsd, netCdf } = await this.getNetFinanceBalances()
     const { newNewcomersCount, newcomersDelta, monthlyBars, annualGrowthStr, allYearsData, availableYears } =
-      await this.getNewcomersStats(now, startOfYear, endOfYear)
+      await this.getNewcomersStats(now)
 
     const stats = [
       { label: 'Membres actifs', value: activeMembersCount.toLocaleString('fr-FR'), delta: membersDelta },
@@ -203,7 +201,7 @@ export default class AdminDashboardController {
    * calcule la croissance des nouveaux venus pour le graphique mensuel pour TOUTES les années,
    * ainsi que le pourcentage de croissance annuelle.
    */
-  private async getNewcomersStats(now: DateTime, startOfYear: DateTime, endOfYear: DateTime) {
+  private async getNewcomersStats(now: DateTime) {
     const startOfMonth = now.startOf('month')
     const endOfMonth = now.endOf('month')
     const startOfPreviousMonth = now.minus({ months: 1 }).startOf('month')

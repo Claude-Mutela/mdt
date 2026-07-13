@@ -460,4 +460,213 @@ export class BrevoService {
     `
     await this.send(pastorEmail, 'Pasteur Phila', subject, htmlContent)
   }
+
+  /**
+   * Envoie un e-mail de notification au secrétariat concernant une nouvelle demande de rendez-vous.
+   */
+  static async sendAppointmentRequestToSecretariat(
+    clientFirstName: string,
+    clientLastName: string,
+    clientPhone: string,
+    clientEmail: string | null,
+    reason: string,
+    format: string,
+    date: string,
+    time: string
+  ) {
+    const secretariatEmail = env.get('SECRETARIAT_EMAIL')
+    if (!secretariatEmail) {
+      console.warn('[BrevoService] SECRETARIAT_EMAIL non défini. Notification de demande au secrétariat ignorée.')
+      return
+    }
+
+    const subject = `[Rendez-vous] Nouvelle demande — ${clientFirstName} ${clientLastName}`
+    const htmlContent = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #ea580c; border-bottom: 2px solid #ea580c; padding-bottom: 10px;">Nouvelle demande de rendez-vous reçue</h2>
+        <p>Bonjour,</p>
+        <p>Un visiteur a soumis une demande de rendez-vous pastoral sur le site Phila MDT.</p>
+        
+        <div style="background-color: #fff7ed; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ea580c;">
+          <h3 style="margin-top: 0; color: #9a3412;">Détails de la demande :</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold; width: 150px;">Visiteur :</td>
+              <td style="padding: 5px 0;">${clientFirstName} ${clientLastName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Téléphone :</td>
+              <td style="padding: 5px 0;"><a href="tel:${clientPhone}">${clientPhone}</a></td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">E-mail :</td>
+              <td style="padding: 5px 0;">${clientEmail ? `<a href="mailto:${clientEmail}">${clientEmail}</a>` : 'Non fourni'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Date & Heure souhaitées :</td>
+              <td style="padding: 5px 0;">Le ${date} à ${time}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Format souhaité :</td>
+              <td style="padding: 5px 0; text-transform: capitalize;">${format}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Motif :</td>
+              <td style="padding: 5px 0;">${reason}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <p>Veuillez vous rendre dans l'espace d'administration pour traiter cette demande.</p>
+        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
+          Ceci est une notification automatique de votre application.<br>
+          <strong>Phila MDT</strong>
+        </p>
+      </div>
+    `
+    await this.send(secretariatEmail, 'Secrétariat Phila', subject, htmlContent)
+  }
+
+  /**
+   * Envoie un e-mail de notification au secrétariat concernant un rendez-vous confirmé.
+   */
+  static async sendAppointmentConfirmedToSecretariat(
+    clientFirstName: string,
+    clientLastName: string,
+    clientPhone: string,
+    clientEmail: string | null,
+    reason: string,
+    format: string,
+    date: string,
+    time: string
+  ) {
+    const secretariatEmail = env.get('SECRETARIAT_EMAIL')
+    if (!secretariatEmail) {
+      console.warn('[BrevoService] SECRETARIAT_EMAIL non défini. Notification de confirmation au secrétariat ignorée.')
+      return
+    }
+
+    const subject = `[Rendez-vous] Confirmé — ${clientFirstName} ${clientLastName}`
+    const htmlContent = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #16a34a; border-bottom: 2px solid #16a34a; padding-bottom: 10px;">Rendez-vous pastoral confirmé</h2>
+        <p>Bonjour,</p>
+        <p>Le rendez-vous pastoral suivant a été confirmé.</p>
+        
+        <div style="background-color: #f0fdf4; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #16a34a;">
+          <h3 style="margin-top: 0; color: #14532d;">Détails du rendez-vous :</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold; width: 150px;">Date & Heure :</td>
+              <td style="padding: 5px 0; font-weight: bold; color: #14532d;">Le ${date} à ${time}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Format :</td>
+              <td style="padding: 5px 0; text-transform: capitalize;">${format}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Visiteur :</td>
+              <td style="padding: 5px 0;">${clientFirstName} ${clientLastName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Téléphone :</td>
+              <td style="padding: 5px 0;"><a href="tel:${clientPhone}">${clientPhone}</a></td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">E-mail :</td>
+              <td style="padding: 5px 0;">${clientEmail ? `<a href="mailto:${clientEmail}">${clientEmail}</a>` : 'Non fourni'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Motif :</td>
+              <td style="padding: 5px 0;">${reason}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
+          Ceci est une notification automatique de votre application.<br>
+          <strong>Phila MDT</strong>
+        </p>
+      </div>
+    `
+    await this.send(secretariatEmail, 'Secrétariat Phila', subject, htmlContent)
+  }
+
+  /**
+   * Envoie un e-mail d'annulation de rendez-vous au client.
+   */
+  static async sendAppointmentCancelledToClient(
+    email: string,
+    firstName: string,
+    lastName: string,
+    date: string,
+    time: string
+  ) {
+    const subject = 'Votre rendez-vous pastoral est annulé - Phila MDT'
+    const htmlContent = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">Rendez-vous pastoral annulé</h2>
+        <p>Bonjour <strong>${firstName} ${lastName}</strong>,</p>
+        <p>Nous vous informons que votre rendez-vous pastoral initialement prévu le <strong>${date}</strong> à <strong>${time}</strong> a été <strong>annulé</strong>.</p>
+        
+        <p>Pour planifier une nouvelle rencontre, nous vous invitons à soumettre une nouvelle demande via <a href="https://philamdt.church/rendez-vous">notre site web</a> ou à contacter directement le secrétariat.</p>
+        
+        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
+          Que Dieu vous bénisse,<br>
+          <strong>L'équipe Phila MDT</strong>
+        </p>
+      </div>
+    `
+    await this.send(email, `${firstName} ${lastName}`, subject, htmlContent)
+  }
+
+  /**
+   * Envoie un e-mail de notification au secrétariat concernant un rendez-vous annulé.
+   */
+  static async sendAppointmentCancelledToSecretariat(
+    clientFirstName: string,
+    clientLastName: string,
+    reason: string,
+    date: string,
+    time: string
+  ) {
+    const secretariatEmail = env.get('SECRETARIAT_EMAIL')
+    if (!secretariatEmail) {
+      console.warn('[BrevoService] SECRETARIAT_EMAIL non défini. Notification d\'annulation au secrétariat ignorée.')
+      return
+    }
+
+    const subject = `[Rendez-vous] Annulé — ${clientFirstName} ${clientLastName}`
+    const htmlContent = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">Rendez-vous pastoral annulé</h2>
+        <p>Bonjour,</p>
+        <p>Le rendez-vous pastoral suivant a été marqué comme <strong>annulé</strong> dans le système.</p>
+        
+        <div style="background-color: #fef2f2; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #dc2626;">
+          <h3 style="margin-top: 0; color: #991b1b;">Détails du rendez-vous annulé :</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold; width: 150px;">Visiteur :</td>
+              <td style="padding: 5px 0;">${clientFirstName} ${clientLastName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Date & Heure prévues :</td>
+              <td style="padding: 5px 0;">Le ${date} à ${time}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Motif :</td>
+              <td style="padding: 5px 0;">${reason}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
+          Ceci est une notification automatique de votre application.<br>
+          <strong>Phila MDT</strong>
+        </p>
+      </div>
+    `
+    await this.send(secretariatEmail, 'Secrétariat Phila', subject, htmlContent)
+  }
 }

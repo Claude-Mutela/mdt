@@ -73,17 +73,29 @@ export default class AppointmentsController {
         status: 'pending',
       })
 
-      // Envoyer un e-mail de confirmation de réception via Brevo si un e-mail a été renseigné
+      // Formater le format de manière lisible pour les e-mails
+      const prettyFormat = payload.format === 'presentiel'
+        ? 'Présentiel'
+        : payload.format === 'enligne'
+          ? 'En ligne (Appel vidéo)'
+          : 'En ligne (Appel vocal)'
+
+      const dateStr = appointmentDate.toFormat('dd/MM/yyyy')
+
+      // 1. Envoyer un e-mail de notification au secrétariat
+      await BrevoService.sendAppointmentRequestToSecretariat(
+        appointment.firstName,
+        appointment.lastName,
+        appointment.phone,
+        appointment.email,
+        appointment.reason,
+        prettyFormat,
+        dateStr,
+        appointment.appointmentTime
+      )
+
+      // 2. Envoyer un e-mail de confirmation de réception au client si un e-mail a été renseigné
       if (appointment.email) {
-        // Formater le format de manière lisible pour le mail
-        const prettyFormat = payload.format === 'presentiel'
-          ? 'Présentiel'
-          : payload.format === 'enligne'
-            ? 'En ligne (Appel vidéo)'
-            : 'En ligne (Appel vocal)'
-
-        const dateStr = appointmentDate.toFormat('dd/MM/yyyy')
-
         await BrevoService.sendReceptionConfirmation(
           appointment.email,
           appointment.firstName,

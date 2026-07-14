@@ -15,8 +15,11 @@ const Donation: React.FC = () => {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const westernUnion = { id: 'wu1', name: 'Western Union / MoneyGram', beneficiary: 'PHILA MDT', phone: '+243000000000', city: 'Kinshasa', country: 'RDC' };
-  const equity = { id: 'eq1', name: 'EQUITY BCDC', accountName: 'PHILA MDT', accountNumber: '00011 050 233 2000 6931 7219', swift: 'EQBCDCXXXX' };
+  const westernUnion = { id: 'wu1', name: 'Western Union / MoneyGram', beneficiary: 'Prisca MASSAMBA MALUENGO' };
+  const equity = { id: 'eq1', name: 'EQUITY BCDC', accountName: 'PHILA MDT', accountNumberUSD: '500200204667272', accountNumberCDF: '500200204987954', accountNumberEUR: '500200204992804', swift: 'BCDCCDKI' };
+  const vodacom = { id: 'mm1', operateur1: 'M-Pesa', phoneNumber: '243832000083', beneficiary:'Prisca MASSAMBA' };
+  const orange = { id: 'mm2', operateur1: 'Orange Money', phoneNumber: '243892100089', beneficiary:'Prisca MASSAMBA' };
+  const airtel = { id: 'mm3', operateur1: 'Airtel Money', phoneNumber: '243982000089', beneficiary:'Prisca MASSAMBA' };
 
   const faqs = [
     {
@@ -183,8 +186,35 @@ const Donation: React.FC = () => {
                   <div className="space-y-2">
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Numéro de Compte (USD)</p>
                     <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                      <span className="font-black text-slate-900 font-mono tracking-wider break-all">{equity.accountNumber}</span>
-                      <button onClick={() => handleCopy(equity.accountNumber, equity.id)} className={`p-2 rounded-lg transition-all ${copied === equity.id ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
+                      <span className="font-black text-slate-900 font-mono tracking-wider break-all">{equity.accountNumberUSD}</span>
+                      <button onClick={() => handleCopy(equity.accountNumberUSD, equity.id)} className={`p-2 rounded-lg transition-all ${copied === equity.id ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
+                        {copied === equity.id ? <Check size={16}/> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Numéro de Compte (CDF)</p>
+                    <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                      <span className="font-black text-slate-900 font-mono tracking-wider break-all">{equity.accountNumberCDF}</span>
+                      <button onClick={() => handleCopy(equity.accountNumberCDF, equity.id)} className={`p-2 rounded-lg transition-all ${copied === equity.id ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
+                        {copied === equity.id ? <Check size={16}/> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Numéro de Compte (EUR)</p>
+                    <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                      <span className="font-black text-slate-900 font-mono tracking-wider break-all">{equity.accountNumberEUR}</span>
+                      <button onClick={() => handleCopy(equity.accountNumberEUR, equity.id)} className={`p-2 rounded-lg transition-all ${copied === equity.id ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
+                        {copied === equity.id ? <Check size={16}/> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">CODE SWIFT</p>
+                    <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                      <span className="font-black text-slate-900 font-mono tracking-wider break-all">{equity.swift}</span>
+                      <button onClick={() => handleCopy(equity.swift, equity.id)} className={`p-2 rounded-lg transition-all ${copied === equity.id ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
                         {copied === equity.id ? <Check size={16}/> : <Copy size={16} />}
                       </button>
                     </div>
@@ -204,29 +234,36 @@ const Donation: React.FC = () => {
                 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Bénéficiaire</p>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{vodacom.operateur1} | Bénéficiaire: {vodacom.beneficiary}</p>
                     <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                      <span className="font-bold text-slate-700">{westernUnion.beneficiary}</span>
-                      <button onClick={() => handleCopy(westernUnion.beneficiary, westernUnion.id)} className={`p-2 rounded-lg transition-all ${copied === westernUnion.id ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
-                        {copied === westernUnion.id ? <Check size={16}/> : <Copy size={16} />}
+                      <span className="font-bold text-slate-700">{ vodacom.phoneNumber}</span>
+                      <button onClick={() => handleCopy(vodacom.phoneNumber, vodacom.id)} className={`p-2 rounded-lg transition-all ${copied === vodacom.id ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
+                        {copied === vodacom.id ? <Check size={16}/> : <Copy size={16} />}
                       </button>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Ville / Pays</p>
-                      <p className="font-bold text-slate-700 p-4 rounded-xl bg-slate-50 border border-slate-100">{westernUnion.city}, {westernUnion.country}</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Téléphone</p>
-                      <div className="flex items-center justify-between gap-2 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                        <span className="font-bold text-slate-700 font-mono tracking-wider truncate">{westernUnion.phone}</span>
-                        <button onClick={() => handleCopy(westernUnion.phone, westernUnion.id + 'phone')} className={`p-2 rounded-lg transition-all flex-shrink-0 ${copied === westernUnion.id + 'phone' ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
-                          {copied === westernUnion.id + 'phone' ? <Check size={16}/> : <Copy size={16} />}
-                        </button>
-                      </div>
+
+                   <div className="space-y-2">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{vodacom.operateur1} | Bénéficiaire: {orange.beneficiary} </p>
+                    <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                      <span className="font-bold text-slate-700">{orange.phoneNumber}</span>
+                      <button onClick={() => handleCopy(orange.phoneNumber, orange.id)} className={`p-2 rounded-lg transition-all ${copied === orange.id ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
+                        {copied === orange.id ? <Check size={16}/> : <Copy size={16} />}
+                      </button>
                     </div>
                   </div>
+                  
+                  <div className="space-y-2">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{airtel.operateur1} | Bénéficiaire: {airtel.beneficiary} </p>
+                    <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                      <span className="font-bold text-slate-700">{airtel.phoneNumber}</span>
+                      <button onClick={() => handleCopy(airtel.phoneNumber, airtel.id)} className={`p-2 rounded-lg transition-all ${copied === airtel.id ? 'bg-emerald-500 text-white' : 'bg-white text-primary hover:bg-primary hover:text-white shadow-sm'}`}>
+                        {copied === airtel.id ? <Check size={16}/> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  </div>                  
+                  
+                  
                 </div>
               </div>
             </div>

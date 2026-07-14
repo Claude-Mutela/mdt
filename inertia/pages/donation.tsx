@@ -104,7 +104,8 @@ const Donation: React.FC = () => {
             </div>
             
             <div className="max-w-3xl mx-auto bg-white rounded-[40px] shadow-2xl p-8 md:p-12 border border-slate-100">
-              <div className="space-y-10">
+              <p className="text-primary font-bold text-center max-w-2xl mx-auto">Paiement en ligne pas encore disponible. Veuillez utiliser nos coordonnées bancaires. ou mobile money ci-dessous</p>
+              {/* <div className="space-y-10">
                 <div className="space-y-6">
                   <h3 className="text-xl font-bold font-serif text-slate-900">1. Choisissez un montant</h3>
                   <div className="flex gap-4">
@@ -151,7 +152,7 @@ const Donation: React.FC = () => {
                     Paiement 100% sécurisé et crypté
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </section>
 

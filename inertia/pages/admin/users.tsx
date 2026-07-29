@@ -5,7 +5,7 @@ import Pagination from '../../components/Pagination'
 import { Plus, Search, Filter, Pencil, Trash2, X, Check, ShieldCheck } from 'lucide-react'
 
 type Role = 'admin' | 'superadmin' | 'user' | 'pasteur' | 'tresorier' | 'financier' | 'mdtcom' | 'administration' | 'porte_integration'
-type Statut = 'actif' | 'inactif' | 'suspendu'
+type Statut = 'en_attente' | 'actif' | 'inactif' | 'suspendu'
 
 interface Utilisateur {
   id: number
@@ -25,7 +25,13 @@ interface UsersProps {
 }
 
 const ROLES = ['Tous', 'admin', 'user', 'pasteur', 'superadmin', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration']
-const STATUTS = ['Tous', 'actif', 'inactif', 'suspendu']
+const STATUTS = [
+  { value: 'Tous', label: 'Tous' },
+  { value: 'en_attente', label: 'En attente' },
+  { value: 'actif', label: 'Actif' },
+  { value: 'inactif', label: 'Inactif' },
+  { value: 'suspendu', label: 'Suspendu' },
+]
 
 export default function AdminUsers({ users }: UsersProps) {
   const [search, setSearch]         = useState('')
@@ -40,7 +46,7 @@ export default function AdminUsers({ users }: UsersProps) {
     email: '',
     password: '',
     role: 'user' as Role,
-    status: 'actif' as Statut
+    status: 'en_attente' as Statut
   })
 
   const usersList = users.data || []
@@ -123,10 +129,21 @@ export default function AdminUsers({ users }: UsersProps) {
 
   const getStatutBadge = (statut: Statut) => {
     switch (statut) {
+      case 'en_attente': return 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
       case 'actif': return 'bg-green-500/10 text-green-400 border border-green-500/20'
       case 'inactif': return 'bg-slate-700 text-slate-400 border border-slate-600'
       case 'suspendu': return 'bg-red-500/10 text-red-400 border border-red-500/20'
       default: return 'bg-slate-700 text-slate-400 border border-slate-600'
+    }
+  }
+
+  const getStatutLabel = (statut: string) => {
+    switch (statut) {
+      case 'en_attente': return 'En attente'
+      case 'actif': return 'Actif'
+      case 'inactif': return 'Inactif'
+      case 'suspendu': return 'Suspendu'
+      default: return statut
     }
   }
 
@@ -154,9 +171,9 @@ export default function AdminUsers({ users }: UsersProps) {
             </select>
             <select
               value={filtreStatut} onChange={(e) => setFiltreStatut(e.target.value)}
-              className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-primary capitalize"
+              className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-primary"
             >
-              {STATUTS.map((s) => <option key={s} value={s}>{s}</option>)}
+              {STATUTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
             </select>
           </div>
           <button onClick={openAdd} className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-primary/20">
@@ -192,7 +209,6 @@ export default function AdminUsers({ users }: UsersProps) {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-white font-medium whitespace-nowrap">{u.firstname} {u.lastname}</span>
-                          {/* Optionnel : afficher le full_name s'il est différent ou utile */}
                         </div>
                       </div>
                     </td>
@@ -204,7 +220,7 @@ export default function AdminUsers({ users }: UsersProps) {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider ${getStatutBadge(u.status)}`}>
-                        {u.status}
+                        {getStatutLabel(u.status)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -293,7 +309,7 @@ export default function AdminUsers({ users }: UsersProps) {
                     />
                     {errors.password && <span className="text-red-500 text-xs mt-1 block">{errors.password}</span>}
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className={modal === 'edit' ? "grid grid-cols-2 gap-4" : "block"}>
                     <div>
                       <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Rôle</label>
                       <select 
@@ -304,16 +320,20 @@ export default function AdminUsers({ users }: UsersProps) {
                         {ROLES.filter(r => r !== 'Tous').map((r) => <option key={r} value={r}>{r}</option>)}
                       </select>
                     </div>
-                    <div>
-                      <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Statut</label>
-                      <select 
-                        value={data.status} 
-                        onChange={(e) => setData('status', e.target.value as Statut)}
-                        className="w-full mt-1.5 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-primary transition-colors capitalize"
-                      >
-                        {STATUTS.filter(s => s !== 'Tous').map((s) => <option key={s} value={s}>{s}</option>)}
-                      </select>
-                    </div>
+                    {modal === 'edit' && (
+                      <div>
+                        <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Statut</label>
+                        <select 
+                          value={data.status} 
+                          onChange={(e) => setData('status', e.target.value as Statut)}
+                          className="w-full mt-1.5 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-primary transition-colors"
+                        >
+                          {STATUTS.filter(s => s.value !== 'Tous').map((s) => (
+                            <option key={s.value} value={s.value as Statut}>{s.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-800/20">
@@ -353,3 +373,4 @@ export default function AdminUsers({ users }: UsersProps) {
     </>
   )
 }
+

@@ -10,7 +10,7 @@ export const createUserValidator = vine.compile(
     email: vine.string().email().unique({ table: 'users', column: 'email' }),
     password: vine.string().minLength(8),
     role: vine.enum(['admin', 'user', 'pasteur', 'superadmin', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration'] as const),
-    status: vine.enum(['actif', 'inactif', 'suspendu'] as const),
+    status: vine.enum(['en_attente', 'actif', 'inactif', 'suspendu'] as const).optional(),
   })
 )
 
@@ -33,6 +33,7 @@ export const updateUserValidator = vine.compile(
     }),
     password: vine.string().minLength(8).optional(),
     role: vine.enum(['admin', 'user', 'pasteur', 'superadmin', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration'] as const),
-    status: vine.enum(['actif', 'inactif', 'suspendu'] as const),
+    status: vine.enum(['en_attente', 'actif', 'inactif', 'suspendu'] as const),
   })
 )
+

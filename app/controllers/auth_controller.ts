@@ -3,6 +3,7 @@ import { HttpContext } from '@adonisjs/core/http'
 import { RecaptchaService } from '#services/recaptcha_service'
 import env from '#start/env'
 import { errors as vineErrors } from '@vinejs/vine'
+import { DateTime } from 'luxon'
 
 export default class AuthController {
   /**
@@ -37,8 +38,13 @@ export default class AuthController {
       // 2. Vérifier les identifiants
       const user = await User.verifyCredentials(email, password)
 
-      // 3. Vérifier si l'utilisateur est actif
-      if (user.status !== 'actif') {
+      // 3. Vérifier le statut de l'utilisateur
+      if (user.status === 'en_attente') {
+        session.flash('inputErrorsBag', {
+          auth: "Votre compte n'est pas encore activé. Veuillez vérifier vos e-mails et cliquer sur le lien de validation.",
+        })
+        return response.redirect().back()
+      } else if (user.status !== 'actif') {
         session.flash('inputErrorsBag', {
           auth: 'Votre compte est inactif ou suspendu. Veuillez contacter un administrateur.',
         })
@@ -75,4 +81,30 @@ export default class AuthController {
     await auth.use('web').logout()
     return response.redirect().toPath('/login')
   }
-}
+
+  /**
+   * Vérification de l'adresse e-mail / activation de compte via URL signée
+   */
+  async verifyEmail({ request, params, response, session }: HttpContext) {
+    if (!request.hasValidSignature()) {
+      session.flash('error', 'Le lien de validation est invalide ou a expiré.')
+      return response.redirect().toPath('/login')
+    }
+
+    const user = await User.find(params.id)
+    if (!user) {
+      session.flash('error', 'Utilisateur introuvable.')
+      return response.redirect().toPath('/login')
+    }
+
+    user.status = 'actif'
+    if (!user.emailVerifiedAt) {
+      user.emailVerifiedAt = DateTime.now()
+    }
+    await user.save()
+
+    session.flash('success', 'Votre compte a été vérifié et activé avec succès. Vous pouvez maintenant vous connecter.')
+    return response.redirect().toPath('/login')
+  }
+
+}

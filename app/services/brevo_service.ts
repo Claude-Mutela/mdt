@@ -669,4 +669,103 @@ export class BrevoService {
     `
     await this.send(secretariatEmail, 'Secrétariat Phila', subject, htmlContent)
   }
+
+  /**
+   * Envoie un e-mail à l'utilisateur lors de la création de son compte avec ses identifiants et le lien de validation.
+   */
+  static async sendUserAccountCreated(
+    email: string,
+    name: string,
+    defaultPassword: string,
+    verificationUrl: string
+  ) {
+    const subject = 'Bienvenue sur Phila MDT — Activation de votre compte'
+    const htmlContent = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #ea580c; border-bottom: 2px solid #ea580c; padding-bottom: 10px;">Bienvenue sur Phila MDT</h2>
+        <p>Bonjour <strong>${name}</strong>,</p>
+        <p>Votre compte utilisateur a été créé avec succès par un administrateur. Voici vos accès de connexion :</p>
+        
+        <div style="background-color: #f9fafb; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ea580c;">
+          <h3 style="margin-top: 0; color: #475569;">Vos identifiants de connexion :</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold; width: 180px;">Adresse e-mail :</td>
+              <td style="padding: 5px 0;">${email}</td>
+            </tr>
+            <tr>
+              <td style="padding: 5px 0; font-weight: bold;">Mot de passe par défaut :</td>
+              <td style="padding: 5px 0; font-family: monospace; background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">${defaultPassword}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div style="background-color: #fffbebf1; border: 1px solid #fcd34d; padding: 12px; border-radius: 8px; margin: 20px 0;">
+          <p style="margin: 0; font-size: 0.9em; color: #92400e;">
+            🔒 <strong>Recommandation de sécurité :</strong> Veuillez modifier votre mot de passe dès votre première connexion dans la section <strong>Paramètres de votre compte</strong>.
+          </p>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verificationUrl}" style="background-color: #ea580c; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Activer et Valider mon compte</a>
+        </div>
+
+        <p style="font-size: 0.85em; color: #64748b;">
+          Si le bouton ne fonctionne pas, vous pouvez copier et coller le lien suivant dans votre navigateur :<br>
+          <a href="${verificationUrl}" style="color: #ea580c;">${verificationUrl}</a>
+        </p>
+
+        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
+          Que Dieu vous bénisse,<br>
+          <strong>L'équipe Phila MDT</strong>
+        </p>
+      </div>
+    `
+    await this.send(email, name, subject, htmlContent)
+  }
+
+  /**
+   * Envoie une notification e-mail à l'utilisateur lors de la mise à jour de son compte.
+   */
+  static async sendUserAccountUpdated(email: string, name: string) {
+    const subject = 'Notification — Mise à jour de votre compte Phila MDT'
+    const htmlContent = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">Mise à jour de votre compte</h2>
+        <p>Bonjour <strong>${name}</strong>,</p>
+        <p>Nous vous informons que les informations relatives à votre compte utilisateur sur l'application <strong>Phila MDT</strong> ont été mises à jour par un administrateur.</p>
+        
+        <p>Si vous n'êtes pas à l'origine de cette demande ou si vous constatez une anomalie, veuillez contacter immédiatement l'administration.</p>
+        
+        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
+          Cordialement,<br>
+          <strong>L'équipe Phila MDT</strong>
+        </p>
+      </div>
+    `
+    await this.send(email, name, subject, htmlContent)
+  }
+
+  /**
+   * Envoie une notification e-mail à l'utilisateur lors de la suppression de son compte.
+   */
+  static async sendUserAccountDeleted(email: string, name: string) {
+    const subject = 'Notification — Fermeture de votre compte Phila MDT'
+    const htmlContent = `
+      <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+        <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">Compte supprimé</h2>
+        <p>Bonjour <strong>${name}</strong>,</p>
+        <p>Nous vous informons que votre compte utilisateur sur l'application <strong>Phila MDT</strong> a été supprimé par un administrateur.</p>
+        
+        <p>Si vous pensez qu'il s'agit d'une erreur, veuillez contacter l'administration de Phila MDT.</p>
+        
+        <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.9em; color: #666;">
+          Cordialement,<br>
+          <strong>L'équipe Phila MDT</strong>
+        </p>
+      </div>
+    `
+    await this.send(email, name, subject, htmlContent)
+  }
 }
+

@@ -12,9 +12,9 @@ export default class extends BaseSchema {
       table.string('email', 254).notNullable().unique()
       table.string('password').notNullable()
       table
-        .enu('status', ['actif', 'inactif', 'suspendu'])
+        .enu('status', ['en attente', 'actif', 'inactif', 'suspendu'])
         .notNullable()
-        .defaultTo('actif')
+        .defaultTo('en attente')
       table
         .enu('role', ['admin', 'user', 'pasteur', 'superadmin'])
         .notNullable()

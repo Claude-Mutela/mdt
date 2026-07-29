@@ -37,7 +37,9 @@ router
   })
   .use(middleware.guest())
 
+router.get('/verifier-compte/:id', [() => import('#controllers/auth_controller'), 'verifyEmail']).as('auth.verify_email')
 router.post('logout', [() => import('#controllers/auth_controller'), 'logout']).as('logout').use(middleware.auth())
+
 
 /* ── Admin routes ─────────────────────────────────────────────────── */
 router

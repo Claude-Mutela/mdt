@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { Head, Link } from '@inertiajs/react'
+import { FC, useEffect, useRef, useState, useCallback } from 'react'
+import { Head, Link, router } from '@inertiajs/react'
 import { ArrowRight, Calendar, Clock, MapPin, Mail, Play } from 'lucide-react'
 
 /* ── Types globaux reCAPTCHA ─────────────────────────────────────── */
 declare global {
   interface Window {
     grecaptcha: {
-      render: (container: HTMLElement, params: object) => number
-      reset: (widgetId: number) => void
-      getResponse: (widgetId: number) => string
+      render: (container: string | HTMLElement, params: object) => number
+      reset: (widgetId?: number) => void
+      getResponse: (widgetId?: number) => string
+      execute: (widgetId?: number) => void
     }
     onRecaptchaLoad: () => void
   }
@@ -41,7 +42,6 @@ const CulteCard = ({ day, title, description, time, location, highlight = false,
   )
 }
 
-import type { FC } from 'react'
 import CloudinaryImage from '~/components/CloudinaryImage'
 
 interface HeroAsset {
@@ -94,15 +94,22 @@ function isYoutubeUrl(url: string): boolean {
   return url.includes('youtube.com') || url.includes('youtu.be')
 }
 
-function getYoutubeEmbedUrl(url: string): string {
-  // https://www.youtube.com/watch?v=ID => https://www.youtube.com/embed/ID
-  // https://youtu.be/ID => https://www.youtube.com/embed/ID
-  let videoId = ''
+function getYoutubeVideoId(url: string): string | null {
   const watchMatch = url.match(/[?&]v=([^&#]+)/)
   const shortMatch = url.match(/youtu\.be\/([^?&#]+)/)
-  if (watchMatch) videoId = watchMatch[1]
-  else if (shortMatch) videoId = shortMatch[1]
-  return videoId ? `https://www.youtube.com/embed/${videoId}` : url
+  if (watchMatch) return watchMatch[1]
+  if (shortMatch) return shortMatch[1]
+  return null
+}
+
+function getYoutubeEmbedUrl(url: string): string {
+  const id = getYoutubeVideoId(url)
+  return id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1` : url
+}
+
+function getYoutubeThumbnail(url: string): string {
+  const id = getYoutubeVideoId(url)
+  return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : ''
 }
 function getCloudinaryUrl(url: string, transformations: string): string {
   if (!url) return ''
@@ -123,6 +130,79 @@ const DAYS_FR: Record<string, string> = {
   '5': 'Vendredi', '6': 'Samedi', '7': 'Dimanche'
 }
 
+/* ── Composant façade YouTube ─────────────────────────────────────────────
+ * Affiche une vignette cliquable (img.youtube.com) à la place de l'iframe.
+ * L'iframe ne se charge que lors du clic, évitant tout appel réseau
+ * vers youtube.com / google.com au chargement de la page.
+ * ────────────────────────────────────────────────────────────────────── */
+const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
+  const [playing, setPlaying] = useState(false)
+  const thumbnail = getYoutubeThumbnail(url)
+  const embedSrc  = getYoutubeEmbedUrl(url)
+
+  return (
+    <div className="aspect-video relative bg-black">
+      {playing ? (
+        <iframe
+          className="absolute inset-0 w-full h-full"
+          src={embedSrc}
+          title={title}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setPlaying(true)}
+          className="absolute inset-0 w-full h-full group/play focus:outline-none"
+          aria-label={`Lire la vidéo : ${title}`}
+        >
+          {/* Vignette */}
+          {thumbnail ? (
+            <img
+              src={thumbnail}
+              alt={title}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover/play:scale-105"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-slate-900 to-slate-800" />
+          )}
+
+          {/* Overlay sombre */}
+          <div className="absolute inset-0 bg-black/30 group-hover/play:bg-black/10 transition-colors duration-300" />
+
+          {/* Bouton Play */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xl
+                            group-hover/play:scale-110 group-hover/play:bg-white transition-all duration-300">
+              {/* Triangle play YouTube-style */}
+              <svg
+                className="w-8 h-8 text-primary ml-1"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Badge YouTube */}
+          <div className="absolute bottom-4 right-4 flex items-center gap-1.5 bg-black/70 backdrop-blur-sm
+                          text-white text-xs font-bold px-3 py-1.5 rounded-full">
+            <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z" />
+            </svg>
+            Regarder sur YouTube
+          </div>
+        </button>
+      )}
+    </div>
+  )
+}
+
 const Home: FC<{
   activeHero: HeroAsset | null
   lastPreach: LastPreach | null
@@ -139,6 +219,8 @@ const Home: FC<{
   const [newsletterToken, setNewsletterToken]   = useState('')
   const [newsletterEmail, setNewsletterEmail]   = useState('')
   const [newsletterSent,  setNewsletterSent]    = useState(false)
+  const [newsletterError, setNewsletterError]   = useState<string | null>(null)
+  const [newsletterLoading, setNewsletterLoading] = useState(false)
 
   const renderNewsletterWidget = useCallback(() => {
     if (!newsletterRecaptchaRef.current || !recaptchaSiteKey || newsletterWidgetRef.current !== null) return
@@ -172,8 +254,33 @@ const Home: FC<{
   function handleNewsletterSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!newsletterEmail) return
-    // TODO: brancher le vrai appel backend
-    setNewsletterSent(true)
+    if (newsletterLoading) return
+
+    setNewsletterError(null)
+    setNewsletterLoading(true)
+
+    router.post(
+      '/newsletter',
+      { email: newsletterEmail, recaptchaToken: newsletterToken },
+      {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+          setNewsletterSent(true)
+          setNewsletterLoading(false)
+        },
+        onError: () => {
+          setNewsletterError('Une erreur est survenue. Veuillez réessayer.')
+          setNewsletterLoading(false)
+          // Reset du widget reCAPTCHA
+          if (recaptchaSiteKey && newsletterWidgetRef.current !== null) {
+            window.grecaptcha.reset(newsletterWidgetRef.current)
+            setNewsletterToken('')
+          }
+        },
+        onFinish: () => setNewsletterLoading(false),
+      }
+    )
   }
 
   useEffect(() => {
@@ -332,16 +439,10 @@ const Home: FC<{
               {/* Lecteur média */}
               <div className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black max-w-5xl mx-auto">
                 {lastPreach.url && lastPreach.format === 'video' && isYoutubeUrl(lastPreach.url) ? (
-                  <div className="aspect-video">
-                    <iframe
-                      className="w-full h-full"
-                      src={getYoutubeEmbedUrl(lastPreach.url)}
-                      title={lastPreach.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
-                  </div>
+                  <YoutubeFacade
+                    url={lastPreach.url}
+                    title={lastPreach.title}
+                  />
                 ) : lastPreach.url && lastPreach.format === 'video' ? (
                   <div className="aspect-video">
                     <video
@@ -832,11 +933,24 @@ const Home: FC<{
 
                   <button
                     type="submit"
-                    disabled={!!recaptchaSiteKey && !newsletterToken}
-                    className="w-full px-6 py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={(!!recaptchaSiteKey && !newsletterToken) || newsletterLoading}
+                    className="w-full px-6 py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    S'inscrire
+                    {newsletterLoading ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                        </svg>
+                        Envoi en cours…
+                      </>
+                    ) : "S'inscrire"}
                   </button>
+
+                  {/* Message d'erreur */}
+                  {newsletterError && (
+                    <p className="text-xs text-red-300 text-center">{newsletterError}</p>
+                  )}
 
                   <p className="text-xs text-white/60 text-center">
                     Nous respectons votre vie privée. Vous pouvez vous désabonner à tout moment.

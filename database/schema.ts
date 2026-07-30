@@ -528,6 +528,25 @@ export class NewcomerSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class NewsletterSchema extends BaseModel {
+  static $columns = ['confirmedAt', 'createdAt', 'email', 'id', 'status', 'token', 'updatedAt'] as const
+  $columns = NewsletterSchema.$columns
+  @column.dateTime()
+  declare confirmedAt: DateTime | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare email: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare status: string | null
+  @column()
+  declare token: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class UserSchema extends BaseModel {
   static $columns = ['createdAt', 'email', 'emailVerifiedAt', 'firstname', 'fullName', 'id', 'lastname', 'password', 'role', 'status', 'updatedAt'] as const
   $columns = UserSchema.$columns

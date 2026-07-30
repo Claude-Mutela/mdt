@@ -767,5 +767,104 @@ export class BrevoService {
     `
     await this.send(email, name, subject, htmlContent)
   }
+
+  /**
+   * Envoie l'e-mail de confirmation d'abonnement à la newsletter.
+   * L'abonné doit cliquer sur le lien pour activer son abonnement.
+   */
+  static async sendNewsletterConfirmation(email: string, confirmUrl: string) {
+    const subject = 'Confirmez votre abonnement à la Newsletter Phila MDT'
+    const htmlContent = `
+      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 0; border-radius: 12px; overflow: hidden; border: 1px solid #eee;">
+
+        <!-- En-tête -->
+        <div style="background: linear-gradient(135deg, #C35100 0%, #a03e00 100%); padding: 36px 32px; text-align: center;">
+          <h1 style="margin: 0; color: #ffffff; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px;">
+            Phila Maison de Témoignages
+          </h1>
+          <p style="margin: 8px 0 0; color: rgba(255,255,255,0.8); font-size: 0.9rem;">Newsletter</p>
+        </div>
+
+        <!-- Corps -->
+        <div style="padding: 36px 32px; background: #ffffff;">
+          <h2 style="color: #C35100; font-size: 1.3rem; margin-top: 0;">
+            Confirmez votre abonnement ✉️
+          </h2>
+
+          <p style="line-height: 1.7; color: #444;">
+            Merci de vous être inscrit(e) à la newsletter de <strong>Phila MDT</strong> !
+          </p>
+          <p style="line-height: 1.7; color: #444;">
+            Pour commencer à recevoir nos actualités, nos mots d'encouragement et nos annonces,
+            veuillez confirmer votre adresse e-mail en cliquant sur le bouton ci-dessous.
+          </p>
+
+          <!-- Bouton de confirmation -->
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="${confirmUrl}"
+               style="display: inline-block; background: #C35100; color: #ffffff; text-decoration: none;
+                      font-weight: 700; font-size: 1rem; padding: 14px 36px; border-radius: 8px;
+                      letter-spacing: 0.3px;">
+              ✅ Confirmer mon abonnement
+            </a>
+          </div>
+
+          <p style="line-height: 1.7; color: #888; font-size: 0.85rem;">
+            Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :<br>
+            <a href="${confirmUrl}" style="color: #C35100; word-break: break-all;">${confirmUrl}</a>
+          </p>
+
+          <p style="line-height: 1.7; color: #888; font-size: 0.85rem;">
+            Si vous n'avez pas demandé cet abonnement, ignorez simplement cet e-mail.
+          </p>
+        </div>
+
+        <!-- Pied de page -->
+        <div style="background: #f9f9f9; border-top: 1px solid #eee; padding: 20px 32px; text-align: center;">
+          <p style="margin: 0; font-size: 0.8rem; color: #aaa;">
+            © ${new Date().getFullYear()} Phila Maison de Témoignages — Tous droits réservés.
+          </p>
+        </div>
+      </div>
+    `
+    await this.send(email, email, subject, htmlContent)
+  }
+
+  /**
+   * Ajoute ou met à jour un abonné dans la liste des contacts Brevo.
+   * Permet d'envoyer des campagnes e-mail (Newsletters) directement depuis l'interface Brevo.
+   */
+  static async syncContactToBrevo(email: string) {
+    const apiKey = env.get('BREVO_API_KEY')
+
+    if (!apiKey) {
+      console.warn('[BrevoService] BREVO_API_KEY manquante. Synchronisation du contact Brevo ignorée.')
+      return
+    }
+
+    try {
+      const response = await fetch('https://api.brevo.com/v3/contacts', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'api-key': apiKey,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          updateEnabled: true,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`[BrevoService] Échec de la création du contact ${email} dans Brevo. Status: ${response.status}. Erreur: ${errorText}`)
+      } else {
+        console.log(`[BrevoService] Contact ${email} ajouté/mis à jour avec succès dans les contacts Brevo.`)
+      }
+    } catch (error) {
+      console.error('[BrevoService] Erreur lors de l\'ajout du contact dans Brevo:', error)
+    }
+  }
 }
 

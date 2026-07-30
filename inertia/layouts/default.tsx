@@ -21,12 +21,13 @@ export default function Layout({ children }: { children: ReactElement<any> }) {
   const { url, props } = usePage<any>()
 
   useEffect(() => {
-    toast.dismiss()
-  }, [url])
-
-  if (props.flash?.error) {
-    toast.error(props.flash.error)
-  }
+    if (props.flash?.success) {
+      toast.success(props.flash.success)
+    }
+    if (props.flash?.error) {
+      toast.error(props.flash.error)
+    }
+  }, [props.flash, url])
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-slate-900 bg-background-off relative">

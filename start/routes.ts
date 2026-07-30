@@ -29,6 +29,10 @@ router.post('/rendez-vous', [() => import('#controllers/appointments_controller'
 router.on('/donation').renderInertia('donation', {}).as('donation')
 router.on('/intercession-priere').renderInertia('intercession-priere', {}).as('intercession')
 
+/* ── Newsletter publique ──────────────────────────────────────────── */
+router.post('/newsletter', [() => import('#controllers/newsletter_controller'), 'store']).as('newsletter.store')
+router.get('/newsletter/confirmer', [() => import('#controllers/newsletter_controller'), 'confirm']).as('newsletter.confirm')
+
 /* ── Auth routes ──────────────────────────────────────────────────── */
 router
   .group(() => {
@@ -115,7 +119,8 @@ router
         router.put('/cellules/:id', [() => import('#controllers/admin_cellules_controller'), 'update']).as('admin.cellules.update')
         router.delete('/cellules/:id', [() => import('#controllers/admin_cellules_controller'), 'destroy']).as('admin.cellules.destroy')
 
-        router.on('/newsletter').renderInertia('admin/newsletter', {}).as('admin.newsletter')
+        router.get('/newsletter', [() => import('#controllers/admin_newsletter_controller'), 'index']).as('admin.newsletter')
+        router.delete('/newsletter/:id', [() => import('#controllers/admin_newsletter_controller'), 'destroy']).as('admin.newsletter.destroy')
       })
       .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur', 'mdtcom'] }))
 

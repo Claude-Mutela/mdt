@@ -1,85 +1,95 @@
-import { Head } from '@inertiajs/react'
+import { Head, router } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
-import { Search, Filter, Mail, Users, UserCheck, UserX, Download, Calendar } from 'lucide-react'
+import { Search, Filter, Mail, Users, UserCheck, Clock, Download, Calendar, Trash2 } from 'lucide-react'
 
-type StatutAbonne = 'actif' | 'inactif'
+type StatutAbonne = 'actif' | 'en_attente'
 
 interface Abonne {
   id: number
   email: string
-  statut: StatutAbonne
-  dateInscription: string
+  status: StatutAbonne
+  createdAt: string
+  confirmedAt: string | null
 }
 
-/* ── Données de démonstration ──────────────────────────── */
-const initialData: Abonne[] = [
-  { id: 1,  email: 'jean.mbala@gmail.com',        statut: 'actif',   dateInscription: '2025-01-15' },
-  { id: 2,  email: 'sarah.lukusa@outlook.com',     statut: 'actif',   dateInscription: '2025-01-22' },
-  { id: 3,  email: 'pastor.phila@mdt.cd',          statut: 'inactif', dateInscription: '2025-02-03' },
-  { id: 4,  email: 'esperance.nzombi@gmail.com',   statut: 'actif',   dateInscription: '2025-02-10' },
-  { id: 5,  email: 'paul.ilunga@yahoo.fr',         statut: 'actif',   dateInscription: '2025-02-18' },
-  { id: 6,  email: 'grace.mutombo@gmail.com',      statut: 'inactif', dateInscription: '2025-03-01' },
-  { id: 7,  email: 'daniel.kasongo@hotmail.com',   statut: 'actif',   dateInscription: '2025-03-12' },
-  { id: 8,  email: 'miriam.tshiama@gmail.com',     statut: 'actif',   dateInscription: '2025-03-20' },
-  { id: 9,  email: 'pierre.luyindula@gmail.com',   statut: 'actif',   dateInscription: '2025-03-28' },
-  { id: 10, email: 'rachel.ngalula@outlook.com',   statut: 'inactif', dateInscription: '2025-04-05' },
-  { id: 11, email: 'emile.bofala@gmail.com',       statut: 'actif',   dateInscription: '2025-04-11' },
-  { id: 12, email: 'amour.kitenge@gmail.com',      statut: 'actif',   dateInscription: '2025-04-19' },
-  { id: 13, email: 'solange.mbeki@yahoo.fr',       statut: 'inactif', dateInscription: '2025-04-25' },
-  { id: 14, email: 'josue.nkosi@gmail.com',        statut: 'actif',   dateInscription: '2025-05-02' },
-  { id: 15, email: 'naomi.tshimanga@gmail.com',    statut: 'actif',   dateInscription: '2025-05-09' },
-  { id: 16, email: 'caleb.mwamba@mdt.cd',          statut: 'actif',   dateInscription: '2025-05-15' },
-  { id: 17, email: 'deborah.kabila@outlook.com',   statut: 'inactif', dateInscription: '2025-05-21' },
-  { id: 18, email: 'ezechiel.banda@gmail.com',     statut: 'actif',   dateInscription: '2025-06-01' },
-  { id: 19, email: 'lydie.ngandu@gmail.com',       statut: 'actif',   dateInscription: '2025-06-07' },
-  { id: 20, email: 'samuel.kayumba@hotmail.com',   statut: 'actif',   dateInscription: '2025-06-14' },
-]
+interface PaginationMeta {
+  total: number
+  perPage: number
+  currentPage: number
+  lastPage: number
+  firstPage: number
+}
 
-/* ── Formateur de date ─────────────────────────────────── */
-function formatDate(dateStr: string) {
+interface Stats {
+  total: number
+  actifs: number
+  attente: number
+}
+
+interface Filters {
+  search: string
+  statut: 'Tous' | StatutAbonne
+}
+
+function formatDate(dateStr: string | null) {
+  if (!dateStr) return '—'
   const d = new Date(dateStr)
   return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
 }
 
-export default function AdminNewsletter() {
-  const [search, setSearch] = useState('')
-  const [filtreStatut, setFiltreStatut] = useState<StatutAbonne | 'Tous'>('Tous')
-  const [currentPage, setCurrentPage] = useState(1)
-  const perPage = 10
+export default function AdminNewsletter({
+  subscribers,
+  stats,
+  filters,
+}: {
+  subscribers: { data: Abonne[]; meta: PaginationMeta }
+  stats: Stats
+  filters: Filters
+}) {
+  const [search, setSearch]           = useState(filters.search ?? '')
+  const [filtreStatut, setFiltreStatut] = useState<StatutAbonne | 'Tous'>(filters.statut ?? 'Tous')
+  const [deletingId, setDeletingId]   = useState<number | null>(null)
 
-  /* ── Filtrage ── */
-  const filtered = initialData.filter((a) => {
-    const matchSearch = a.email.toLowerCase().includes(search.toLowerCase())
-    const matchStatut = filtreStatut === 'Tous' || a.statut === filtreStatut
-    return matchSearch && matchStatut
-  })
+  const data = subscribers?.data ?? []
+  const meta: PaginationMeta = subscribers?.meta ?? { total: 0, perPage: 15, currentPage: 1, lastPage: 1, firstPage: 1 }
 
-  /* ── Pagination ── */
-  const total = filtered.length
-  const lastPage = Math.max(1, Math.ceil(total / perPage))
-  const paginatedData = filtered.slice((currentPage - 1) * perPage, currentPage * perPage)
-  const meta = { total, perPage, currentPage, lastPage, firstPage: 1 }
-
-  /* ── Stats ── */
-  const totalAll = initialData.length
-  const totalActifs = initialData.filter(a => a.statut === 'actif').length
-  const totalInactifs = initialData.filter(a => a.statut === 'inactif').length
-
-  const handleFilterChange = (statut: StatutAbonne | 'Tous') => {
-    setFiltreStatut(statut)
-    setCurrentPage(1)
+  /* ── Recherche / Filtre (côté serveur) ── */
+  function applyFilters(newSearch: string, newStatut: StatutAbonne | 'Tous') {
+    router.get('/admin/newsletter', { search: newSearch, statut: newStatut }, {
+      preserveState: true,
+      preserveScroll: true,
+    })
   }
 
   const handleSearch = (value: string) => {
     setSearch(value)
-    setCurrentPage(1)
+    applyFilters(value, filtreStatut)
   }
 
-  /* ── Faux export CSV ── */
+  const handleFilterChange = (statut: StatutAbonne | 'Tous') => {
+    setFiltreStatut(statut)
+    applyFilters(search, statut)
+  }
+
+  /* ── Suppression ── */
+  const handleDelete = (id: number) => {
+    if (!confirm('Supprimer cet abonné ? Cette action est irréversible.')) return
+    setDeletingId(id)
+    router.delete(`/admin/newsletter/${id}`, {
+      onFinish: () => setDeletingId(null),
+    })
+  }
+
+  /* ── Export CSV ── */
   const handleExport = () => {
-    const rows = ['Email,Statut,Date Inscription', ...filtered.map(a => `${a.email},${a.statut},${a.dateInscription}`)]
+    const rows = [
+      'Email,Statut,Date Inscription,Confirmation',
+      ...data.map(a =>
+        `${a.email},${a.status === 'actif' ? 'Actif' : 'En attente'},${formatDate(a.createdAt)},${formatDate(a.confirmedAt)}`
+      ),
+    ]
     const blob = new Blob([rows.join('\n')], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -103,7 +113,7 @@ export default function AdminNewsletter() {
             </div>
             <div>
               <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">Total abonnés</p>
-              <p className="text-3xl font-black text-white">{totalAll}</p>
+              <p className="text-3xl font-black text-white">{stats?.total ?? 0}</p>
             </div>
           </div>
 
@@ -113,27 +123,27 @@ export default function AdminNewsletter() {
               <UserCheck size={22} className="text-emerald-400" />
             </div>
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">Actifs</p>
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">Confirmés</p>
               <div className="flex items-end gap-2">
-                <p className="text-3xl font-black text-white">{totalActifs}</p>
+                <p className="text-3xl font-black text-white">{stats?.actifs ?? 0}</p>
                 <p className="text-xs text-emerald-400 font-bold mb-1">
-                  {totalAll > 0 ? Math.round((totalActifs / totalAll) * 100) : 0}%
+                  {(stats?.total ?? 0) > 0 ? Math.round(((stats?.actifs ?? 0) / stats.total) * 100) : 0}%
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Inactifs */}
+          {/* En attente */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
-              <UserX size={22} className="text-red-400" />
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+              <Clock size={22} className="text-amber-400" />
             </div>
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">Inactifs</p>
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">En attente</p>
               <div className="flex items-end gap-2">
-                <p className="text-3xl font-black text-white">{totalInactifs}</p>
-                <p className="text-xs text-red-400 font-bold mb-1">
-                  {totalAll > 0 ? Math.round((totalInactifs / totalAll) * 100) : 0}%
+                <p className="text-3xl font-black text-white">{stats?.attente ?? 0}</p>
+                <p className="text-xs text-amber-400 font-bold mb-1">
+                  {(stats?.total ?? 0) > 0 ? Math.round(((stats?.attente ?? 0) / stats.total) * 100) : 0}%
                 </p>
               </div>
             </div>
@@ -162,8 +172,8 @@ export default function AdminNewsletter() {
               className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:border-primary capitalize transition-colors"
             >
               <option value="Tous">Tous les statuts</option>
-              <option value="actif">Actif</option>
-              <option value="inactif">Inactif</option>
+              <option value="actif">Confirmés</option>
+              <option value="en_attente">En attente</option>
             </select>
           </div>
 
@@ -185,7 +195,7 @@ export default function AdminNewsletter() {
             <h2 className="text-white font-bold flex items-center gap-2">
               <Mail size={18} className="text-primary" />
               Liste des Abonnés
-              <span className="text-slate-400 font-normal text-sm">({total})</span>
+              <span className="text-slate-400 font-normal text-sm">({meta.total})</span>
             </h2>
           </div>
 
@@ -193,7 +203,7 @@ export default function AdminNewsletter() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-800 bg-slate-800/30">
-                  {['Adresse Email', 'Statut', 'Date d\'inscription'].map((h) => (
+                  {['Adresse Email', 'Statut', 'Date d\'inscription', 'Confirmation', 'Actions'].map((h) => (
                     <th key={h} className="text-left text-slate-400 font-semibold px-6 py-3 text-xs uppercase tracking-wider whitespace-nowrap">
                       {h}
                     </th>
@@ -201,7 +211,7 @@ export default function AdminNewsletter() {
                 </tr>
               </thead>
               <tbody>
-                {paginatedData.map((a) => (
+                {data.map((a) => (
                   <tr key={a.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
                     {/* Email */}
                     <td className="px-6 py-3.5">
@@ -216,29 +226,53 @@ export default function AdminNewsletter() {
                     {/* Statut */}
                     <td className="px-6 py-3.5">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider ${
-                        a.statut === 'actif'
+                        a.status === 'actif'
                           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                          : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${a.statut === 'actif' ? 'bg-emerald-400' : 'bg-red-400'}`} />
-                        {a.statut === 'actif' ? 'Actif' : 'Inactif'}
+                        <span className={`w-1.5 h-1.5 rounded-full ${a.status === 'actif' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                        {a.status === 'actif' ? 'Confirmé' : 'En attente'}
                       </span>
                     </td>
 
-                    {/* Date */}
+                    {/* Date inscription */}
                     <td className="px-6 py-3.5">
                       <div className="flex items-center gap-2 text-slate-400">
                         <Calendar size={13} className="shrink-0" />
-                        <span>{formatDate(a.dateInscription)}</span>
+                        <span>{formatDate(a.createdAt)}</span>
                       </div>
+                    </td>
+
+                    {/* Date confirmation */}
+                    <td className="px-6 py-3.5">
+                      {a.confirmedAt ? (
+                        <div className="flex items-center gap-2 text-emerald-400">
+                          <Calendar size={13} className="shrink-0" />
+                          <span>{formatDate(a.confirmedAt)}</span>
+                        </div>
+                      ) : (
+                        <span className="text-slate-600 text-xs italic">Non confirmé</span>
+                      )}
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-6 py-3.5">
+                      <button
+                        onClick={() => handleDelete(a.id)}
+                        disabled={deletingId === a.id}
+                        title="Supprimer"
+                        className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </td>
                   </tr>
                 ))}
 
                 {/* État vide */}
-                {paginatedData.length === 0 && (
+                {data.length === 0 && (
                   <tr>
-                    <td colSpan={3} className="px-6 py-16 text-center">
+                    <td colSpan={5} className="px-6 py-16 text-center">
                       <div className="flex flex-col items-center gap-3">
                         <div className="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center">
                           <Mail size={24} className="text-slate-600" />
@@ -256,7 +290,7 @@ export default function AdminNewsletter() {
           {/* Pagination */}
           <Pagination
             meta={meta}
-            onPageChange={(p) => setCurrentPage(p)}
+            onPageChange={(p) => router.get('/admin/newsletter', { search, statut: filtreStatut, page: p }, { preserveState: true, preserveScroll: true })}
           />
         </div>
 

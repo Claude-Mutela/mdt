@@ -77,8 +77,12 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
+          # Mot de passe root identique à celui utilisé dans .env (DB_PASSWORD=root)
           MYSQL_ROOT_PASSWORD: root
+          # Base dédiée aux tests — évite de toucher la base de dev
           MYSQL_DATABASE: mdt_test
+          MYSQL_USER: mdt_ci
+          MYSQL_PASSWORD: mdt_ci_password
         ports:
           - 3306:3306
         options: >-
@@ -96,22 +100,30 @@ jobs:
       APP_KEY: ${{ secrets.APP_KEY }}
       APP_URL: http://localhost:3333
       SESSION_DRIVER: cookie
+      # ── Base de données (root / root — identique au .env local) ───────────
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: root
       DB_DATABASE: mdt_test
+      # ── Cloudinary (stub pour les tests) ──────────────────────────────────
       CLOUDINARY_CLOUD_NAME: test
       CLOUDINARY_API_KEY: test
       CLOUDINARY_API_SECRET: test
+      CLOUDINARY_URL: cloudinary://test:test@test
+      # ── Brevo — Rendez-vous pastoral (stub) ───────────────────────────────
       BREVO_API_KEY: test
       BREVO_SENDER_EMAIL: test@test.com
       BREVO_SENDER_NAME: Test
       PASTOR_EMAIL: pastor@test.com
+      # ── Brevo — Contact & Newsletter (stub) ───────────────────────────────
       CONTACT_BREVO_API_KEY: test
       CONTACT_SENDER_EMAIL: contact@test.com
       CONTACT_SENDER_NAME: Test
       SECRETARIAT_EMAIL: secretariat@test.com
+      # ── reCAPTCHA v2 (clés de test Google — toujours valides en test) ─────
+      RECAPTCHA_SITE_KEY: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+      RECAPTCHA_SECRET_KEY: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
 
     steps:
       - name: Checkout du code source

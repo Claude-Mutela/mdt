@@ -15,11 +15,7 @@ export default class extends BaseSchema {
 
   async down() {
     this.schema.alterTable(this.tableName, (table) => {
-      table
-        .enu('status', ['actif', 'inactif', 'suspendu'])
-        .notNullable()
-        .defaultTo('actif')
-        .alter()
+      table.enu('status', ['actif', 'inactif', 'suspendu']).notNullable().defaultTo('actif').alter()
     })
   }
 }

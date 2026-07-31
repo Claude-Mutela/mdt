@@ -15,10 +15,7 @@ export default class extends BaseSchema {
         .enu('status', ['en attente', 'actif', 'inactif', 'suspendu'])
         .notNullable()
         .defaultTo('en attente')
-      table
-        .enu('role', ['admin', 'user', 'pasteur', 'superadmin'])
-        .notNullable()
-        .defaultTo('user')
+      table.enu('role', ['admin', 'user', 'pasteur', 'superadmin']).notNullable().defaultTo('user')
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()
     })

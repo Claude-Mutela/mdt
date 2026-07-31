@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.integer('operation_id').unsigned().notNullable()
       table.enum('action', ['CREATE', 'UPDATE', 'DELETE']).notNullable()
-      
+
       // Données sérialisées en JSON
       table.json('old_values').nullable()
       table.json('new_values').nullable()

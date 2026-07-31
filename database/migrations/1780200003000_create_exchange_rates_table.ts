@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.string('devise_source', 3).notNullable()
       table.string('devise_cible', 3).notNullable().defaultTo('USD')
       table.decimal('taux', 12, 4).notNullable()
-      
+
       table.timestamp('created_at').nullable()
       table.timestamp('updated_at').nullable()
 

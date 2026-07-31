@@ -64,10 +64,10 @@ export default class Event extends BaseModel {
     await this.query()
       .whereNot('status', 'annule')
       .whereNot('status', 'termine')
-      .andWhere(q => {
+      .andWhere((q) => {
         q.whereNotNull('date_fin')
           .andWhere('date_fin', '<', today)
-          .orWhere(q2 => q2.whereNull('date_fin').andWhere('date', '<', today))
+          .orWhere((q2) => q2.whereNull('date_fin').andWhere('date', '<', today))
       })
       .update({ status: 'termine' })
 
@@ -75,7 +75,7 @@ export default class Event extends BaseModel {
     await this.query()
       .where('status', 'a_venir')
       .andWhere('date', '<=', today)
-      .andWhere(q => {
+      .andWhere((q) => {
         q.whereNull('date_fin').orWhere('date_fin', '>=', today)
       })
       .update({ status: 'en_cours' })

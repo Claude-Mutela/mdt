@@ -7,10 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').notNullable()
       table.string('title', 300).notNullable()
-      table
-        .enu('format', ['audio', 'video', 'texte', 'podcast'])
-        .notNullable()
-        .defaultTo('video')
+      table.enu('format', ['audio', 'video', 'texte', 'podcast']).notNullable().defaultTo('video')
       table.string('file', 500).nullable()
       table.string('url_file', 500).nullable()
       table.string('orateur', 200).nullable()

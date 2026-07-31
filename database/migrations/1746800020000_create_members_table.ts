@@ -13,13 +13,8 @@ export default class extends BaseSchema {
       table.string('phone', 30).nullable()
       table.enu('gender', ['M', 'F']).nullable()
       table.date('date_integration').nullable()
-      table
-        .enu('statut', ['actif', 'inactif'])
-        .notNullable()
-        .defaultTo('actif')
-      table
-        .enu('type_member', ['responsable', 'membre', 'visiteur'])
-        .nullable()
+      table.enu('statut', ['actif', 'inactif']).notNullable().defaultTo('actif')
+      table.enu('type_member', ['responsable', 'membre', 'visiteur']).nullable()
       table
         .integer('ministry_id')
         .unsigned()

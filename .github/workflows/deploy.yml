@@ -259,7 +259,8 @@ jobs:
             npm ci --omit=dev
 
             echo "🗄️ Exécution des migrations..."
-            node bin/server.js --entrypoint="migration:run" --force || node ace.js migration:run --force || true
+            # Exécution non-bloquante des migrations via ace.js ou ace CLI compilé
+            node ace.js migration:run --force || node bin/console.js migration:run --force || true
 
             echo "♻️ Configuration et Rechargement PM2..."
             cd /var/www/philamdt

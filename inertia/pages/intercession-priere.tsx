@@ -1,32 +1,8 @@
 import { Head } from '@inertiajs/react'
-import { Phone, Mail, CheckCircle2, MessageSquare, ShieldCheck, Clock, Sparkles, Send, Heart } from 'lucide-react'
+import { Phone, Mail, Clock } from 'lucide-react'
 import { FaWhatsapp } from "react-icons/fa";
-import { useState } from 'react'
 
 export default function IntercessionPriere() {
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [formData, setFormData] = useState({
-    nom: '',
-    telephone: '',
-    email: '',
-    sujet: '',
-    message: '',
-    confidentiel: false,
-  })
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Simuler l'envoi de la demande
-    setIsSubmitted(true)
-  }
-
-  const handleWhatsAppSubmit = () => {
-    const text = `Bonjour Phila MDT, je vous contacte pour une demande de prière.\n\n*Nom :* ${formData.nom || 'Anonyme'}\n*Téléphone :* ${formData.telephone || 'Non renseigné'}\n*Sujet :* ${formData.sujet || 'Sujet général'}\n*Message :* ${formData.message || 'Sujet non détaillé'}\n*Confidentiel :* ${formData.confidentiel ? 'Oui' : 'Non'}`
-    const encodedText = encodeURIComponent(text)
-    // Utilisation d'un numéro d'intercession fictif ou du numéro WhatsApp général
-    window.open(`https://wa.me/243830200083?text=${encodedText}`, '_blank')
-  }
-
   return (
     <>
       <Head title="Demande de Prière — Phila MDT">

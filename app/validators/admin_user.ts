@@ -9,7 +9,17 @@ export const createUserValidator = vine.compile(
     lastname: vine.string().maxLength(50).minLength(4),
     email: vine.string().email().unique({ table: 'users', column: 'email' }),
     password: vine.string().minLength(8),
-    role: vine.enum(['admin', 'user', 'pasteur', 'superadmin', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration'] as const),
+    role: vine.enum([
+      'admin',
+      'user',
+      'pasteur',
+      'superadmin',
+      'tresorier',
+      'financier',
+      'mdtcom',
+      'administration',
+      'porte_integration',
+    ] as const),
     status: vine.enum(['en_attente', 'actif', 'inactif', 'suspendu'] as const).optional(),
   })
 )
@@ -24,16 +34,28 @@ export const updateUserValidator = vine.compile(
     }),
     firstname: vine.string().maxLength(50).minLength(4),
     lastname: vine.string().maxLength(50).minLength(4),
-    email: vine.string().email().unique({
-      table: 'users',
-      column: 'email',
-      filter: (db, _value, field) => {
-        db.whereNot('id', field.meta.userId)
-      }
-    }),
+    email: vine
+      .string()
+      .email()
+      .unique({
+        table: 'users',
+        column: 'email',
+        filter: (db: any, _value: any, field: any) => {
+          db.whereNot('id', field.meta.userId)
+        },
+      }),
     password: vine.string().minLength(8).optional(),
-    role: vine.enum(['admin', 'user', 'pasteur', 'superadmin', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration'] as const),
+    role: vine.enum([
+      'admin',
+      'user',
+      'pasteur',
+      'superadmin',
+      'tresorier',
+      'financier',
+      'mdtcom',
+      'administration',
+      'porte_integration',
+    ] as const),
     status: vine.enum(['en_attente', 'actif', 'inactif', 'suspendu'] as const),
   })
 )
-

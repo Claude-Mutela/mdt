@@ -12,7 +12,7 @@ const messages = {
   'catGaleryId.required': 'Veuillez sélectionner une catégorie.',
   'galeryId.required': 'Veuillez sélectionner un album.',
   'file.required': 'Veuillez téléverser une image.',
-  'file.size': 'L\'image est trop lourde (max 30Mo).',
+  'file.size': "L'image est trop lourde (max 30Mo).",
   'file.extname': 'Format de fichier non pris en charge. Utilisez JPG, PNG ou WebP.',
 }
 

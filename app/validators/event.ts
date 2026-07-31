@@ -8,7 +8,7 @@ const messages = {
   'enum': 'La valeur sélectionnée est invalide.',
   'minLength': 'Ce champ doit faire au moins {{ min }} caractères.',
   'maxLength': 'Ce champ ne doit pas dépasser {{ max }} caractères.',
-  'name.required': 'Le titre de l\'événement est obligatoire.',
+  'name.required': "Le titre de l'événement est obligatoire.",
   'name.minLength': 'Le titre doit faire au moins {{ min }} caractères.',
   'description.required': 'La description courte est obligatoire.',
   'description.minLength': 'La description doit faire au moins {{ min }} caractères.',
@@ -18,8 +18,8 @@ const messages = {
   'place.minLength': 'Le lieu doit faire au moins {{ min }} caractères.',
   'date.required': 'La date de début est obligatoire.',
   'dateFin.required': 'La date de fin est obligatoire.',
-  'catEventId.required': 'Veuillez sélectionner une catégorie d\'événement.',
-  'urlImg.required': 'L\'image de couverture est obligatoire.',
+  'catEventId.required': "Veuillez sélectionner une catégorie d'événement.",
+  'urlImg.required': "L'image de couverture est obligatoire.",
   'file.size': 'L’image est trop lourde (max 2Mo).',
   'file.extname': 'L’image doit être au format jpg, png ou webp.',
 }
@@ -60,7 +60,7 @@ updateEventValidator.messagesProvider = new SimpleMessagesProvider(messages)
 
 export const catEventValidator = vine.compile(
   vine.object({
-    name: vine.string().trim().minLength(2)
+    name: vine.string().trim().minLength(2),
   })
 )
 catEventValidator.messagesProvider = new SimpleMessagesProvider({

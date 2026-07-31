@@ -43,17 +43,18 @@ const isUniqueCelluleName = vine.createRule(
  * - Create : pas de meta  → vérifie l'unicité globale
  * - Update : meta.celluleId → exclut la cellule courante de la vérification
  */
-export const celluleValidator = vine
-  .withMetaData<{ celluleId?: number }>()
-  .compile(
-    vine.object({
-      name: vine.string().trim().minLength(2).maxLength(100).use(isUniqueCelluleName({})),
-      description: vine.string().trim().maxLength(500),
-      horaire: vine.string().trim().maxLength(200),
-      adresse: vine.string().trim().maxLength(300),
-      contact: vine.string().trim().regex(/^[0-9]{10}$/),
-      responsableId: vine.number().nullable(),
-    })
-  )
+export const celluleValidator = vine.withMetaData<{ celluleId?: number }>().compile(
+  vine.object({
+    name: vine.string().trim().minLength(2).maxLength(100).use(isUniqueCelluleName({})),
+    description: vine.string().trim().maxLength(500),
+    horaire: vine.string().trim().maxLength(200),
+    adresse: vine.string().trim().maxLength(300),
+    contact: vine
+      .string()
+      .trim()
+      .regex(/^[0-9]{10}$/),
+    responsableId: vine.number().nullable(),
+  })
+)
 
 celluleValidator.messagesProvider = new SimpleMessagesProvider(messages)

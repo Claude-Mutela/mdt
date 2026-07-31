@@ -12,7 +12,10 @@ const messages = {
 
 export const financeOperationValidator = vine.compile(
   vine.object({
-    date: vine.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/),
+    date: vine
+      .string()
+      .trim()
+      .regex(/^\d{4}-\d{2}-\d{2}$/),
     montant: vine.number().positive(),
     devise: vine.enum(['USD', 'CDF', 'EUR']),
     type: vine.enum(['entrée', 'sortie']),

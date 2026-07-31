@@ -3,12 +3,12 @@ import type { FieldContext } from '@vinejs/vine/types'
 import db from '@adonisjs/lucid/services/db'
 
 const messages = {
-  'required': 'Ce champ est obligatoire.',
-  'string': 'La valeur doit être du texte.',
-  'minLength': 'Le champ doit faire au moins {{ min }} caractères.',
-  'maxLength': 'Le champ ne doit pas dépasser {{ max }} caractères.',
-  'enum': 'La valeur sélectionnée est invalide.',
-  'unique': 'Cette nature d\'opération existe déjà pour ce type de flux.',
+  required: 'Ce champ est obligatoire.',
+  string: 'La valeur doit être du texte.',
+  minLength: 'Le champ doit faire au moins {{ min }} caractères.',
+  maxLength: 'Le champ ne doit pas dépasser {{ max }} caractères.',
+  enum: 'La valeur sélectionnée est invalide.',
+  unique: "Cette nature d'opération existe déjà pour ce type de flux.",
 }
 
 /**
@@ -23,10 +23,7 @@ const isUniqueCategoryName = vine.createRule(
 
     if (!type) return
 
-    const query = db
-      .from('finance_categories')
-      .whereILike('name', value.trim())
-      .where('type', type)
+    const query = db.from('finance_categories').whereILike('name', value.trim()).where('type', type)
 
     // En mise à jour, on ignore la catégorie en cours d'édition
     if (categoryId) {
@@ -35,22 +32,16 @@ const isUniqueCategoryName = vine.createRule(
 
     const exists = await query.first()
     if (exists) {
-      field.report(
-        'Cette nature d\'opération existe déjà pour ce type de flux.',
-        'unique',
-        field
-      )
+      field.report("Cette nature d'opération existe déjà pour ce type de flux.", 'unique', field)
     }
   }
 )
 
-export const financeCategoryValidator = vine
-  .withMetaData<{ categoryId?: number }>()
-  .compile(
-    vine.object({
-      name: vine.string().trim().minLength(2).maxLength(100).use(isUniqueCategoryName({})),
-      type: vine.enum(['entrée', 'sortie']),
-    })
-  )
+export const financeCategoryValidator = vine.withMetaData<{ categoryId?: number }>().compile(
+  vine.object({
+    name: vine.string().trim().minLength(2).maxLength(100).use(isUniqueCategoryName({})),
+    type: vine.enum(['entrée', 'sortie']),
+  })
+)
 
 financeCategoryValidator.messagesProvider = new SimpleMessagesProvider(messages)

@@ -24,7 +24,9 @@ export const createMediaValidator = vine.compile(
     date: vine.date().optional(),
     catMediaId: vine.number(),
     urlFile: vine.string().trim().maxLength(500).optional(),
-    file: vine.file({ size: '10mb', extnames: ['jpg', 'png', 'jpeg', 'webp', 'mp3', 'mp4', 'pdf'] }).optional(),
+    file: vine
+      .file({ size: '10mb', extnames: ['jpg', 'png', 'jpeg', 'webp', 'mp3', 'mp4', 'pdf'] })
+      .optional(),
   })
 )
 createMediaValidator.messagesProvider = new SimpleMessagesProvider(messages)
@@ -38,14 +40,16 @@ export const updateMediaValidator = vine.compile(
     date: vine.date().optional(),
     catMediaId: vine.number(),
     urlFile: vine.string().trim().maxLength(500).optional(),
-    file: vine.file({ size: '10mb', extnames: ['jpg', 'png', 'jpeg', 'webp', 'mp3', 'mp4', 'pdf'] }).optional(),
+    file: vine
+      .file({ size: '10mb', extnames: ['jpg', 'png', 'jpeg', 'webp', 'mp3', 'mp4', 'pdf'] })
+      .optional(),
   })
 )
 updateMediaValidator.messagesProvider = new SimpleMessagesProvider(messages)
 
 export const catMediaValidator = vine.compile(
   vine.object({
-    name: vine.string().trim().minLength(2).maxLength(150)
+    name: vine.string().trim().minLength(2).maxLength(150),
   })
 )
 catMediaValidator.messagesProvider = new SimpleMessagesProvider({

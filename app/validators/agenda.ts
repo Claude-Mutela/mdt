@@ -7,12 +7,12 @@ export const agendaValidator = vine.compile(
     hourStart: vine.string().optional(),
     hourEnd: vine.string().optional(),
     place: vine.string().optional(),
-    catActivityId: vine.number()
+    catActivityId: vine.number(),
   })
 )
 
 export const catActivityValidator = vine.compile(
   vine.object({
-    name: vine.string().trim()
+    name: vine.string().trim(),
   })
 )

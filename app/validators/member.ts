@@ -28,6 +28,4 @@ export const memberValidator = vine.compile(
   })
 )
 
-
 memberValidator.messagesProvider = new SimpleMessagesProvider(messages)
-

@@ -1,4 +1,4 @@
-import { ArrowRight, Users, Calendar, BookOpen, Star } from 'lucide-react'
+import { Users, Calendar, BookOpen, Star } from 'lucide-react'
 import { Link } from '@inertiajs/react'
 
 export default function HeroAbout() {

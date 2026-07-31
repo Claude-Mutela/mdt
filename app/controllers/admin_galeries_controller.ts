@@ -72,7 +72,7 @@ export default class AdminGaleriesController {
       paginationMeta = paginatedData.getMeta()
     }
 
-    return inertia.render('admin/galerie', {
+    return inertia.render('admin/galerie' as any, {
       tab,
       galeries: tab === 'albums'
         ? paginatedData.all().map((g: Galery) => ({

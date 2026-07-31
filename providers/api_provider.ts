@@ -1,4 +1,4 @@
-import { HttpContext } from '@adonisjs/core/http'
+import { HttpContext } from '@adonisjs/http-server'
 import { BaseSerializer } from '@adonisjs/core/transformers'
 import { type SimplePaginatorMetaKeys } from '@adonisjs/lucid/types/querybuilder'
 
@@ -47,7 +47,7 @@ serialize.withoutWrapping = serializer.serializeWithoutWrapping.bind(serializer)
  * Usage in controllers: return ctx.serialize(data)
  * This ensures all API responses follow the same structure with data wrapping.
  */
-HttpContext.instanceProperty('serialize', serialize)
+HttpContext.getter('serialize' as any, () => serialize)
 
 /**
  * Module augmentation to add the serialize method to HttpContext.
@@ -55,6 +55,12 @@ HttpContext.instanceProperty('serialize', serialize)
  */
 declare module '@adonisjs/core/http' {
   export interface HttpContext {
-    serialize: typeof serialize
+    serialize?: typeof serialize
+  }
+}
+
+declare module '@adonisjs/http-server' {
+  export interface HttpContext {
+    serialize?: typeof serialize
   }
 }

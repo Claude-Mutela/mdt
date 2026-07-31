@@ -7,7 +7,7 @@ export default class AdminAssetsController {
 
   public async index({ inertia }: HttpContext) {
     const assets = await HeroAsset.query().orderBy('created_at', 'desc')
-    return inertia.render('admin/assets', {
+    return inertia.render('admin/assets' as any, {
       assets: assets.map(a => ({
         id: a.id,
         name: a.name,

@@ -302,8 +302,9 @@ jobs:
             done
 
             if [ $SUCCESS -eq 0 ]; then
-              echo "❌ Health check échoué !"
-              pm2 logs philamdt --lines 20 --nostream
+              echo "❌ Health check échoué ! Affichage des derniers logs d'erreur PM2 :"
+              tail -n 30 ~/.pm2/logs/philamdt-error-0.log 2>/dev/null || true
+              tail -n 30 ~/.pm2/logs/philamdt-out-0.log 2>/dev/null || true
               exit 1
             fi
 

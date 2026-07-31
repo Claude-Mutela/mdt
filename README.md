@@ -8,12 +8,12 @@ Stack technique : **AdonisJS 7 · InertiaJS · React 19 · TypeScript · MySQL �
 
 ## 📋 Prérequis
 
-| Outil | Version minimale |
-|-------|-----------------|
-| Node.js | ≥ 20 LTS |
-| npm | ≥ 10 |
-| MySQL | ≥ 8.0 |
-| Git | ≥ 2.40 |
+| Outil   | Version minimale |
+| ------- | ---------------- |
+| Node.js | ≥ 20 LTS         |
+| npm     | ≥ 10             |
+| MySQL   | ≥ 8.0            |
+| Git     | ≥ 2.40           |
 
 ---
 
@@ -286,13 +286,13 @@ Le pipeline est défini dans `.github/workflows/deploy.yml`.
 
 ### Secrets GitHub à configurer
 
-| Secret | Description |
-|--------|-------------|
-| `APP_KEY` | Clé secrète AdonisJS |
-| `VPS_HOST` | Adresse IP du VPS Hostinger |
-| `VPS_USER` | Utilisateur SSH |
-| `VPS_SSH_KEY` | Clé SSH privée |
-| `VPS_PORT` | Port SSH (défaut : 22) |
+| Secret        | Description                 |
+| ------------- | --------------------------- |
+| `APP_KEY`     | Clé secrète AdonisJS        |
+| `VPS_HOST`    | Adresse IP du VPS Hostinger |
+| `VPS_USER`    | Utilisateur SSH             |
+| `VPS_SSH_KEY` | Clé SSH privée              |
+| `VPS_PORT`    | Port SSH (défaut : 22)      |
 
 ### Pipeline CI/CD
 

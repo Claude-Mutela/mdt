@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
 import CloudinaryImage from '../../components/CloudinaryImage'
-import { Plus, Pencil, Trash2, X, Check, User, Mail, Phone, Calendar, ShieldCheck, Search, Printer, ImageIcon, Upload } from 'lucide-react'
+import { Plus, Pencil, Trash2, X, Check, User, Mail, Phone, Search, Printer, ImageIcon, Upload } from 'lucide-react'
 
 interface Ministry {
   id: number

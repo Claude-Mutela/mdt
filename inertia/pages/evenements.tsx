@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react'
-import { Calendar, MapPin, ArrowRight, Filter } from 'lucide-react'
+import { Calendar, ArrowRight, Filter } from 'lucide-react'
 import { useState, useMemo } from 'react'
 
 interface Event {

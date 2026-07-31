@@ -11,7 +11,7 @@ export default class CellulesController {
       .preload('responsable')
       .orderBy('name', 'asc')
 
-    return inertia.render('cellules', {
+    return inertia.render('cellules' as any, {
       cellules: cellules.map((c) => ({
         id: c.id,
         nom: c.name,

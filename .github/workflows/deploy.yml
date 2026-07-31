@@ -77,9 +77,7 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          # Mot de passe root identique à celui utilisé dans .env (DB_PASSWORD=root)
           MYSQL_ROOT_PASSWORD: root
-          # Base dédiée aux tests — évite de toucher la base de dev
           MYSQL_DATABASE: mdt_test
           MYSQL_USER: mdt_ci
           MYSQL_PASSWORD: mdt_ci_password
@@ -100,28 +98,23 @@ jobs:
       APP_KEY: ${{ secrets.APP_KEY || 'd3VtbXlfdGVzdF9hcHBfa2V5XzMyX2NoYXJhY3RlcnM=' }}
       APP_URL: http://localhost:3333
       SESSION_DRIVER: cookie
-      # ── Base de données (root / root — identique au .env local) ───────────
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: root
       DB_DATABASE: mdt_test
-      # ── Cloudinary (stub pour les tests) ──────────────────────────────────
       CLOUDINARY_CLOUD_NAME: test
       CLOUDINARY_API_KEY: test
       CLOUDINARY_API_SECRET: test
       CLOUDINARY_URL: cloudinary://test:test@test
-      # ── Brevo — Rendez-vous pastoral (stub) ───────────────────────────────
       BREVO_API_KEY: test
       BREVO_SENDER_EMAIL: test@test.com
       BREVO_SENDER_NAME: Test
       PASTOR_EMAIL: pastor@test.com
-      # ── Brevo — Contact & Newsletter (stub) ───────────────────────────────
       CONTACT_BREVO_API_KEY: test
       CONTACT_SENDER_EMAIL: contact@test.com
       CONTACT_SENDER_NAME: Test
       SECRETARIAT_EMAIL: secretariat@test.com
-      # ── reCAPTCHA v2 (clés de test Google — toujours valides en test) ─────
       RECAPTCHA_SITE_KEY: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
       RECAPTCHA_SECRET_KEY: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
 
@@ -202,21 +195,19 @@ jobs:
           name: production-build
           path: build/
 
-      - name: Déploiement SSH sur VPS
+      - name: Déploiement SSH sur VPS (Préparation & Backup)
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
           script: |
             set -e
             echo "📦 Déploiement de Phila MDT..."
 
-            # Aller dans le répertoire du projet
             cd /var/www/philamdt
 
-            # Sauvegarde du build précédent (rollback possible)
             if [ -d "build" ]; then
               rm -rf build_backup
               cp -r build build_backup
@@ -226,10 +217,10 @@ jobs:
       - name: Transfert du build vers VPS
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
           source: 'build/'
           target: '/var/www/philamdt/'
           strip_components: 1
@@ -237,22 +228,28 @@ jobs:
       - name: Finalisation du déploiement et redémarrage PM2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
           script: |
             set -e
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 24.15.0
+
             cd /var/www/philamdt/build
 
             echo "📦 Installation des dépendances de production..."
             npm ci --omit=dev
 
             echo "🗄️ Exécution des migrations..."
-            node ace migration:run --force
+            node ace.js migration:run --force
 
             echo "♻️ Rechargement PM2..."
-            pm2 reload philamdt --update-env || pm2 start bin/server.js --name philamdt
+            cd /var/www/philamdt
+            pm2 reload ecosystem.config.json --env production || pm2 start ecosystem.config.json --env production
+            pm2 save
 
             echo "⏳ Attente du démarrage..."
             sleep 5
@@ -271,18 +268,17 @@ jobs:
         if: failure()
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
           script: |
             echo "🔄 Rollback vers le build précédent..."
             cd /var/www/philamdt
             if [ -d "build_backup" ]; then
               rm -rf build
               mv build_backup build
-              cd build
-              pm2 restart philamdt
+              pm2 restart ecosystem.config.json --env production
               echo "✅ Rollback effectué"
             else
               echo "❌ Aucun backup disponible pour le rollback"

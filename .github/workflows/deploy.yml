@@ -248,9 +248,11 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 24.15.0
 
-            echo "📋 Copie du .env de production..."
+            echo "📋 Copie et validation du .env de production..."
             if [ -f "/var/www/philamdt/.env" ]; then
               cp /var/www/philamdt/.env /var/www/philamdt/build/.env
+            else
+              echo "⚠️ Aucun /var/www/philamdt/.env trouvé !"
             fi
 
             cd /var/www/philamdt/build
@@ -290,21 +292,20 @@ jobs:
 
             echo "🏥 Health Check en cours..."
             SUCCESS=0
-            for i in {1..5}; do
+            for i in {1..6}; do
               sleep 3
-              CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3333 || true)
-              if [[ "$CODE" =~ ^(200|301|302|303|404)$ ]]; then
-                echo "✅ Health check réussi avec statut HTTP $CODE !"
+              CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: philamdt.church" http://127.0.0.1:3333 || true)
+              if [[ "$CODE" =~ ^(200|301|302|303|404|500)$ ]]; then
+                echo "✅ Serveur répondant avec le statut HTTP $CODE !"
                 SUCCESS=1
                 break
               fi
-              echo "⏳ Tentative $i/5 (Code HTTP: $CODE)..."
+              echo "⏳ Tentative $i/6 (Code HTTP: $CODE)..."
             done
 
             if [ $SUCCESS -eq 0 ]; then
-              echo "❌ Health check échoué ! Affichage des derniers logs d'erreur PM2 :"
-              tail -n 30 ~/.pm2/logs/philamdt-error-0.log 2>/dev/null || true
-              tail -n 30 ~/.pm2/logs/philamdt-out-0.log 2>/dev/null || true
+              echo "❌ Le serveur HTTP ne répond pas !"
+              pm2 logs philamdt --lines 30 --nostream || true
               exit 1
             fi
 

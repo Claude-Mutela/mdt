@@ -5,9 +5,16 @@ import inertia from '@adonisjs/inertia/vite'
 
 export default defineConfig({
   plugins: [
+    adonisjs({
+      entrypoints: ['inertia/app.tsx'],
+      reload: ['resources/views/**/*.edge'],
+    }),
+    inertia({
+      ssr: {
+        enabled: false,
+      },
+    }),
     react(),
-    inertia({ ssr: { enabled: false, entrypoint: 'inertia/ssr.tsx' } }),
-    adonisjs({ entrypoints: ['inertia/app.tsx'], reload: ['resources/views/**/*.edge'] }),
   ],
 
   /**

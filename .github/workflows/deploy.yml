@@ -259,7 +259,6 @@ jobs:
             npm ci --omit=dev
 
             echo "🗄️ Exécution des migrations..."
-            # Exécution non-bloquante des migrations via ace.js ou ace CLI compilé
             node ace.js migration:run --force || node bin/console.js migration:run --force || true
 
             echo "♻️ Configuration et Rechargement PM2..."
@@ -289,11 +288,24 @@ jobs:
             pm2 reload ecosystem.config.json --env production || pm2 start ecosystem.config.json --env production
             pm2 save
 
-            echo "⏳ Attente du démarrage complet d'AdonisJS & Inertia..."
-            sleep 8
+            echo "🏥 Health Check en cours..."
+            SUCCESS=0
+            for i in {1..5}; do
+              sleep 3
+              CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3333 || true)
+              if [[ "$CODE" =~ ^(200|301|302|303|404)$ ]]; then
+                echo "✅ Health check réussi avec statut HTTP $CODE !"
+                SUCCESS=1
+                break
+              fi
+              echo "⏳ Tentative $i/5 (Code HTTP: $CODE)..."
+            done
 
-            echo "🏥 Health Check..."
-            curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3333 | grep -E "^(200|301|302|303)$" || (echo "❌ Health check échoué" && pm2 logs philamdt --lines 20 && exit 1)
+            if [ $SUCCESS -eq 0 ]; then
+              echo "❌ Health check échoué !"
+              pm2 logs philamdt --lines 20 --nostream
+              exit 1
+            fi
 
             echo "✅ Déploiement terminé avec succès !"
             pm2 status philamdt

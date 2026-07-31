@@ -1,12 +1,8 @@
-import { HttpContext } from '@adonisjs/core/http'
-import { NextFn } from '@adonisjs/core/types/http'
+import { type HttpContext } from '@adonisjs/core/http'
+import { type NextFn } from '@adonisjs/core/types/http'
 
 export default class RoleMiddleware {
-  async handle(
-    ctx: HttpContext,
-    next: NextFn,
-    options: { allowedRoles: string[] }
-  ) {
+  async handle(ctx: HttpContext, next: NextFn, options: { allowedRoles: string[] }) {
     const user = ctx.auth.user
 
     // Si l'utilisateur n'est pas connecté (devrait déjà être géré par auth middleware)
@@ -25,6 +21,8 @@ export default class RoleMiddleware {
     }
 
     // Si non autorisé, redirection avec message d'erreur ou erreur 403
-    return ctx.response.forbidden('Vous n\'avez pas les permissions nécessaires pour accéder à cette page.')
+    return ctx.response.forbidden(
+      "Vous n'avez pas les permissions nécessaires pour accéder à cette page."
+    )
   }
 }

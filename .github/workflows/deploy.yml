@@ -202,6 +202,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
+          timeout: 30s
+          command_timeout: 10m
           script: |
             set -e
             echo "📦 Préparation du dossier de destination..."

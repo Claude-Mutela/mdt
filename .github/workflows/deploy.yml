@@ -254,7 +254,7 @@ jobs:
             npm ci --omit=dev
 
             echo "🗄️ Exécution des migrations..."
-            node bin/server.js --node-args="--entrypoint=migration:run" || node ace migration:run --force || true
+            node bin/server.js --entrypoint="migration:run" --force || node index.js --entrypoint="migration:run" --force || true
 
             echo "♻️ Rechargement PM2..."
             cd /var/www/philamdt
@@ -262,7 +262,7 @@ jobs:
             pm2 save
 
             echo "⏳ Attente du démarrage..."
-            sleep 5
+            sleep 3
 
             echo "🏥 Health Check..."
             curl -f http://localhost:3333 -o /dev/null -s -w "%{http_code}" | grep -E "^(200|301|302)$" || (echo "❌ Health check échoué" && pm2 restart philamdt && exit 1)

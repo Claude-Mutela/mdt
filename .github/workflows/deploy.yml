@@ -248,17 +248,26 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 24.15.0
 
-            echo "📋 Copie et validation du .env de production..."
+            echo "📋 Copie du .env de production..."
             if [ -f "/var/www/philamdt/.env" ]; then
               cp /var/www/philamdt/.env /var/www/philamdt/build/.env
-            else
-              echo "⚠️ Aucun /var/www/philamdt/.env trouvé !"
             fi
 
             cd /var/www/philamdt/build
 
             echo "📦 Installation des dépendances de production..."
             npm ci --omit=dev
+
+            echo "📂 Correction & Duplication du fichier manifest.json..."
+            # On s'assure que manifest.json est accessible partout où AdonisJS/Inertia pourrait le chercher
+            mkdir -p /var/www/philamdt/build/public/assets/.vite
+            mkdir -p /var/www/philamdt/public/assets/.vite
+
+            if [ -f "/var/www/philamdt/build/public/assets/.vite/manifest.json" ]; then
+              cp /var/www/philamdt/build/public/assets/.vite/manifest.json /var/www/philamdt/build/public/assets/manifest.json
+              cp -r /var/www/philamdt/build/public/* /var/www/philamdt/public/ 2>/dev/null || true
+              echo "✅ Manifest.json synchronisé avec succès"
+            fi
 
             echo "🗄️ Exécution des migrations..."
             node ace.js migration:run --force || node bin/console.js migration:run --force || true
@@ -295,7 +304,7 @@ jobs:
             for i in {1..6}; do
               sleep 3
               CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: philamdt.church" http://127.0.0.1:3333 || true)
-              if [[ "$CODE" =~ ^(200|301|302|303|404|500)$ ]]; then
+              if [[ "$CODE" =~ ^(200|301|302|303|404)$ ]]; then
                 echo "✅ Serveur répondant avec le statut HTTP $CODE !"
                 SUCCESS=1
                 break

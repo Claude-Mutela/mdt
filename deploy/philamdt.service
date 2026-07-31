@@ -1,0 +1,18 @@
+[Unit]
+Description=Phila MDT — AdonisJS Application
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/philamdt/build
+ExecStart=/usr/bin/node bin/server.js
+Restart=on-failure
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=philamdt
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

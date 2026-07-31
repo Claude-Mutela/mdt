@@ -24,4 +24,33 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   // Session
   SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
+
+  // Database (MySQL)
+  DB_HOST: Env.schema.string(),
+  DB_PORT: Env.schema.number(),
+  DB_USER: Env.schema.string(),
+  DB_PASSWORD: Env.schema.string.optional(),
+  DB_DATABASE: Env.schema.string(),
+
+  // Cloudinary
+  CLOUDINARY_CLOUD_NAME: Env.schema.string(),
+  CLOUDINARY_API_KEY: Env.schema.string(),
+  CLOUDINARY_API_SECRET: Env.schema.string(),
+  CLOUDINARY_URL: Env.schema.string.optional(),
+
+  // Brevo — Rendez-vous pastoral
+  BREVO_API_KEY: Env.schema.string(),
+  BREVO_SENDER_EMAIL: Env.schema.string({ format: 'email' }),
+  BREVO_SENDER_NAME: Env.schema.string(),
+  PASTOR_EMAIL: Env.schema.string({ format: 'email' }),
+
+  // Brevo — Formulaire de contact & Newsletter
+  CONTACT_BREVO_API_KEY: Env.schema.string(),
+  CONTACT_SENDER_EMAIL: Env.schema.string({ format: 'email' }),
+  CONTACT_SENDER_NAME: Env.schema.string(),
+  SECRETARIAT_EMAIL: Env.schema.string({ format: 'email' }),
+
+  // reCAPTCHA
+  RECAPTCHA_SITE_KEY: Env.schema.string.optional(),
+  RECAPTCHA_SECRET_KEY: Env.schema.string.optional(),
 })

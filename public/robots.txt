@@ -1,0 +1,12 @@
+﻿# Phila Maison de Temoignages - robots.txt
+User-agent: *
+Allow: /
+
+# Pages d'administration : exclues de l'indexation
+Disallow: /admin/
+Disallow: /login
+Disallow: /logout
+
+# Sitemap
+Sitemap: https://www.philamdt.church/sitemap.xml
+

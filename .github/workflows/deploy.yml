@@ -172,8 +172,10 @@ jobs:
           MANIFEST=$(find build/public -name "manifest.json" | head -n 1)
           if [ -n "$MANIFEST" ]; then
             echo "✅ Manifest.json trouvé : $MANIFEST"
-            cp "$MANIFEST" build/public/assets/.vite/manifest.json
-            cp "$MANIFEST" build/public/assets/manifest.json
+            [ "$MANIFEST" = "build/public/assets/.vite/manifest.json" ] || cp "$MANIFEST" build/public/assets/.vite/manifest.json
+            [ "$MANIFEST" = "build/public/assets/manifest.json" ] || cp "$MANIFEST" build/public/assets/manifest.json
+          else
+            echo "❌ manifest.json manquant" && exit 1
           fi
 
       - name: Upload de l'artifact de build

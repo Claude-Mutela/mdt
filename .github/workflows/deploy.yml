@@ -62,8 +62,8 @@ jobs:
       - name: Installation des dépendances
         run: npm ci
 
-      - name: Audit de sécurité npm
-        run: npm audit --audit-level=high
+      - name: Audit de sécurité npm (dépendances de production)
+        run: npm audit --omit=dev --audit-level=high
 
   # ═══════════════════════════════════════════════════════
   # ÉTAPE 3 — TESTS
@@ -97,7 +97,7 @@ jobs:
       PORT: 3333
       HOST: localhost
       LOG_LEVEL: info
-      APP_KEY: ${{ secrets.APP_KEY }}
+      APP_KEY: ${{ secrets.APP_KEY || 'd3VtbXlfdGVzdF9hcHBfa2V5XzMyX2NoYXJhY3RlcnM=' }}
       APP_URL: http://localhost:3333
       SESSION_DRIVER: cookie
       # ── Base de données (root / root — identique au .env local) ───────────

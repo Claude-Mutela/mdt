@@ -42,11 +42,14 @@ export default class ContactController {
     const isHuman = await RecaptchaService.verifyToken(recaptchaToken)
 
     if (!isHuman) {
-      throw new vineErrors.E_VALIDATION_ERROR([{
-        field: 'recaptchaToken',
-        message: 'La vérification anti-robot a échoué. Veuillez cocher la case reCAPTCHA et réessayer.',
-        rule: 'recaptcha',
-      }])
+      throw new vineErrors.E_VALIDATION_ERROR([
+        {
+          field: 'recaptchaToken',
+          message:
+            'La vérification anti-robot a échoué. Veuillez cocher la case reCAPTCHA et réessayer.',
+          rule: 'recaptcha',
+        },
+      ])
     }
 
     try {
@@ -59,17 +62,19 @@ export default class ContactController {
       )
 
       // 3b. Envoyer un accusé de réception au visiteur
-      await BrevoService.sendContactAcknowledgement(
-        payload.name,
-        payload.email,
-        payload.subject
-      )
+      await BrevoService.sendContactAcknowledgement(payload.name, payload.email, payload.subject)
 
-      session.flash('success', 'Votre message a bien été envoyé. Nous vous répondrons dans les meilleurs délais.')
+      session.flash(
+        'success',
+        'Votre message a bien été envoyé. Nous vous répondrons dans les meilleurs délais.'
+      )
     } catch (error) {
       // Ne jamais exposer l'erreur interne au client
-      console.error('[ContactController] Erreur lors de l\'envoi du message de contact:', error)
-      session.flash('error', 'Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer.')
+      console.error("[ContactController] Erreur lors de l'envoi du message de contact:", error)
+      session.flash(
+        'error',
+        "Une erreur est survenue lors de l'envoi de votre message. Veuillez réessayer."
+      )
     }
 
     return response.redirect().back()

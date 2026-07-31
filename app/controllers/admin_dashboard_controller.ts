@@ -145,11 +145,21 @@ export default class AdminDashboardController {
 
     // 9. Calcul du solde net des finances et des statistiques des nouveaux venus
     const { netUsd, netCdf } = await this.getNetFinanceBalances()
-    const { newNewcomersCount, newcomersDelta, monthlyBars, annualGrowthStr, allYearsData, availableYears } =
-      await this.getNewcomersStats(now)
+    const {
+      newNewcomersCount,
+      newcomersDelta,
+      monthlyBars,
+      annualGrowthStr,
+      allYearsData,
+      availableYears,
+    } = await this.getNewcomersStats(now)
 
     const stats = [
-      { label: 'Membres actifs', value: activeMembersCount.toLocaleString('fr-FR'), delta: membersDelta },
+      {
+        label: 'Membres actifs',
+        value: activeMembersCount.toLocaleString('fr-FR'),
+        delta: membersDelta,
+      },
       { label: 'Événements à venir', value: upcomingEventsCount.toString(), delta: eventsDelta },
       { label: 'Ministères actifs', value: ministriesCount.toString(), delta: ministriesDelta },
       { label: 'Cultes ce mois', value: cultesVal.toString(), delta: cultesDelta },
@@ -161,7 +171,7 @@ export default class AdminDashboardController {
       { label: 'Photos galerie', value: photosCount.toString(), delta: photosDelta },
     ]
 
-    return inertia.render('admin/dashboard' as any, {
+    return inertia.render('admin/dashboard', {
       stats,
       recentMembers,
       upcomingEvents,

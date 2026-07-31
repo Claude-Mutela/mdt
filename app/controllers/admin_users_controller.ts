@@ -9,7 +9,7 @@ export default class AdminUsersController {
   async index({ inertia, request }: HttpContext) {
     const page = request.input('page', 1)
     const users = await User.query().orderBy('id', 'desc').paginate(page, 15)
-    return inertia.render('admin/users' as any, { users })
+    return inertia.render('admin/users', { users })
   }
 
   async store({ request, response, session }: HttpContext) {
@@ -22,7 +22,11 @@ export default class AdminUsersController {
     })
 
     // Génération du lien de validation signé (expire dans 2 heures)
-    const relativeUrl = router.makeSignedUrl('auth.verify_email', { id: user.id }, { expiresIn: '2h' })
+    const relativeUrl = router.makeSignedUrl(
+      'auth.verify_email',
+      { id: user.id },
+      { expiresIn: '2h' }
+    )
 
     // Prise en compte dynamique de l'URL du domaine (philamdt.church en prod ou request host en dev)
     const appUrl = env.get('APP_URL')
@@ -49,11 +53,10 @@ export default class AdminUsersController {
     return response.redirect().back()
   }
 
-
   async update({ params, request, response, session }: HttpContext) {
     const user = await User.findOrFail(params.id)
 
-    const { params: _, ...payload } = await request.validateUsing(updateUserValidator, {
+    const { params: unusedParams, ...payload } = await request.validateUsing(updateUserValidator, {
       meta: { userId: user.id },
     })
 
@@ -77,7 +80,8 @@ export default class AdminUsersController {
   async destroy({ params, response, session }: HttpContext) {
     const user = await User.findOrFail(params.id)
     const userEmail = user.email
-    const userName = user.fullName || `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.email
+    const userName =
+      user.fullName || `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.email
 
     await user.delete()
 
@@ -88,4 +92,3 @@ export default class AdminUsersController {
     return response.redirect().back()
   }
 }
-

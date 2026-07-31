@@ -33,7 +33,11 @@ import { DateTime } from 'luxon'
  * Sinon, cherche le premier taux disponible dans le futur.
  * Sinon, retourne un taux par défaut.
  */
-async function getExchangeRateForDate(deviseSource: string, date: string, trx?: any): Promise<number> {
+async function getExchangeRateForDate(
+  deviseSource: string,
+  date: string,
+  trx?: any
+): Promise<number> {
   const query = ExchangeRate.query()
 
   if (trx) {
@@ -136,7 +140,7 @@ export default class AdminFinancesController {
       moyen_paiement: op.moyenPaiement,
     }))
 
-    return inertia.render('admin/finances' as any, {
+    return inertia.render('admin/finances', {
       operations,
       categories: dbCategories,
       exchangeRates,

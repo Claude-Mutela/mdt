@@ -36,9 +36,7 @@ export default class MediaController {
   }
 
   public async allContent({ inertia }: HttpContext) {
-    const allMedias = await Media.query()
-      .orderBy('createdAt', 'desc')
-      .preload('catMedia')
+    const allMedias = await Media.query().orderBy('createdAt', 'desc').preload('catMedia')
 
     return inertia.render('allContent', {
       items: allMedias.map((m) => ({
@@ -47,7 +45,9 @@ export default class MediaController {
         type: mapFormatToType(m.format),
         category: m.catMedia?.name || 'Média',
         date: m.date ? m.date.toFormat('dd LLL yyyy') : m.createdAt.toFormat('dd LLL yyyy'),
-        duration: m.duration ? new Date(m.duration * 1000).toISOString().substring(11, 19) : undefined,
+        duration: m.duration
+          ? new Date(m.duration * 1000).toISOString().substring(11, 19)
+          : undefined,
         thumbnail: m.urlFile || '',
         url: m.file || '#',
         speaker: m.orateur,

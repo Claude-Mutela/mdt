@@ -13,7 +13,6 @@ import CloudinaryService from '#services/cloudinary_service'
 import { DateTime } from 'luxon'
 
 export default class AdminGaleriesController {
-
   public async index({ request, inertia }: HttpContext) {
     const page = request.input('page', 1)
     const search = request.input('search', '')
@@ -32,10 +31,9 @@ export default class AdminGaleriesController {
 
       if (search) {
         query.where((q) => {
-          q.where('title', 'like', `%${search}%`)
-           .orWhereHas('galery', (g) => {
-             g.where('title', 'like', `%${search}%`)
-           })
+          q.where('title', 'like', `%${search}%`).orWhereHas('galery', (g) => {
+            g.where('title', 'like', `%${search}%`)
+          })
         })
       }
 
@@ -57,10 +55,9 @@ export default class AdminGaleriesController {
 
       if (search) {
         query.where((q) => {
-          q.where('title', 'like', `%${search}%`)
-           .orWhereHas('catGalery', (c) => {
-             c.where('name', 'like', `%${search}%`)
-           })
+          q.where('title', 'like', `%${search}%`).orWhereHas('catGalery', (c) => {
+            c.where('name', 'like', `%${search}%`)
+          })
         })
       }
 
@@ -72,31 +69,33 @@ export default class AdminGaleriesController {
       paginationMeta = paginatedData.getMeta()
     }
 
-    return inertia.render('admin/galerie' as any, {
+    return inertia.render('admin/galerie', {
       tab,
-      galeries: tab === 'albums'
-        ? paginatedData.all().map((g: Galery) => ({
-            id: g.id,
-            title: g.title,
-            coverImg: g.coverImg,
-            urlImg: g.urlImg,
-            imgNber: g.imgNber,
-            catGaleryId: g.catGaleryId,
-            catGalery: g.catGalery ? { id: g.catGalery.id, name: g.catGalery.name } : null,
-            createdAt: g.createdAt.toISO(),
-          }))
-        : [],
-      photos: tab === 'photos'
-        ? paginatedData.all().map((img: Image) => ({
-            id: img.id,
-            title: img.title,
-            url: img.url,
-            date: img.date ? img.date.toISODate() : null,
-            galeryId: img.galeryId,
-            galery: img.galery ? { id: img.galery.id, title: img.galery.title } : null,
-            createdAt: img.createdAt.toISO(),
-          }))
-        : [],
+      galeries:
+        tab === 'albums'
+          ? paginatedData.all().map((g: Galery) => ({
+              id: g.id,
+              title: g.title,
+              coverImg: g.coverImg,
+              urlImg: g.urlImg,
+              imgNber: g.imgNber,
+              catGaleryId: g.catGaleryId,
+              catGalery: g.catGalery ? { id: g.catGalery.id, name: g.catGalery.name } : null,
+              createdAt: g.createdAt.toISO(),
+            }))
+          : [],
+      photos:
+        tab === 'photos'
+          ? paginatedData.all().map((img: Image) => ({
+              id: img.id,
+              title: img.title,
+              url: img.url,
+              date: img.date ? img.date.toISODate() : null,
+              galeryId: img.galeryId,
+              galery: img.galery ? { id: img.galery.id, title: img.galery.title } : null,
+              createdAt: img.createdAt.toISO(),
+            }))
+          : [],
       allGaleries: allGaleries.map((g) => ({
         id: g.id,
         title: g.title,
@@ -145,7 +144,7 @@ export default class AdminGaleriesController {
       session.flash('success', 'Album créé avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', 'Erreur lors de la création de l\'album.')
+      session.flash('error', "Erreur lors de la création de l'album.")
     }
 
     return response.redirect().back()
@@ -178,7 +177,7 @@ export default class AdminGaleriesController {
       session.flash('success', 'Album mis à jour avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', 'Erreur lors de la mise à jour de l\'album.')
+      session.flash('error', "Erreur lors de la mise à jour de l'album.")
     }
 
     return response.redirect().back()
@@ -212,7 +211,7 @@ export default class AdminGaleriesController {
       session.flash('success', 'Album supprimé avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', 'Erreur lors de la suppression de l\'album.')
+      session.flash('error', "Erreur lors de la suppression de l'album.")
     }
 
     return response.redirect().back()
@@ -236,7 +235,7 @@ export default class AdminGaleriesController {
         const url = await CloudinaryService.upload(file.tmpPath, 'gallery_photos')
         image.url = url
       } else {
-        session.flash('error', 'L\'image est obligatoire.')
+        session.flash('error', "L'image est obligatoire.")
         return response.redirect().back()
       }
 
@@ -250,7 +249,7 @@ export default class AdminGaleriesController {
       session.flash('success', 'Photo ajoutée avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', 'Erreur lors de l\'ajout de la photo.')
+      session.flash('error', "Erreur lors de l'ajout de la photo.")
     }
 
     return response.redirect().back()
@@ -341,7 +340,10 @@ export default class AdminGaleriesController {
       session.flash('success', 'Catégorie créée avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', 'Erreur lors de la création de la catégorie (le nom doit être unique).')
+      session.flash(
+        'error',
+        'Erreur lors de la création de la catégorie (le nom doit être unique).'
+      )
     }
 
     return response.redirect().back()
@@ -371,7 +373,10 @@ export default class AdminGaleriesController {
       session.flash('success', 'Catégorie supprimée avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', 'Impossible de supprimer cette catégorie car elle contient des albums associés.')
+      session.flash(
+        'error',
+        'Impossible de supprimer cette catégorie car elle contient des albums associés.'
+      )
     }
 
     return response.redirect().back()

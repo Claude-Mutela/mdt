@@ -7,17 +7,14 @@ import string from '@adonisjs/core/helpers/string'
 export default class AdminMinistriesController {
   async index({ inertia }: HttpContext) {
     const ministries = await Ministry.all()
-    return inertia.render('admin/ministeres' as any, { ministries })
+    return inertia.render('admin/ministeres', { ministries })
   }
 
   // Ministries CRUD
   async storeMinistry({ request, response, session }: HttpContext) {
     const data = await request.validateUsing(ministryValidator)
-    
+
     try {
-
-
-      
       const ministry = new Ministry()
       ministry.fill({
         name: data.name,
@@ -39,17 +36,17 @@ export default class AdminMinistriesController {
       session.flash('success', 'Ministère créé avec succès sur Cloudinary.')
     } catch (error) {
       console.error(error)
-      session.flash('error', "Erreur lors de la création du ministère.")
+      session.flash('error', 'Erreur lors de la création du ministère.')
     }
     return response.redirect().back()
   }
 
   async updateMinistry({ params, request, response, session }: HttpContext) {
     const data = await request.validateUsing(ministryValidator)
-    
+
     try {
       const ministry = await Ministry.findOrFail(params.id)
-      
+
       ministry.merge({
         name: data.name,
         slug: string.slug(data.name, { lower: true }),
@@ -78,12 +75,10 @@ export default class AdminMinistriesController {
       session.flash('success', 'Ministère mis à jour avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', "Erreur lors de la mise à jour du ministère.")
+      session.flash('error', 'Erreur lors de la mise à jour du ministère.')
     }
     return response.redirect().back()
   }
-
-
 
   async destroyMinistry({ params, response, session }: HttpContext) {
     try {
@@ -100,9 +95,8 @@ export default class AdminMinistriesController {
       await ministry.delete()
       session.flash('success', 'Ministère supprimé avec succès.')
     } catch (error) {
-      session.flash('error', "Erreur lors de la suppression du ministère.")
+      session.flash('error', 'Erreur lors de la suppression du ministère.')
     }
     return response.redirect().back()
   }
-
 }

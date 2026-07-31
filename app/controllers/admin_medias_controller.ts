@@ -6,7 +6,6 @@ import CloudinaryService from '#services/cloudinary_service'
 import { DateTime } from 'luxon'
 
 export default class AdminMediasController {
-
   public async index({ request, inertia }: HttpContext) {
     const page = request.input('page', 1)
     const search = request.input('search', '')
@@ -20,8 +19,7 @@ export default class AdminMediasController {
 
     if (search) {
       query.where((q) => {
-        q.where('title', 'like', `%${search}%`)
-          .orWhere('orateur', 'like', `%${search}%`)
+        q.where('title', 'like', `%${search}%`).orWhere('orateur', 'like', `%${search}%`)
       })
     }
 
@@ -31,8 +29,8 @@ export default class AdminMediasController {
     // Serialize pagination for React
     const paginationMeta = paginated.getMeta()
 
-    return inertia.render('admin/medias' as any, {
-      medias: paginated.all().map(m => ({
+    return inertia.render('admin/medias', {
+      medias: paginated.all().map((m) => ({
         id: m.id,
         title: m.title,
         format: m.format,
@@ -43,23 +41,23 @@ export default class AdminMediasController {
         date: m.date ? m.date.toISODate() : null,
         catMediaId: m.catMediaId,
         catMedia: m.catMedia ? { id: m.catMedia.id, name: m.catMedia.name } : null,
-        createdAt: m.createdAt.toISO()
+        createdAt: m.createdAt.toISO(),
       })),
-      categories: categories.map(c => ({
+      categories: categories.map((c) => ({
         id: c.id,
-        name: c.name
+        name: c.name,
       })),
       meta: {
         total: paginationMeta.total,
         perPage: paginationMeta.perPage,
         currentPage: paginationMeta.currentPage,
         lastPage: paginationMeta.lastPage,
-        firstPage: 1
+        firstPage: 1,
       },
       filters: {
         search,
-        catId
-      }
+        catId,
+      },
     })
   }
 
@@ -165,7 +163,10 @@ export default class AdminMediasController {
       session.flash('success', 'Catégorie créée avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', 'Erreur lors de la création de la catégorie (le nom doit être unique).')
+      session.flash(
+        'error',
+        'Erreur lors de la création de la catégorie (le nom doit être unique).'
+      )
     }
 
     return response.redirect().back()
@@ -195,7 +196,10 @@ export default class AdminMediasController {
       session.flash('success', 'Catégorie supprimée avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', 'Impossible de supprimer cette catégorie car elle contient des médias associés.')
+      session.flash(
+        'error',
+        'Impossible de supprimer cette catégorie car elle contient des médias associés.'
+      )
     }
 
     return response.redirect().back()

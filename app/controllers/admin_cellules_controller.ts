@@ -26,7 +26,7 @@ export default class AdminCellulesController {
       fetchResponsables(),
     ])
 
-    return inertia.render('admin/cellules' as any, { cellules, responsables })
+    return inertia.render('admin/cellules', { cellules, responsables })
   }
 
   /**
@@ -67,7 +67,7 @@ export default class AdminCellulesController {
           .first()
 
         if (!isEligible) {
-          session.flash('error', 'Le membre sélectionné n\'est pas éligible comme responsable.')
+          session.flash('error', "Le membre sélectionné n'est pas éligible comme responsable.")
           return response.redirect().back()
         }
       }
@@ -109,7 +109,7 @@ export default class AdminCellulesController {
           .first()
 
         if (!isEligible) {
-          session.flash('error', 'Le membre sélectionné n\'est pas éligible comme responsable.')
+          session.flash('error', "Le membre sélectionné n'est pas éligible comme responsable.")
           return response.redirect().back()
         }
       }

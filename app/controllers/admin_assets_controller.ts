@@ -4,18 +4,17 @@ import CloudinaryService from '#services/cloudinary_service'
 import { heroAssetValidator } from '#validators/hero_asset'
 
 export default class AdminAssetsController {
-
   public async index({ inertia }: HttpContext) {
     const assets = await HeroAsset.query().orderBy('created_at', 'desc')
-    return inertia.render('admin/assets' as any, {
-      assets: assets.map(a => ({
+    return inertia.render('admin/assets', {
+      assets: assets.map((a) => ({
         id: a.id,
         name: a.name,
         filePath: a.filePath,
         type: a.type,
         status: a.status,
         createdAt: a.createdAt.toISO(),
-      }))
+      })),
     })
   }
 
@@ -35,10 +34,7 @@ export default class AdminAssetsController {
     }
 
     // Upload directly from AdonisJS temporary path
-    const cloudinaryUrl = await CloudinaryService.upload(
-      file.tmpPath,
-      'mdt/hero'
-    )
+    const cloudinaryUrl = await CloudinaryService.upload(file.tmpPath, 'mdt/hero')
 
     console.log('[DEBUG] UPLOADED URL:', cloudinaryUrl)
 

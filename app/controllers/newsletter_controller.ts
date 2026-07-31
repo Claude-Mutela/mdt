@@ -8,7 +8,7 @@ import env from '#start/env'
 
 /**
  * Contrôleur gérant les abonnements à la Newsletter publique.
- * 
+ *
  * Processus d'inscription (Double Opt-in) :
  * 1. L'utilisateur saisit son e-mail et coche le reCAPTCHA sur la page d'accueil.
  * 2. Le contrôleur valide l'e-mail et le reCAPTCHA.
@@ -35,7 +35,10 @@ export default class NewsletterController {
     // ── 2. Vérification anti-robot reCAPTCHA ──────────────────────────────────
     const isHuman = await RecaptchaService.verifyToken(recaptchaToken)
     if (!isHuman) {
-      session.flash('error', 'La vérification anti-robot a échoué. Veuillez cocher la case reCAPTCHA et réessayer.')
+      session.flash(
+        'error',
+        'La vérification anti-robot a échoué. Veuillez cocher la case reCAPTCHA et réessayer.'
+      )
       return response.redirect().back()
     }
 
@@ -48,11 +51,14 @@ export default class NewsletterController {
         session.flash('success', 'Vous êtes déjà abonné(e) à notre newsletter !')
         return response.redirect().back()
       }
-      
+
       // Si le compte est en attente, renvoyer l'e-mail de confirmation
       const confirmUrl = this._buildConfirmUrl(request, existing.token!)
       await BrevoService.sendNewsletterConfirmation(email, confirmUrl)
-      session.flash('success', 'Un e-mail de confirmation vous a déjà été envoyé. Veuillez consulter votre boîte e-mail pour valider votre abonnement.')
+      session.flash(
+        'success',
+        'Un e-mail de confirmation vous a déjà été envoyé. Veuillez consulter votre boîte e-mail pour valider votre abonnement.'
+      )
       return response.redirect().back()
     }
 
@@ -70,7 +76,10 @@ export default class NewsletterController {
     await BrevoService.sendNewsletterConfirmation(email, confirmUrl)
 
     // Message de succès affiché sur la page d'accueil
-    session.flash('success', 'Merci ! Un e-mail de confirmation vient de vous être envoyé. Veuillez cliquer sur le lien reçu pour valider votre abonnement.')
+    session.flash(
+      'success',
+      'Merci ! Un e-mail de confirmation vient de vous être envoyé. Veuillez cliquer sur le lien reçu pour valider votre abonnement.'
+    )
     return response.redirect().back()
   }
 
@@ -111,7 +120,10 @@ export default class NewsletterController {
     // ── Synchronisation automatique du contact dans les listes Brevo ─────────
     await BrevoService.syncContactToBrevo(subscriber.email)
 
-    session.flash('success', 'Félicitations ! Votre abonnement à la newsletter Phila MDT a bien été confirmé. 🎉')
+    session.flash(
+      'success',
+      'Félicitations ! Votre abonnement à la newsletter Phila MDT a bien été confirmé. 🎉'
+    )
     return response.redirect('/')
   }
 

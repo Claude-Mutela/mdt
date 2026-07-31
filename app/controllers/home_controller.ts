@@ -10,8 +10,8 @@ export default class HomeController {
     // Récupère l'asset Hero actif
     const activeHero = await HeroAsset.query().where('status', 'active').first()
 
-    // Récupère les ministères 
-    const allMinistries = await Ministry.all();
+    // Récupère les ministères
+    const allMinistries = await Ministry.all()
     // Récupère la dernière prédication (culte dominical)
     const lastPreach = await Media.query()
       .whereHas('catMedia', (query) => {
@@ -22,7 +22,7 @@ export default class HomeController {
 
     // Récupère les événements de la semaine ISO en cours (lundi → dimanche)
     const startOfWeek = DateTime.now().startOf('week') // lundi
-    const endOfWeek = DateTime.now().endOf('week')     // dimanche
+    const endOfWeek = DateTime.now().endOf('week') // dimanche
 
     const weekAgendas = await Agenda.query()
       .where('day', '>=', startOfWeek.toSQLDate() as string)
@@ -34,23 +34,23 @@ export default class HomeController {
     return inertia.render('home', {
       activeHero: activeHero
         ? {
-          id: activeHero.id,
-          name: activeHero.name,
-          filePath: activeHero.filePath,
-          type: activeHero.type,
-          status: activeHero.status,
-        }
+            id: activeHero.id,
+            name: activeHero.name,
+            filePath: activeHero.filePath,
+            type: activeHero.type,
+            status: activeHero.status,
+          }
         : null,
       lastPreach: lastPreach
         ? {
-          id: lastPreach.id,
-          title: lastPreach.title,
-          format: lastPreach.format,
-          orateur: lastPreach.orateur,
-          duree: lastPreach.duration,
-          url: lastPreach.urlFile,
-          date: lastPreach.date,
-        }
+            id: lastPreach.id,
+            title: lastPreach.title,
+            format: lastPreach.format,
+            orateur: lastPreach.orateur,
+            duree: lastPreach.duration,
+            url: lastPreach.urlFile,
+            date: lastPreach.date,
+          }
         : null,
       allMinistries: allMinistries.map((min) => ({
         id: min.id,
@@ -59,7 +59,7 @@ export default class HomeController {
         description: min.description,
         urlImg: min.coverImg || min.urlImg,
         badgeColor: min.badgeColor,
-        tag: min.tag
+        tag: min.tag,
       })),
       weekAgendas: weekAgendas.map((a) => ({
         id: a.id,

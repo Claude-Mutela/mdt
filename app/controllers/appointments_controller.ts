@@ -41,11 +41,14 @@ export default class AppointmentsController {
     const isHuman = await RecaptchaService.verifyToken(recaptchaToken)
 
     if (!isHuman) {
-      throw new vineErrors.E_VALIDATION_ERROR([{
-        field: 'recaptchaToken',
-        message: 'La vérification anti-robot a échoué. Veuillez cocher la case reCAPTCHA et réessayer.',
-        rule: 'recaptcha',
-      }])
+      throw new vineErrors.E_VALIDATION_ERROR([
+        {
+          field: 'recaptchaToken',
+          message:
+            'La vérification anti-robot a échoué. Veuillez cocher la case reCAPTCHA et réessayer.',
+          rule: 'recaptcha',
+        },
+      ])
     }
 
     try {
@@ -74,11 +77,12 @@ export default class AppointmentsController {
       })
 
       // Formater le format de manière lisible pour les e-mails
-      const prettyFormat = payload.format === 'presentiel'
-        ? 'Présentiel'
-        : payload.format === 'enligne'
-          ? 'En ligne (Appel vidéo)'
-          : 'En ligne (Appel vocal)'
+      const prettyFormat =
+        payload.format === 'presentiel'
+          ? 'Présentiel'
+          : payload.format === 'enligne'
+            ? 'En ligne (Appel vidéo)'
+            : 'En ligne (Appel vocal)'
 
       const dateStr = appointmentDate.toFormat('dd/MM/yyyy')
 
@@ -106,16 +110,24 @@ export default class AppointmentsController {
           appointment.appointmentTime
         )
 
-        session.flash('success', 'Votre demande de rendez-vous a été envoyée avec succès. Un e-mail de confirmation de réception vous a été envoyé.')
+        session.flash(
+          'success',
+          'Votre demande de rendez-vous a été envoyée avec succès. Un e-mail de confirmation de réception vous a été envoyé.'
+        )
       } else {
-        session.flash('success', 'Votre demande de rendez-vous a été envoyée avec succès. Notre secrétariat vous contactera très prochainement.')
+        session.flash(
+          'success',
+          'Votre demande de rendez-vous a été envoyée avec succès. Notre secrétariat vous contactera très prochainement.'
+        )
       }
     } catch (error) {
       console.error('[AppointmentsController] Erreur lors de la création du rendez-vous:', error)
-      session.flash('error', 'Une erreur est survenue lors de l\'enregistrement de votre demande. Veuillez réessayer.')
+      session.flash(
+        'error',
+        "Une erreur est survenue lors de l'enregistrement de votre demande. Veuillez réessayer."
+      )
     }
 
     return response.redirect().back()
   }
 }
-

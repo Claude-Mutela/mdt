@@ -7,7 +7,6 @@ import { DateTime } from 'luxon'
 import string from '@adonisjs/core/helpers/string'
 
 export default class AdminEventsController {
-
   public async index({ request, inertia }: HttpContext) {
     const search = request.input('search', '')
     const status = request.input('status', 'all')
@@ -28,8 +27,8 @@ export default class AdminEventsController {
     const events = await query
     const categories = await CatEvent.query().orderBy('name', 'asc')
 
-    return inertia.render('admin/evenements' as any, {
-      events: events.map(e => ({
+    return inertia.render('admin/evenements', {
+      events: events.map((e) => ({
         id: e.id,
         name: e.name,
         description: e.description,
@@ -44,14 +43,14 @@ export default class AdminEventsController {
         startTime: e.startTime,
         endTime: e.endTime,
       })),
-      categories: categories.map(c => ({
+      categories: categories.map((c) => ({
         id: c.id,
-        name: c.name
+        name: c.name,
       })),
       filters: {
         search,
-        status
-      }
+        status,
+      },
     })
   }
 
@@ -204,7 +203,7 @@ export default class AdminEventsController {
     const payload = await request.validateUsing(catEventValidator)
     await CatEvent.create(payload)
 
-    session.flash('success', 'Catégorie d\'événement créée avec succès.')
+    session.flash('success', "Catégorie d'événement créée avec succès.")
     return response.redirect().back()
   }
 
@@ -215,7 +214,7 @@ export default class AdminEventsController {
     category.name = payload.name
     await category.save()
 
-    session.flash('success', 'Catégorie d\'événement modifiée avec succès.')
+    session.flash('success', "Catégorie d'événement modifiée avec succès.")
     return response.redirect().back()
   }
 
@@ -225,12 +224,15 @@ export default class AdminEventsController {
     // Check if category has events to prevent orphaned foreign keys or show helpful message
     const eventsCount = await Event.query().where('catEventId', category.id).first()
     if (eventsCount) {
-      session.flash('error', 'Impossible de supprimer cette catégorie car elle contient des événements.')
+      session.flash(
+        'error',
+        'Impossible de supprimer cette catégorie car elle contient des événements.'
+      )
       return response.redirect().back()
     }
 
     await category.delete()
-    session.flash('success', 'Catégorie d\'événement supprimée avec succès.')
+    session.flash('success', "Catégorie d'événement supprimée avec succès.")
     return response.redirect().back()
   }
 }

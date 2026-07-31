@@ -1,5 +1,5 @@
 import User from '#models/user'
-import { HttpContext } from '@adonisjs/core/http'
+import { type HttpContext } from '@adonisjs/core/http'
 import { RecaptchaService } from '#services/recaptcha_service'
 import env from '#start/env'
 import { errors as vineErrors } from '@vinejs/vine'
@@ -27,11 +27,14 @@ export default class AuthController {
     const isHuman = await RecaptchaService.verifyToken(recaptchaToken)
 
     if (!isHuman) {
-      throw new vineErrors.E_VALIDATION_ERROR([{
-        field: 'recaptchaToken',
-        message: 'La vérification anti-robot a échoué. Veuillez cocher la case reCAPTCHA et réessayer.',
-        rule: 'recaptcha',
-      }])
+      throw new vineErrors.E_VALIDATION_ERROR([
+        {
+          field: 'recaptchaToken',
+          message:
+            'La vérification anti-robot a échoué. Veuillez cocher la case reCAPTCHA et réessayer.',
+          rule: 'recaptcha',
+        },
+      ])
     }
 
     try {
@@ -103,8 +106,10 @@ export default class AuthController {
     }
     await user.save()
 
-    session.flash('success', 'Votre compte a été vérifié et activé avec succès. Vous pouvez maintenant vous connecter.')
+    session.flash(
+      'success',
+      'Votre compte a été vérifié et activé avec succès. Vous pouvez maintenant vous connecter.'
+    )
     return response.redirect().toPath('/login')
   }
-
-}
+}

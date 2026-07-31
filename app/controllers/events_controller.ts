@@ -4,18 +4,23 @@ import CatEvent from '#models/cat_event'
 
 const mapStatus = (status: string) => {
   switch (status) {
-    case 'a_venir':  return 'upcoming'
-    case 'en_cours': return 'ongoing'
-    case 'termine':  return 'past'
-    case 'annule':   return 'past'
-    default:         return 'past'
+    case 'a_venir':
+      return 'upcoming'
+    case 'en_cours':
+      return 'ongoing'
+    case 'termine':
+      return 'past'
+    case 'annule':
+      return 'past'
+    default:
+      return 'past'
   }
 }
 
 const formatDate = (event: Event) => {
   if (!event.date) return ''
   const start = event.date.setLocale('fr').toFormat('dd MMMM yyyy')
-  
+
   if (event.dateFin && event.dateFin.toISODate() !== event.date.toISODate()) {
     const end = event.dateFin.setLocale('fr').toFormat('dd MMMM yyyy')
     let timeStr = ''
@@ -27,7 +32,7 @@ const formatDate = (event: Event) => {
     }
     return `Du ${start} au ${end}${timeStr}`
   }
-  
+
   let timeStr = ''
   if (event.startTime) {
     timeStr += ` à ${event.startTime}`
@@ -65,10 +70,7 @@ export default class EventsController {
   }
 
   public async show({ params, inertia, response }: HttpContext) {
-    const event = await Event.query()
-      .where('slug', params.slug)
-      .preload('catEvent')
-      .first()
+    const event = await Event.query().where('slug', params.slug).preload('catEvent').first()
 
     if (!event) return response.redirect('/evenements')
 

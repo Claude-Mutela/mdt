@@ -14,10 +14,7 @@ export default class AdminMembersController {
     const ministryId = request.input('ministryId')
     const search = request.input('search')
 
-    const query = Member.query()
-      .preload('ministry')
-      .preload('user')
-      .orderBy('createdAt', 'desc')
+    const query = Member.query().preload('ministry').preload('user').orderBy('createdAt', 'desc')
 
     if (ministryId) {
       query.where('ministryId', ministryId)
@@ -35,10 +32,10 @@ export default class AdminMembersController {
     const members = await query.paginate(page, 15)
     const ministries = await Ministry.all()
 
-    return inertia.render('admin/membres' as any, { 
+    return inertia.render('admin/membres', {
       members,
       ministries,
-      filters: { ministryId, search }
+      filters: { ministryId, search },
     })
   }
 
@@ -48,13 +45,10 @@ export default class AdminMembersController {
   async print({ inertia, request }: HttpContext) {
     const ministryId = request.input('ministryId')
     const typeMember = request.input('typeMember')
-    
-    const query = Member.query()
-      .preload('ministry')
-      .preload('user')
-      .orderBy('firstname', 'asc')
 
-    let filterTitle = "Liste globale des membres des Ministères"
+    const query = Member.query().preload('ministry').preload('user').orderBy('firstname', 'asc')
+
+    let filterTitle = 'Liste globale des membres des Ministères'
 
     if (ministryId) {
       query.where('ministryId', ministryId)
@@ -69,10 +63,10 @@ export default class AdminMembersController {
 
     const members = await query.exec()
 
-    return inertia.render('admin/membres_print' as any, { 
+    return inertia.render('admin/membres_print', {
       members,
       filterTitle,
-      printDate: new Date().toLocaleDateString('fr-FR')
+      printDate: new Date().toLocaleDateString('fr-FR'),
     })
   }
 
@@ -81,7 +75,7 @@ export default class AdminMembersController {
    */
   async store({ request, response, session }: HttpContext) {
     const data = await request.validateUsing(memberValidator)
-    
+
     try {
       const member = new Member()
       member.fill({
@@ -116,16 +110,15 @@ export default class AdminMembersController {
     return response.redirect().back()
   }
 
-
   /**
    * Mettre à jour un membre
    */
   async update({ params, request, response, session }: HttpContext) {
     const data = await request.validateUsing(memberValidator)
-    
+
     try {
       const member = await Member.findOrFail(params.id)
-      
+
       member.merge({
         firstname: data.firstname,
         lastname: data.lastname,
@@ -163,11 +156,10 @@ export default class AdminMembersController {
       session.flash('success', 'Membre mis à jour avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', "Erreur lors de la mise à jour du membre.")
+      session.flash('error', 'Erreur lors de la mise à jour du membre.')
     }
     return response.redirect().back()
   }
-
 
   /**
    * Supprimer un membre
@@ -187,9 +179,8 @@ export default class AdminMembersController {
       await member.delete()
       session.flash('success', 'Membre supprimé avec succès.')
     } catch (error) {
-      session.flash('error', "Erreur lors de la suppression du membre.")
+      session.flash('error', 'Erreur lors de la suppression du membre.')
     }
     return response.redirect().back()
   }
-
 }

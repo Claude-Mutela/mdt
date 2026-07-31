@@ -32,17 +32,23 @@ export default class AdminNewsletterController {
     const subscribers = await query.paginate(page, 15)
 
     // Calcul des statistiques globales (sans les filtres de recherche applicables)
-    const totalAll      = await Newsletter.query().count('* as total').first()
-    const totalActifs   = await Newsletter.query().where('status', 'actif').count('* as total').first()
-    const totalAttente  = await Newsletter.query().where('status', 'en_attente').count('* as total').first()
+    const totalAll = await Newsletter.query().count('* as total').first()
+    const totalActifs = await Newsletter.query()
+      .where('status', 'actif')
+      .count('* as total')
+      .first()
+    const totalAttente = await Newsletter.query()
+      .where('status', 'en_attente')
+      .count('* as total')
+      .first()
 
     // Rendu de la vue Inertia d'administration
-    return inertia.render('admin/newsletter' as any, {
+    return inertia.render('admin/newsletter', {
       subscribers,
       stats: {
-        total:    Number((totalAll as any).$extras.total   ?? 0),
-        actifs:   Number((totalActifs as any).$extras.total  ?? 0),
-        attente:  Number((totalAttente as any).$extras.total ?? 0),
+        total: Number((totalAll as any).$extras.total ?? 0),
+        actifs: Number((totalActifs as any).$extras.total ?? 0),
+        attente: Number((totalAttente as any).$extras.total ?? 0),
       },
       filters: { search, statut },
     })

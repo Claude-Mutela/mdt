@@ -28,7 +28,11 @@ export default class AdminNewcomersController {
 
     if (year) {
       if (month) {
-        const start = DateTime.fromObject({ year: Number(year), month: Number(month), day: 1 }).startOf('month')
+        const start = DateTime.fromObject({
+          year: Number(year),
+          month: Number(month),
+          day: 1,
+        }).startOf('month')
         const end = start.endOf('month')
         query.whereBetween('date', [start.toSQLDate()!, end.toSQLDate()!])
       } else {
@@ -42,15 +46,17 @@ export default class AdminNewcomersController {
 
     // Récupérer toutes les années disponibles pour le filtre
     const allDates = await Newcomer.query().select('date')
-    const availableYears = Array.from(new Set(allDates.map(n => n.date.year))).sort((a, b) => b - a)
+    const availableYears = Array.from(new Set(allDates.map((n) => n.date.year))).sort(
+      (a, b) => b - a
+    )
     if (availableYears.length === 0) {
       availableYears.push(DateTime.now().year)
     }
 
-    return inertia.render('admin/nouveaux-venus' as any, {
+    return inertia.render('admin/nouveaux-venus', {
       newcomers,
       availableYears,
-      filters: { search, month, year }
+      filters: { search, month, year },
     })
   }
 
@@ -75,15 +81,29 @@ export default class AdminNewcomersController {
       })
     }
 
-    let filterTitle = "Liste globale des nouveaux venus"
+    let filterTitle = 'Liste globale des nouveaux venus'
 
     if (year) {
       const MOIS_FR_LONG = [
-        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+        'Janvier',
+        'Février',
+        'Mars',
+        'Avril',
+        'Mai',
+        'Juin',
+        'Juillet',
+        'Août',
+        'Septembre',
+        'Octobre',
+        'Novembre',
+        'Décembre',
       ]
       if (month) {
-        const start = DateTime.fromObject({ year: Number(year), month: Number(month), day: 1 }).startOf('month')
+        const start = DateTime.fromObject({
+          year: Number(year),
+          month: Number(month),
+          day: 1,
+        }).startOf('month')
         const end = start.endOf('month')
         query.whereBetween('date', [start.toSQLDate()!, end.toSQLDate()!])
         filterTitle = `Nouveaux venus — ${MOIS_FR_LONG[Number(month) - 1]} ${year}`
@@ -97,8 +117,8 @@ export default class AdminNewcomersController {
 
     const newcomers = await query.exec()
 
-    return inertia.render('admin/nouveaux_venus_print' as any, {
-      newcomers: newcomers.map(n => ({
+    return inertia.render('admin/nouveaux_venus_print', {
+      newcomers: newcomers.map((n) => ({
         id: n.id,
         date: n.date.toISODate(),
         firstname: n.firstname,
@@ -117,10 +137,10 @@ export default class AdminNewcomersController {
         receiveJesus: n.receiveJesus,
         joinCell: n.joinCell,
         serve: n.serve,
-        suggestions: n.suggestions
+        suggestions: n.suggestions,
       })),
       filterTitle,
-      printDate: DateTime.now().setLocale('fr').toFormat('dd MMMM yyyy')
+      printDate: DateTime.now().setLocale('fr').toFormat('dd MMMM yyyy'),
     })
   }
 
@@ -204,7 +224,7 @@ export default class AdminNewcomersController {
       session.flash('success', 'Nouveau venu modifié avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', "Erreur lors de la modification.")
+      session.flash('error', 'Erreur lors de la modification.')
     }
 
     return response.redirect().back()
@@ -220,7 +240,7 @@ export default class AdminNewcomersController {
       session.flash('success', 'Nouveau venu supprimé avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash('error', "Erreur lors de la suppression.")
+      session.flash('error', 'Erreur lors de la suppression.')
     }
 
     return response.redirect().back()

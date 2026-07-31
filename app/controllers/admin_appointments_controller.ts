@@ -12,7 +12,7 @@ export default class AdminAppointmentsController {
   async index({ inertia }: HttpContext) {
     const appointments = await Appointment.query().orderBy('appointment_date', 'desc')
 
-    return inertia.render('admin/rendez-vous' as any, {
+    return inertia.render('admin/rendez-vous', {
       appointments: appointments.map((a) => ({
         id: a.id,
         clientName: `${a.firstName} ${a.lastName}`,
@@ -34,13 +34,13 @@ export default class AdminAppointmentsController {
    */
   async print({ inertia, request }: HttpContext) {
     const period = request.input('period', 'mois') as 'jour' | 'semaine' | 'mois' | 'annee'
-    const ref    = request.input('ref', DateTime.now().toISODate()) as string
+    const ref = request.input('ref', DateTime.now().toISODate()) as string
     const status = request.input('status', 'all') as 'all' | 'confirmed' | 'pending' | 'cancelled'
 
     const statusLabel: Record<string, string> = {
       all: '',
       confirmed: ' — Confirmés',
-      pending:   ' — En attente',
+      pending: ' — En attente',
       cancelled: ' — Annulés',
     }
 
@@ -52,29 +52,26 @@ export default class AdminAppointmentsController {
     if (period === 'jour') {
       const day = DateTime.fromISO(ref).isValid ? DateTime.fromISO(ref) : now
       start = day.startOf('day')
-      end   = day.endOf('day')
+      end = day.endOf('day')
       filterTitle = `Rendez-vous du ${day.setLocale('fr').toFormat('EEEE dd MMMM yyyy')}${statusLabel[status]}`
-
     } else if (period === 'semaine') {
       const day = DateTime.fromISO(ref).isValid ? DateTime.fromISO(ref) : now
       start = day.startOf('week')
-      end   = day.endOf('week')
+      end = day.endOf('week')
       filterTitle = `Rendez-vous de la semaine du ${start.setLocale('fr').toFormat('dd MMM')} au ${end.setLocale('fr').toFormat('dd MMM yyyy')}${statusLabel[status]}`
-
     } else if (period === 'mois') {
       // ref peut être "YYYY-MM" ou "YYYY-MM-DD"
       const day = DateTime.fromISO(ref.length === 7 ? ref + '-01' : ref).isValid
         ? DateTime.fromISO(ref.length === 7 ? ref + '-01' : ref)
         : now
       start = day.startOf('month')
-      end   = day.endOf('month')
+      end = day.endOf('month')
       filterTitle = `Rendez-vous de ${start.setLocale('fr').toFormat('MMMM yyyy')}${statusLabel[status]}`
-
     } else {
       // annee
-      const year = parseInt(ref, 10) || now.year
+      const year = Number.parseInt(ref, 10) || now.year
       start = DateTime.fromObject({ year }).startOf('year')
-      end   = DateTime.fromObject({ year }).endOf('year')
+      end = DateTime.fromObject({ year }).endOf('year')
       filterTitle = `Rendez-vous de l'année ${year}${statusLabel[status]}`
     }
 
@@ -86,7 +83,7 @@ export default class AdminAppointmentsController {
 
     const printDate = now.setLocale('fr').toFormat('dd MMMM yyyy à HH:mm')
 
-    return inertia.render('admin/rendez_vous_print' as any, {
+    return inertia.render('admin/rendez_vous_print', {
       appointments: rows.map((a) => ({
         id: a.id,
         firstName: a.firstName,
@@ -158,7 +155,10 @@ export default class AdminAppointmentsController {
           appointment.appointmentTime
         )
 
-        session.flash('success', 'Rendez-vous confirmé. Les e-mails de notification ont été envoyés au client, au pasteur et au secrétariat.')
+        session.flash(
+          'success',
+          'Rendez-vous confirmé. Les e-mails de notification ont été envoyés au client, au pasteur et au secrétariat.'
+        )
       } else if (payload.status === 'cancelled' && oldStatus !== 'cancelled') {
         const dateStr = appointment.appointmentDate.toFormat('dd/MM/yyyy')
 
@@ -182,12 +182,18 @@ export default class AdminAppointmentsController {
           appointment.appointmentTime
         )
 
-        session.flash('success', 'Le rendez-vous a été marqué comme annulé. Les e-mails de notification d\'annulation ont été envoyés.')
+        session.flash(
+          'success',
+          "Le rendez-vous a été marqué comme annulé. Les e-mails de notification d'annulation ont été envoyés."
+        )
       } else {
         session.flash('success', 'Statut du rendez-vous mis à jour avec succès.')
       }
     } catch (error) {
-      console.error('[AdminAppointmentsController] Erreur lors de la modification du statut:', error)
+      console.error(
+        '[AdminAppointmentsController] Erreur lors de la modification du statut:',
+        error
+      )
       session.flash('error', 'Erreur lors de la mise à jour du rendez-vous.')
     }
 
@@ -225,7 +231,10 @@ export default class AdminAppointmentsController {
       await appointment.delete()
       session.flash('success', 'Le rendez-vous a été supprimé avec succès.')
     } catch (error) {
-      console.error('[AdminAppointmentsController] Erreur lors de la suppression du rendez-vous:', error)
+      console.error(
+        '[AdminAppointmentsController] Erreur lors de la suppression du rendez-vous:',
+        error
+      )
       session.flash('error', 'Erreur lors de la suppression du rendez-vous.')
     }
 

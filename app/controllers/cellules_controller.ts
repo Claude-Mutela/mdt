@@ -7,11 +7,9 @@ export default class CellulesController {
    * Affiche la liste publique des cellules de maison.
    */
   async index({ inertia }: HttpContext) {
-    const cellules = await Cellule.query()
-      .preload('responsable')
-      .orderBy('name', 'asc')
+    const cellules = await Cellule.query().preload('responsable').orderBy('name', 'asc')
 
-    return inertia.render('cellules' as any, {
+    return inertia.render('cellules', {
       cellules: cellules.map((c) => ({
         id: c.id,
         nom: c.name,
@@ -19,9 +17,7 @@ export default class CellulesController {
         horaire: c.horaire ?? '',
         adresse: c.adresse ?? '',
         telephone: c.contact ?? '',
-        responsable: c.responsable
-          ? `${c.responsable.firstname} ${c.responsable.lastname}`
-          : null,
+        responsable: c.responsable ? `${c.responsable.firstname} ${c.responsable.lastname}` : null,
       })),
     })
   }

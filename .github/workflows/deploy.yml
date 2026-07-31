@@ -1,0 +1,277 @@
+name: CI/CD — Phila MDT
+
+# ─────────────────────────────────────────────────────────
+# Déclenché à chaque push sur les branches main et develop
+# ─────────────────────────────────────────────────────────
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+# Annule les exécutions en cours pour la même branche
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ═══════════════════════════════════════════════════════
+  # ÉTAPE 1 — INSTALL + TYPECHECK + LINT
+  # ═══════════════════════════════════════════════════════
+  quality:
+    name: "🔍 Quality Check (TypeScript + Lint)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Installation des dépendances
+        run: npm ci
+
+      - name: Vérification TypeScript (typecheck)
+        run: npm run typecheck
+
+      - name: Vérification du linting (ESLint)
+        run: npm run lint
+
+  # ═══════════════════════════════════════════════════════
+  # ÉTAPE 2 — AUDIT DE SÉCURITÉ
+  # ═══════════════════════════════════════════════════════
+  security:
+    name: "🔐 Security Audit"
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+      - name: Checkout du code source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Installation des dépendances
+        run: npm ci
+
+      - name: Audit de sécurité npm
+        run: npm audit --audit-level=high
+
+  # ═══════════════════════════════════════════════════════
+  # ÉTAPE 3 — TESTS
+  # ═══════════════════════════════════════════════════════
+  tests:
+    name: "🧪 Tests (Unit + Functional)"
+    runs-on: ubuntu-latest
+    needs: quality
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: mdt_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      NODE_ENV: test
+      TZ: UTC
+      PORT: 3333
+      HOST: localhost
+      LOG_LEVEL: info
+      APP_KEY: ${{ secrets.APP_KEY }}
+      APP_URL: http://localhost:3333
+      SESSION_DRIVER: cookie
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_DATABASE: mdt_test
+      CLOUDINARY_CLOUD_NAME: test
+      CLOUDINARY_API_KEY: test
+      CLOUDINARY_API_SECRET: test
+      BREVO_API_KEY: test
+      BREVO_SENDER_EMAIL: test@test.com
+      BREVO_SENDER_NAME: Test
+      PASTOR_EMAIL: pastor@test.com
+      CONTACT_BREVO_API_KEY: test
+      CONTACT_SENDER_EMAIL: contact@test.com
+      CONTACT_SENDER_NAME: Test
+      SECRETARIAT_EMAIL: secretariat@test.com
+
+    steps:
+      - name: Checkout du code source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Installation des dépendances
+        run: npm ci
+
+      - name: Vérification de la migration (dry-run)
+        run: node ace migration:run --dry-run
+
+      - name: Exécution des tests
+        run: npm run test
+
+  # ═══════════════════════════════════════════════════════
+  # ÉTAPE 4 — BUILD DE PRODUCTION
+  # ═══════════════════════════════════════════════════════
+  build:
+    name: "🏗️ Production Build"
+    runs-on: ubuntu-latest
+    needs: [security, tests]
+
+    steps:
+      - name: Checkout du code source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Installation des dépendances
+        run: npm ci
+
+      - name: Build de production (AdonisJS + Vite)
+        env:
+          NODE_ENV: production
+        run: npm run build
+
+      - name: Vérification des assets générés
+        run: |
+          test -f build/public/assets/.vite/manifest.json && echo "✅ manifest.json présent" || (echo "❌ manifest.json manquant" && exit 1)
+          test -f build/bin/server.js && echo "✅ server.js présent" || (echo "❌ server.js manquant" && exit 1)
+
+      - name: Upload de l'artifact de build
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: build/
+          retention-days: 1
+
+  # ═══════════════════════════════════════════════════════
+  # ÉTAPE 5 — DÉPLOIEMENT SUR VPS HOSTINGER
+  # (uniquement sur push vers main)
+  # ═══════════════════════════════════════════════════════
+  deploy:
+    name: "🚀 Deploy to VPS Hostinger"
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout du code source
+        uses: actions/checkout@v4
+
+      - name: Téléchargement de l'artifact de build
+        uses: actions/download-artifact@v4
+        with:
+          name: production-build
+          path: build/
+
+      - name: Déploiement SSH sur VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            echo "📦 Déploiement de Phila MDT..."
+
+            # Aller dans le répertoire du projet
+            cd /var/www/philamdt
+
+            # Sauvegarde du build précédent (rollback possible)
+            if [ -d "build" ]; then
+              rm -rf build_backup
+              cp -r build build_backup
+              echo "✅ Sauvegarde du build précédent effectuée"
+            fi
+
+      - name: Transfert du build vers VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          source: "build/"
+          target: "/var/www/philamdt/"
+          strip_components: 1
+
+      - name: Finalisation du déploiement et redémarrage PM2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            cd /var/www/philamdt/build
+
+            echo "📦 Installation des dépendances de production..."
+            npm ci --omit=dev
+
+            echo "🗄️ Exécution des migrations..."
+            node ace migration:run --force
+
+            echo "♻️ Rechargement PM2..."
+            pm2 reload philamdt --update-env || pm2 start bin/server.js --name philamdt
+
+            echo "⏳ Attente du démarrage..."
+            sleep 5
+
+            echo "🏥 Health Check..."
+            curl -f http://localhost:3333 -o /dev/null -s -w "%{http_code}" | grep -E "^(200|301|302)$" || (echo "❌ Health check échoué" && pm2 restart philamdt && exit 1)
+
+            echo "✅ Déploiement terminé avec succès !"
+            pm2 status philamdt
+
+      - name: Notification de succès
+        if: success()
+        run: echo "🎉 Phila MDT déployé avec succès sur https://philamdt.church"
+
+      - name: Rollback en cas d'échec
+        if: failure()
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            echo "🔄 Rollback vers le build précédent..."
+            cd /var/www/philamdt
+            if [ -d "build_backup" ]; then
+              rm -rf build
+              mv build_backup build
+              cd build
+              pm2 restart philamdt
+              echo "✅ Rollback effectué"
+            else
+              echo "❌ Aucun backup disponible pour le rollback"
+            fi

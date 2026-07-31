@@ -259,7 +259,7 @@ jobs:
             npm ci --omit=dev
 
             echo "🗄️ Exécution des migrations..."
-            PORT=0 node bin/server.js --entrypoint="migration:run" --force || true
+            node bin/server.js --entrypoint="migration:run" --force || node ace.js migration:run --force || true
 
             echo "♻️ Configuration et Rechargement PM2..."
             cd /var/www/philamdt
@@ -288,11 +288,11 @@ jobs:
             pm2 reload ecosystem.config.json --env production || pm2 start ecosystem.config.json --env production
             pm2 save
 
-            echo "⏳ Attente du démarrage..."
-            sleep 4
+            echo "⏳ Attente du démarrage complet d'AdonisJS & Inertia..."
+            sleep 8
 
             echo "🏥 Health Check..."
-            curl -f http://localhost:3333 -o /dev/null -s -w "%{http_code}" | grep -E "^(200|301|302)$" || (echo "❌ Health check échoué" && pm2 restart philamdt && exit 1)
+            curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3333 | grep -E "^(200|301|302|303)$" || (echo "❌ Health check échoué" && pm2 logs philamdt --lines 20 && exit 1)
 
             echo "✅ Déploiement terminé avec succès !"
             pm2 status philamdt

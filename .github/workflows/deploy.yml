@@ -167,7 +167,7 @@ jobs:
         run: |
           test -f build/bin/server.js && echo "✅ server.js présent" || (echo "❌ server.js manquant" && exit 1)
           
-          # Copie de sécurité du manifest dans le build pour AdonisJS
+          # Copie de sécurité du manifest dans le build pour AdonisJS & Inertia
           mkdir -p build/public/assets/.vite
           MANIFEST=$(find build/public -name "manifest.json" | head -n 1)
           if [ -n "$MANIFEST" ]; then
@@ -268,6 +268,15 @@ jobs:
             echo "📦 Installation des dépendances de production..."
             npm ci --omit=dev
 
+            echo "📂 Synchronisation des manifests Vite dans le build..."
+            mkdir -p /var/www/philamdt/build/public/assets/.vite
+            MANIFEST=$(find /var/www/philamdt/build/public -name "manifest.json" | head -n 1)
+            if [ -n "$MANIFEST" ]; then
+              [ "$MANIFEST" = "/var/www/philamdt/build/public/assets/.vite/manifest.json" ] || cp "$MANIFEST" /var/www/philamdt/build/public/assets/.vite/manifest.json
+              [ "$MANIFEST" = "/var/www/philamdt/build/public/assets/manifest.json" ] || cp "$MANIFEST" /var/www/philamdt/build/public/assets/manifest.json
+              echo "✅ Manifest.json dupliqué avec succès dans public/assets/ et public/assets/.vite/"
+            fi
+
             echo "🗄️ Exécution des migrations..."
             node ace.js migration:run --force || node bin/console.js migration:run --force || true
 
@@ -313,6 +322,7 @@ jobs:
 
             if [ $SUCCESS -eq 0 ]; then
               echo "❌ Le serveur HTTP ne répond pas !"
+              tail -n 40 ~/.pm2/logs/philamdt-error-0.log 2>/dev/null || true
               exit 1
             fi
 

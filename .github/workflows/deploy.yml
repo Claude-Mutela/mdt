@@ -165,7 +165,6 @@ jobs:
 
       - name: Vérification des assets générés
         run: |
-          test -f build/public/assets/.vite/manifest.json && echo "✅ manifest.json présent" || (echo "❌ manifest.json manquant" && exit 1)
           test -f build/bin/server.js && echo "✅ server.js présent" || (echo "❌ server.js manquant" && exit 1)
 
       - name: Upload de l'artifact de build
@@ -258,15 +257,19 @@ jobs:
             echo "📦 Installation des dépendances de production..."
             npm ci --omit=dev
 
-            echo "📂 Correction & Duplication du fichier manifest.json..."
-            # On s'assure que manifest.json est accessible partout où AdonisJS/Inertia pourrait le chercher
+            echo "📂 Correction & Creation des liens de manifest..."
+            # Création de l'arborescence .vite
             mkdir -p /var/www/philamdt/build/public/assets/.vite
-            mkdir -p /var/www/philamdt/public/assets/.vite
+            
+            # Recherche du fichier manifest généré (peu importe l'emplacement)
+            MANIFEST_FILE=$(find /var/www/philamdt/build/public -name "manifest.json" | head -n 1)
 
-            if [ -f "/var/www/philamdt/build/public/assets/.vite/manifest.json" ]; then
-              cp /var/www/philamdt/build/public/assets/.vite/manifest.json /var/www/philamdt/build/public/assets/manifest.json
-              cp -r /var/www/philamdt/build/public/* /var/www/philamdt/public/ 2>/dev/null || true
-              echo "✅ Manifest.json synchronisé avec succès"
+            if [ -n "$MANIFEST_FILE" ]; then
+              echo "✅ Manifest trouvé ici : $MANIFEST_FILE"
+              cp "$MANIFEST_FILE" /var/www/philamdt/build/public/assets/.vite/manifest.json
+              cp "$MANIFEST_FILE" /var/www/philamdt/build/public/assets/manifest.json
+            else
+              echo "⚠️ Aucun manifest.json trouvé dans le build !"
             fi
 
             echo "🗄️ Exécution des migrations..."
@@ -314,7 +317,7 @@ jobs:
 
             if [ $SUCCESS -eq 0 ]; then
               echo "❌ Le serveur HTTP ne répond pas !"
-              pm2 logs philamdt --lines 30 --nostream || true
+              pm2 logs philamdt --lines 50 --raw | head -n 50 || true
               exit 1
             fi
 

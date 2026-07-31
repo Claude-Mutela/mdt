@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Head, Link, router } from '@inertiajs/react'
+import { Head, router } from '@inertiajs/react'
 import { Clock, MapPin, ChevronLeft, ChevronRight, RotateCcw, CalendarDays } from 'lucide-react'
 import { DateTime } from 'luxon'
 
@@ -48,7 +48,6 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
 
   const weekEnd = weekStart.endOf('week')
   const weekRange = `Du ${weekStart.toFormat('dd')} au ${weekEnd.toFormat('dd LLLL yyyy')}`
-  const weekStr = weekStart.toFormat("kkkk-'W'WW")
 
   // Navigate weeks by reloading via Inertia with query param
   const navigate = (dir: 1 | -1) => {

@@ -79,7 +79,7 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
     minForm.reset()
     minForm.clearErrors()
     minForm.setData({
-      name: m.name,
+      name: m.name || '',
       description: m.description || '',
       content: m.content || '',
       coverImg: null,
@@ -147,12 +147,12 @@ export default function AdminMinisteres({ ministries }: { ministries: Ministry[]
                             src={m.coverImg} 
                             width={100} 
                             height={100} 
-                            alt={m.name} 
+                            alt={m.name || ''} 
                             className="w-12 h-12 rounded-xl object-cover border border-slate-700 shadow-sm" 
                           />
                         ) : (
                           <div className={`w-12 h-12 ${m.badgeColor || 'bg-slate-500'} rounded-xl flex items-center justify-center text-white font-black text-lg shrink-0 shadow-sm`}>
-                            {m.name[0]}
+                            {(m.name || 'M')[0]}
                           </div>
                         )}
                         <div>

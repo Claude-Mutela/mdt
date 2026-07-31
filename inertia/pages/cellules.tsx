@@ -1,5 +1,5 @@
-import { Head, Link } from '@inertiajs/react'
-import { MapPin, Clock, Phone, Users, ArrowRight, User, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Head } from '@inertiajs/react'
+import { MapPin, Clock, Phone, Users, User, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
 interface CelluleItem {

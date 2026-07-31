@@ -28,7 +28,7 @@ export default class AdminEventsController {
     const events = await query
     const categories = await CatEvent.query().orderBy('name', 'asc')
 
-    return inertia.render('admin/evenements', {
+    return inertia.render('admin/evenements' as any, {
       events: events.map(e => ({
         id: e.id,
         name: e.name,

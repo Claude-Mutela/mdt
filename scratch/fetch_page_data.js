@@ -1,11 +1,11 @@
-import fs from 'fs';
+import fs from 'fs'
 
 async function main() {
   try {
-    const res = await fetch('http://localhost:3333/');
-    const html = await res.text();
+    const res = await fetch('http://localhost:3333/')
+    const html = await res.text()
     // Find data-page attribute
-    const match = html.match(/data-page="([^"]+)"/);
+    const match = html.match(/data-page="([^"]+)"/)
     if (match) {
       // Decode HTML entities
       const decoded = match[1]
@@ -13,16 +13,16 @@ async function main() {
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/&quot;/g, '"')
-        .replace(/&#039;/g, "'");
-      const pageData = JSON.parse(decoded);
-      console.log('lastPreach from Inertia page data:');
-      console.log(JSON.stringify(pageData.props.lastPreach, null, 2));
+        .replace(/&#039;/g, "'")
+      const pageData = JSON.parse(decoded)
+      console.log('lastPreach from Inertia page data:')
+      console.log(JSON.stringify(pageData.props.lastPreach, null, 2))
     } else {
-      console.log('Could not find data-page attribute in HTML.');
+      console.log('Could not find data-page attribute in HTML.')
     }
   } catch (error) {
-    console.error('Error fetching page:', error);
+    console.error('Error fetching page:', error)
   }
 }
 
-main();
+main()

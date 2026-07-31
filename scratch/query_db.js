@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql from 'mysql2/promise'
 
 async function main() {
   const connection = await mysql.createConnection({
@@ -6,17 +6,17 @@ async function main() {
     user: 'root',
     password: 'root',
     database: 'mdt',
-    port: 3306
-  });
+    port: 3306,
+  })
 
   try {
-    const [rows] = await connection.execute('SELECT * FROM integrations');
-    console.log('Integrations:', rows);
+    const [rows] = await connection.execute('SELECT * FROM integrations')
+    console.log('Integrations:', rows)
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error:', error)
   } finally {
-    await connection.end();
+    await connection.end()
   }
 }
 
-main();
+main()

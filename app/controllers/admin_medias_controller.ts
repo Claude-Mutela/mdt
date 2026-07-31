@@ -31,7 +31,7 @@ export default class AdminMediasController {
     // Serialize pagination for React
     const paginationMeta = paginated.getMeta()
 
-    return inertia.render('admin/medias', {
+    return inertia.render('admin/medias' as any, {
       medias: paginated.all().map(m => ({
         id: m.id,
         title: m.title,

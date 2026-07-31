@@ -77,10 +77,6 @@ export default function AdminCellules({ cellules, responsables }: Props) {
   }
 
   function save() {
-    const payload = {
-      ...form.data,
-      responsableId: form.data.responsableId === '' ? undefined : Number(form.data.responsableId),
-    }
     if (modal === 'add') {
       form.post('/admin/cellules', { onSuccess: () => setModal(null) })
     } else if (modal === 'edit' && selected) {

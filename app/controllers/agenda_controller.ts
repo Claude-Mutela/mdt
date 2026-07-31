@@ -28,7 +28,7 @@ export default class AgendaController {
       .orderBy('day', 'asc')
       .orderBy('hourStart', 'asc')
 
-    return inertia.render('agenda', {
+    return inertia.render('agenda' as any, {
       agendas: agendas.map((a) => ({
         id: a.id,
         day: a.day.toISODate() as string, // "YYYY-MM-DD"

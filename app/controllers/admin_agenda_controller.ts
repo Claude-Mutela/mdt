@@ -33,7 +33,7 @@ export default class AdminAgendaController {
 
     const categories = await CatActivity.all()
 
-    return inertia.render('admin/agenda', { 
+    return inertia.render('admin/agenda' as any, { 
       agendas: agendas.map(a => {
         // Format to simple object for Inertia
         return {

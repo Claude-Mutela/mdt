@@ -17,7 +17,10 @@ export default defineConfig({
     react(),
   ],
 
-
+  /**
+   * Define aliases for importing modules from
+   * your frontend code
+   */
   resolve: {
     alias: {
       '~/': `${import.meta.dirname}/inertia/`,

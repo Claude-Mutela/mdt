@@ -1,5 +1,5 @@
 import { Head, useForm, router } from '@inertiajs/react'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
 import CloudinaryImage from '../../components/CloudinaryImage'
@@ -16,7 +16,6 @@ import {
   Calendar,
   Pencil,
   Eye,
-  ArrowLeftRight
 } from 'lucide-react'
 
 interface CatGalery {

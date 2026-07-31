@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
-import { CreditCard, Smartphone, Banknote, Globe, Check, Copy, Heart, ShieldCheck, Gift, ChevronDown } from 'lucide-react';
+import { CreditCard, Banknote, Globe, Check, Copy, Heart, Gift, ChevronDown } from 'lucide-react';
 
 const Donation: React.FC = () => {
-  const [amount, setAmount] = useState<string>('50');
-  const [currency, setCurrency] = useState<'USD' | 'CDF' | 'EUR'>('USD');
-  const [selectedMethod, setSelectedMethod] = useState<string>('card');
   const [copied, setCopied] = useState<string | null>(null);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
@@ -346,17 +343,5 @@ const Donation: React.FC = () => {
     </>
   );
 };
-
-const PaymentOption = ({ icon, title, desc, active, onClick }: any) => (
-  <button onClick={onClick} className={`p-6 rounded-2xl border-2 text-left transition-all active:scale-95 flex items-center gap-4 w-full ${active ? 'border-primary bg-primary/5 shadow-md' : 'border-slate-100 bg-white hover:border-primary/20'}`}>
-    <div className={`w-12 h-12 flex-shrink-0 rounded-xl flex items-center justify-center ${active ? 'bg-primary text-white' : 'bg-slate-50 text-slate-400 group-hover:text-primary'}`}>
-      {icon}
-    </div>
-    <div className="space-y-1">
-      <p className="font-bold text-slate-900 leading-tight">{title}</p>
-      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tight">{desc}</p>
-    </div>
-  </button>
-);
 
 export default Donation;

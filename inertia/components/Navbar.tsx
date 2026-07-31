@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Link, usePage } from '@inertiajs/react';
-import { Menu, X } from 'lucide-react';
+import React, { useState } from 'react'
+import { Link, usePage } from '@inertiajs/react'
+import { Menu, X } from 'lucide-react'
 
 const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { url } = usePage();
+  const [isOpen, setIsOpen] = useState(false)
+  const { url } = usePage()
 
   const navLinks = [
     { name: 'Accueil', path: '/' },
@@ -15,9 +15,9 @@ const Navbar: React.FC = () => {
     // { name: 'Acadis', path: '/acadis' },
     { name: 'Rendez-vous', path: '/rendez-vous' },
     { name: 'Contact', path: '/contact' },
-  ];
+  ]
 
-  const isActive = (path: string) => url === path;
+  const isActive = (path: string) => url === path
 
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#EAE5DF]">
@@ -32,8 +32,12 @@ const Navbar: React.FC = () => {
               />
             </div>
             <div className="flex flex-col">
-              <h2 className="text-xl font-black text-primary leading-tight font-serif">PHILA MDT</h2>
-              <span className="text-[10px] font-bold text-accent-orange uppercase tracking-widest hidden sm:block">Maison de Témoignages</span>
+              <h2 className="text-xl font-black text-primary leading-tight font-serif">
+                PHILA MDT
+              </h2>
+              <span className="text-[10px] font-bold text-accent-orange uppercase tracking-widest hidden sm:block">
+                Maison de Témoignages
+              </span>
             </div>
           </Link>
 
@@ -44,10 +48,11 @@ const Navbar: React.FC = () => {
                 <Link
                   key={link.path}
                   href={link.path}
-                  className={`text-sm font-semibold transition-colors ${isActive(link.path)
-                    ? 'text-primary border-b-2 border-primary pb-1'
-                    : 'text-slate-600 hover:text-primary'
-                    }`}
+                  className={`text-sm font-semibold transition-colors ${
+                    isActive(link.path)
+                      ? 'text-primary border-b-2 border-primary pb-1'
+                      : 'text-slate-600 hover:text-primary'
+                  }`}
                 >
                   {link.name}
                 </Link>
@@ -84,8 +89,9 @@ const Navbar: React.FC = () => {
               key={link.path}
               href={link.path}
               onClick={() => setIsOpen(false)}
-              className={`block text-lg font-bold ${isActive(link.path) ? 'text-primary' : 'text-slate-600'
-                }`}
+              className={`block text-lg font-bold ${
+                isActive(link.path) ? 'text-primary' : 'text-slate-600'
+              }`}
             >
               {link.name}
             </Link>
@@ -107,7 +113,7 @@ const Navbar: React.FC = () => {
         </div>
       )}
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

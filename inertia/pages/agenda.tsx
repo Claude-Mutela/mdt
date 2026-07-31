@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 
 interface AgendaItem {
   id: number
-  day: string      // "YYYY-MM-DD"
+  day: string // "YYYY-MM-DD"
   title: string
   hourStart: string | null
   hourEnd: string | null
@@ -23,8 +23,14 @@ const DAY_NAMES_FR = ['', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Sa
 // Color palette cycling through categories
 const CATEGORY_COLORS: Record<string, string> = {}
 const COLOR_PALETTE = [
-  'bg-primary', 'bg-blue-500', 'bg-orange-600', 'bg-purple-600',
-  'bg-pink-500', 'bg-green-600', 'bg-slate-700', 'bg-amber-500',
+  'bg-primary',
+  'bg-blue-500',
+  'bg-orange-600',
+  'bg-purple-600',
+  'bg-pink-500',
+  'bg-green-600',
+  'bg-slate-700',
+  'bg-amber-500',
 ]
 let colorIdx = 0
 function getCategoryColor(catName: string): string {
@@ -53,7 +59,11 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
   const navigate = (dir: 1 | -1) => {
     const next = weekStart.plus({ weeks: dir })
     setWeekStart(next)
-    router.get('/agenda', { week: next.toFormat("kkkk-'W'WW") }, { preserveScroll: false, replace: true })
+    router.get(
+      '/agenda',
+      { week: next.toFormat("kkkk-'W'WW") },
+      { preserveScroll: false, replace: true }
+    )
   }
 
   const resetToToday = () => {
@@ -90,18 +100,17 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
   return (
     <>
       <Head title="Agenda des Cultes - Phila Maison de Témoignages">
-        <meta name="description" content="Consultez l'agenda et le programme de nos cultes, réunions de prière hebdomadaires et célébrations spéciales à la Phila Maison de Témoignages." />
+        <meta
+          name="description"
+          content="Consultez l'agenda et le programme de nos cultes, réunions de prière hebdomadaires et célébrations spéciales à la Phila Maison de Témoignages."
+        />
       </Head>
 
       <main className="min-h-screen bg-background-off pb-20">
         {/* Hero Section */}
         <div className="relative h-[40vh] flex items-center justify-center text-center overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <img
-              src="/mdt-banner.jpg"
-              alt="Agenda Banner"
-              className="w-full h-full object-cover"
-            />
+            <img src="/mdt-banner.jpg" alt="Agenda Banner" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-[#7a3218]/35 to-[#5b2010]/75" />
           </div>
 
@@ -113,7 +122,8 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
               L'Agenda de <br /> Notre Église
             </h1>
             <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
-              Planifiez votre semaine spirituelle et ne manquez aucun rendez-vous avec la présence de Dieu.
+              Planifiez votre semaine spirituelle et ne manquez aucun rendez-vous avec la présence
+              de Dieu.
             </p>
           </div>
         </div>
@@ -121,12 +131,13 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
         {/* Calendar View */}
         <section className="max-w-6xl mx-auto px-4 mt-[-60px] relative z-20">
           <div className="bg-white rounded-[40px] shadow-2xl shadow-slate-200/60 p-8 md:p-12 space-y-16">
-
             {/* Week navigation header */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-slate-100 pb-10">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-3xl font-black font-serif text-slate-900 leading-tight">Semaine en cours</h2>
+                  <h2 className="text-3xl font-black font-serif text-slate-900 leading-tight">
+                    Semaine en cours
+                  </h2>
                   <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black rounded-lg uppercase tracking-wider">
                     {weekStart.year}
                   </span>
@@ -168,26 +179,37 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
             {!hasAnyEvent ? (
               <div className="text-center py-20 space-y-4">
                 <CalendarDays size={52} className="mx-auto text-slate-300" />
-                <p className="text-2xl font-black font-serif text-slate-400">Aucun événement cette semaine</p>
-                <p className="text-slate-400">
-                  Essayez une autre semaine ou revenez bientôt.
+                <p className="text-2xl font-black font-serif text-slate-400">
+                  Aucun événement cette semaine
                 </p>
+                <p className="text-slate-400">Essayez une autre semaine ou revenez bientôt.</p>
               </div>
             ) : (
               <div className="space-y-12">
                 {groupedDays.map((dayGroup) => {
                   if (dayGroup.events.length === 0) return null
                   return (
-                    <div key={dayGroup.dow} className="grid lg:grid-cols-12 gap-8 items-start group">
+                    <div
+                      key={dayGroup.dow}
+                      className="grid lg:grid-cols-12 gap-8 items-start group"
+                    >
                       {/* Day label */}
                       <div className="lg:col-span-3">
-                        <div className={`sticky top-28 p-6 rounded-3xl transition-all border ${dayGroup.isToday ? 'bg-primary/5 border-primary/20 ring-4 ring-primary/5' : 'bg-slate-50 border-transparent group-hover:bg-slate-100'}`}>
-                          <h3 className="text-2xl font-black text-slate-900 font-serif mb-1">{dayGroup.dayName}</h3>
-                          <p className={`text-sm font-bold tracking-tight mb-4 ${dayGroup.isToday ? 'text-primary' : 'text-slate-400'}`}>
+                        <div
+                          className={`sticky top-28 p-6 rounded-3xl transition-all border ${dayGroup.isToday ? 'bg-primary/5 border-primary/20 ring-4 ring-primary/5' : 'bg-slate-50 border-transparent group-hover:bg-slate-100'}`}
+                        >
+                          <h3 className="text-2xl font-black text-slate-900 font-serif mb-1">
+                            {dayGroup.dayName}
+                          </h3>
+                          <p
+                            className={`text-sm font-bold tracking-tight mb-4 ${dayGroup.isToday ? 'text-primary' : 'text-slate-400'}`}
+                          >
                             {dayGroup.formattedDate}
                           </p>
                           <div className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-widest">
-                            <span className={`w-2 h-2 rounded-full ${dayGroup.isToday ? 'bg-primary animate-pulse' : 'bg-slate-300'}`} />
+                            <span
+                              className={`w-2 h-2 rounded-full ${dayGroup.isToday ? 'bg-primary animate-pulse' : 'bg-slate-300'}`}
+                            />
                             {dayGroup.events.length} Activité{dayGroup.events.length > 1 ? 's' : ''}
                           </div>
                         </div>
@@ -204,7 +226,9 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
                               className="p-8 rounded-[32px] border border-slate-100 hover:border-primary/20 bg-white transition-all shadow-sm hover:shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-8 group/card"
                             >
                               <div className="flex gap-6 items-start md:items-center">
-                                <div className={`w-14 h-14 rounded-2xl ${color} text-white flex items-center justify-center shrink-0 shadow-lg`}>
+                                <div
+                                  className={`w-14 h-14 rounded-2xl ${color} text-white flex items-center justify-center shrink-0 shadow-lg`}
+                                >
                                   <Clock size={24} />
                                 </div>
                                 <div className="space-y-2">

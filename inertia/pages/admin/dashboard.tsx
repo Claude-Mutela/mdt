@@ -26,7 +26,13 @@ export default function AdminDashboard({
   availableYears = [],
 }: {
   stats: { label: string; value: string; delta: string }[]
-  recentMembers: { nom: string; ministere: string; date: string; statut: string; coverImg?: string | null }[]
+  recentMembers: {
+    nom: string
+    ministere: string
+    date: string
+    statut: string
+    coverImg?: string | null
+  }[]
   upcomingEvents: { titre: string; date: string; statut: string }[]
   monthlyBars: number[]
   annualGrowthStr: string
@@ -42,20 +48,59 @@ export default function AdminDashboard({
   const max = Math.max(...barsForYear, 1)
 
   const statConfig: Record<string, { icon: any; color: string; border: string }> = {
-    'Membres actifs': { icon: Users, color: 'bg-blue-500/10 text-blue-400', border: 'border-blue-500/20' },
-    'Événements à venir': { icon: Ticket, color: 'bg-orange-500/10 text-orange-400', border: 'border-orange-500/20' },
-    'Ministères actifs': { icon: Church, color: 'bg-purple-500/10 text-purple-400', border: 'border-purple-500/20' },
-    'Cultes ce mois': { icon: CalendarDays, color: 'bg-cyan-500/10 text-cyan-400', border: 'border-cyan-500/20' },
-    'Solde Net (USD)': { icon: Coins, color: 'bg-emerald-500/10 text-emerald-400', border: 'border-emerald-500/20' },
-    'Solde Net (CDF)': { icon: Coins, color: 'bg-amber-500/10 text-amber-400', border: 'border-amber-500/20' },
-    'Nouveaux venus': { icon: Users, color: 'bg-indigo-500/10 text-indigo-400', border: 'border-indigo-500/20' },
-    'Médias publiés': { icon: Image, color: 'bg-green-500/10 text-green-400', border: 'border-green-500/20' },
-    'Photos galerie': { icon: Image, color: 'bg-pink-500/10 text-pink-400', border: 'border-pink-500/20' },
+    'Membres actifs': {
+      icon: Users,
+      color: 'bg-blue-500/10 text-blue-400',
+      border: 'border-blue-500/20',
+    },
+    'Événements à venir': {
+      icon: Ticket,
+      color: 'bg-orange-500/10 text-orange-400',
+      border: 'border-orange-500/20',
+    },
+    'Ministères actifs': {
+      icon: Church,
+      color: 'bg-purple-500/10 text-purple-400',
+      border: 'border-purple-500/20',
+    },
+    'Cultes ce mois': {
+      icon: CalendarDays,
+      color: 'bg-cyan-500/10 text-cyan-400',
+      border: 'border-cyan-500/20',
+    },
+    'Solde Net (USD)': {
+      icon: Coins,
+      color: 'bg-emerald-500/10 text-emerald-400',
+      border: 'border-emerald-500/20',
+    },
+    'Solde Net (CDF)': {
+      icon: Coins,
+      color: 'bg-amber-500/10 text-amber-400',
+      border: 'border-amber-500/20',
+    },
+    'Nouveaux venus': {
+      icon: Users,
+      color: 'bg-indigo-500/10 text-indigo-400',
+      border: 'border-indigo-500/20',
+    },
+    'Médias publiés': {
+      icon: Image,
+      color: 'bg-green-500/10 text-green-400',
+      border: 'border-green-500/20',
+    },
+    'Photos galerie': {
+      icon: Image,
+      color: 'bg-pink-500/10 text-pink-400',
+      border: 'border-pink-500/20',
+    },
   }
 
   // Filtrer/Masquer les médias publiés et les photos de galerie conformément aux ajustements demandés
   const mappedStats = stats
-    .filter((s) => s.label !=='Cultes ce mois' && s.label !== 'Médias publiés' && s.label !== 'Photos galerie')
+    .filter(
+      (s) =>
+        s.label !== 'Cultes ce mois' && s.label !== 'Médias publiés' && s.label !== 'Photos galerie'
+    )
     .map((s) => {
       const config = statConfig[s.label] || {
         icon: Users,
@@ -72,7 +117,10 @@ export default function AdminDashboard({
         {/* ── Stats ── */}
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
           {mappedStats.map(({ label, value, delta, icon: Icon, color, border }) => (
-            <div key={label} className={`bg-slate-900 border ${border} rounded-2xl p-4 flex flex-col gap-3`}>
+            <div
+              key={label}
+              className={`bg-slate-900 border ${border} rounded-2xl p-4 flex flex-col gap-3`}
+            >
               <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}>
                 <Icon size={18} />
               </div>
@@ -190,7 +238,10 @@ export default function AdminDashboard({
         <div className="mt-6 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
             <h2 className="text-white font-bold">Derniers membres inscrits</h2>
-            <a href="/admin/membres" className="text-xs text-primary flex items-center gap-1 hover:underline">
+            <a
+              href="/admin/membres"
+              className="text-xs text-primary flex items-center gap-1 hover:underline"
+            >
               Voir tout <ArrowUpRight size={12} />
             </a>
           </div>

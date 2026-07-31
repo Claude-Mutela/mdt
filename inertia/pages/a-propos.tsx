@@ -3,7 +3,6 @@ import { Head } from '@inertiajs/react'
 import { useState } from 'react'
 import { Eye, Globe, Heart, ArrowRight, ExternalLink } from 'lucide-react'
 
-
 const pastoralCouple = {
   nom: 'Blonsky & Lydia Mbala',
   role: 'Couple Pastoral',
@@ -19,7 +18,7 @@ const faqs = [
   {
     question: 'À quelle fréquence ont lieu les cultes ?',
     reponse:
-      'Nous tenons des cultes chaque dimanche matin à 8h00, ainsi que des réunions de d\'Enseignement MALAKISI mardi à partir de 17h30, prière le jeudi soir à 17h30. Des groupes de maison (Cellules) se réunissent également en semaine dans différents quartiers.',
+      "Nous tenons des cultes chaque dimanche matin à 8h00, ainsi que des réunions de d'Enseignement MALAKISI mardi à partir de 17h30, prière le jeudi soir à 17h30. Des groupes de maison (Cellules) se réunissent également en semaine dans différents quartiers.",
   },
   {
     question: 'Y a-t-il des activités pour les enfants et les jeunes ?',
@@ -34,12 +33,12 @@ const faqs = [
   {
     question: "L'église propose-t-elle un accompagnement pastoral ?",
     reponse:
-      "Absolument. Notre équipe pastorale est disponible pour vous accompagner dans les moments difficiles, que ce soit pour un counseling, une prière personnelle ou un suivi spirituel. Contactez-nous pour prendre rendez-vous.",
+      'Absolument. Notre équipe pastorale est disponible pour vous accompagner dans les moments difficiles, que ce soit pour un counseling, une prière personnelle ou un suivi spirituel. Contactez-nous pour prendre rendez-vous.',
   },
   {
     question: "Comment faire un don à l'église ?",
     reponse:
-      "Vous pouvez contribuer lors de nos cultes via les quêtes habituelles, Mobile Money, virement bancaire, le don en ligne à partir du site sur la page contact ou nous contacter directement pour les dons en nature. Chaque contribution soutient notre mission et nos actions communautaires.",
+      'Vous pouvez contribuer lors de nos cultes via les quêtes habituelles, Mobile Money, virement bancaire, le don en ligne à partir du site sur la page contact ou nous contacter directement pour les dons en nature. Chaque contribution soutient notre mission et nos actions communautaires.',
   },
 ]
 
@@ -47,7 +46,10 @@ export default function About() {
   return (
     <>
       <Head title="À propos - Phila Maison de Témoignages">
-        <meta name="description" content="Découvrez l'histoire, la vision, la mission et les valeurs fondamentales de la Phila Maison de Témoignages (MDT)." />
+        <meta
+          name="description"
+          content="Découvrez l'histoire, la vision, la mission et les valeurs fondamentales de la Phila Maison de Témoignages (MDT)."
+        />
       </Head>
       <main>
         <HeroAbout />
@@ -56,12 +58,23 @@ export default function About() {
           <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="space-y-6">
               <h2 className="text-3xl md:text-4xl font-black font-serif">A propos de nous</h2>
-              <p className="text-slate-600">Depuis notre fondation en 2025, Phila Maison de Témoignages a pour vocation de voir des vies transformées. Nous sommes une communauté engagée qui met la Parole en action et qui cherche à impacter notre cité par des témoignages vivants.</p>
-              <p className="text-slate-600">Ici, vous trouverez des programmes pour tous les âges : cultes, groupes de maison, actions sociales et formations spirituelles.</p>
+              <p className="text-slate-600">
+                Depuis notre fondation en 2025, Phila Maison de Témoignages a pour vocation de voir
+                des vies transformées. Nous sommes une communauté engagée qui met la Parole en
+                action et qui cherche à impacter notre cité par des témoignages vivants.
+              </p>
+              <p className="text-slate-600">
+                Ici, vous trouverez des programmes pour tous les âges : cultes, groupes de maison,
+                actions sociales et formations spirituelles.
+              </p>
             </div>
 
             <div className="relative">
-              <img src="/aksanti-mungu-mdt.jpeg" alt="Aksanti Mungu" className="w-full h-80 object-cover rounded-2xl shadow-lg" />
+              <img
+                src="/aksanti-mungu-mdt.jpeg"
+                alt="Aksanti Mungu"
+                className="w-full h-80 object-cover rounded-2xl shadow-lg"
+              />
             </div>
           </div>
         </section>
@@ -70,27 +83,30 @@ export default function About() {
         <section className="py-16 lg:py-24 bg-gradient-to-b from-white to-background-off border-t border-[#EAE5DF] px-4 overflow-hidden">
           <div className="max-w-6xl mx-auto space-y-16">
             <div className="text-center max-w-3xl mx-auto space-y-4">
-              <span className="text-primary font-black uppercase tracking-widest text-xs">Notre Filiation Spirituelle</span>
-              <h2 className="text-slate-900 text-3xl md:text-4xl font-black font-serif">D'où vient Phila Maison de Témoignages ?</h2>
+              <span className="text-primary font-black uppercase tracking-widest text-xs">
+                Notre Filiation Spirituelle
+              </span>
+              <h2 className="text-slate-900 text-3xl md:text-4xl font-black font-serif">
+                D'où vient Phila Maison de Témoignages ?
+              </h2>
               <p className="text-slate-500 text-base md:text-lg">
-                Découvrez la généalogie de notre vision spirituelle. Une vision céleste transmise, établie et propagée pour la gloire de Dieu.
+                Découvrez la généalogie de notre vision spirituelle. Une vision céleste transmise,
+                établie et propagée pour la gloire de Dieu.
               </p>
             </div>
 
             {/* Arbre Généalogique Visuel */}
             <div className="relative">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-16 lg:gap-y-0 gap-x-8 lg:gap-x-16 relative z-10">
-                
                 {/* 1. Centre Missionnaire Philadelphie (CMP) */}
                 <div className="group bg-white rounded-3xl border-2 border-[#EAE5DF] hover:border-primary/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
-                  
                   <div>
                     {/* Image Header */}
                     <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
-                      <img 
-                        src="/rolland&viviane.png" 
-                        alt="Couple Roland et Viviane Dalo" 
-                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" 
+                      <img
+                        src="/rolland&viviane.png"
+                        alt="Couple Roland et Viviane Dalo"
+                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                       {/* Badge de génération */}
                       <div className="absolute top-4 left-4 z-10 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
@@ -103,21 +119,25 @@ export default function About() {
                         <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
                           Centre Missionnaire Philadelphie
                         </h3>
-                        <p className="text-xs text-primary font-bold tracking-wider uppercase">CMP — Église Mère</p>
+                        <p className="text-xs text-primary font-bold tracking-wider uppercase">
+                          CMP — Église Mère
+                        </p>
                       </div>
 
                       <p className="text-slate-600 text-sm leading-relaxed">
-                        L'histoire commence au Centre Missionnaire Philadelphie (CMP), sous l'impulsion spirituelle de l'Apôtre Roland Dalo. C'est l'église fondatrice de la vision, où les fondements et la doctrine d'impact ont été plantés.
+                        L'histoire commence au Centre Missionnaire Philadelphie (CMP), sous
+                        l'impulsion spirituelle de l'Apôtre Roland Dalo. C'est l'église fondatrice
+                        de la vision, où les fondements et la doctrine d'impact ont été plantés.
                       </p>
                     </div>
                   </div>
 
                   <div className="p-6 md:p-8 pt-0">
                     <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
-                      <a 
-                        href="https://eglisecmp.com/" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <a
+                        href="https://eglisecmp.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 text-sm font-black text-primary hover:text-primary-dark transition-colors"
                       >
                         <span>Visiter le site</span>
@@ -129,16 +149,38 @@ export default function About() {
                   {/* Connecteur 1 (Vers Gen 2) */}
                   {/* Sur desktop : ligne horizontale avec flèche simple */}
                   <div className="hidden lg:flex absolute top-1/2 left-full -translate-y-1/2 w-16 h-6 z-20 items-center justify-center pointer-events-none">
-                    <svg className="w-full h-full text-primary/70 animate-pulse" fill="none" viewBox="0 0 64 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M4 12H60M60 12L52 6M60 12L52 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      className="w-full h-full text-primary/70 animate-pulse"
+                      fill="none"
+                      viewBox="0 0 64 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4 12H60M60 12L52 6M60 12L52 18"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                       <circle cx="4" cy="12" r="3.5" fill="currentColor" />
                     </svg>
                   </div>
-                  
+
                   {/* Sur mobile : ligne verticale avec flèche simple arrêtée avant le badge */}
                   <div className="lg:hidden absolute left-1/2 top-full -translate-x-1/2 w-6 h-16 z-20 flex items-center justify-center pointer-events-none">
-                    <svg className="w-full h-full text-primary/70 animate-pulse" fill="none" viewBox="0 0 24 64" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 4V44M12 44L6 36M12 44L18 36" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      className="w-full h-full text-primary/70 animate-pulse"
+                      fill="none"
+                      viewBox="0 0 24 64"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 4V44M12 44L6 36M12 44L18 36"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                       <circle cx="12" cy="4" r="3.5" fill="currentColor" />
                     </svg>
                   </div>
@@ -146,14 +188,13 @@ export default function About() {
 
                 {/* 2. Phila Cité d'Exaucement (PCE) */}
                 <div className="group bg-white rounded-3xl border-2 border-[#EAE5DF] hover:border-primary/50 hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
-                  
                   <div>
                     {/* Image Header */}
                     <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
-                      <img 
-                        src="/athoms&nadege.png" 
-                        alt="Couple Athoms et Nadège Mbuma" 
-                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" 
+                      <img
+                        src="/athoms&nadege.png"
+                        alt="Couple Athoms et Nadège Mbuma"
+                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                       {/* Badge de génération */}
                       <div className="absolute top-4 left-4 z-10 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
@@ -166,21 +207,25 @@ export default function About() {
                         <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
                           Phila Cité d'Exaucement
                         </h3>
-                        <p className="text-xs text-primary font-bold tracking-wider uppercase">Phila CE — Église Fille</p>
+                        <p className="text-xs text-primary font-bold tracking-wider uppercase">
+                          Phila CE — Église Fille
+                        </p>
                       </div>
 
                       <p className="text-slate-600 text-sm leading-relaxed">
-                        De la vision du CMP est née Phila Cité d'Exaucement (Phila CE), dirigée par le couple Pastoral Athoms et Nadège Mbuma. C’est dans ce foyer ardent d'amour et d’adoration que notre communauté a puisé son élan direct.
+                        De la vision du CMP est née Phila Cité d'Exaucement (Phila CE), dirigée par
+                        le couple Pastoral Athoms et Nadège Mbuma. C’est dans ce foyer ardent
+                        d'amour et d’adoration que notre communauté a puisé son élan direct.
                       </p>
                     </div>
                   </div>
 
                   <div className="p-6 md:p-8 pt-0">
                     <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
-                      <a 
-                        href="https://ce.church/" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <a
+                        href="https://ce.church/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 text-sm font-black text-primary hover:text-primary-dark transition-colors"
                       >
                         <span>Visiter le site</span>
@@ -192,16 +237,38 @@ export default function About() {
                   {/* Connecteur 2 (Vers Gen 3) */}
                   {/* Sur desktop : ligne horizontale avec flèche simple */}
                   <div className="hidden lg:flex absolute top-1/2 left-full -translate-y-1/2 w-16 h-6 z-20 items-center justify-center pointer-events-none">
-                    <svg className="w-full h-full text-primary/70 animate-pulse" fill="none" viewBox="0 0 64 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M4 12H60M60 12L52 6M60 12L52 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      className="w-full h-full text-primary/70 animate-pulse"
+                      fill="none"
+                      viewBox="0 0 64 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4 12H60M60 12L52 6M60 12L52 18"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                       <circle cx="4" cy="12" r="3.5" fill="currentColor" />
                     </svg>
                   </div>
-                  
+
                   {/* Sur mobile : ligne verticale avec flèche simple arrêtée avant le badge */}
                   <div className="lg:hidden absolute left-1/2 top-full -translate-x-1/2 w-6 h-16 z-20 flex items-center justify-center pointer-events-none">
-                    <svg className="w-full h-full text-primary/70 animate-pulse" fill="none" viewBox="0 0 24 64" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 4V44M12 44L6 36M12 44L18 36" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      className="w-full h-full text-primary/70 animate-pulse"
+                      fill="none"
+                      viewBox="0 0 24 64"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 4V44M12 44L6 36M12 44L18 36"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                       <circle cx="12" cy="4" r="3.5" fill="currentColor" />
                     </svg>
                   </div>
@@ -209,14 +276,13 @@ export default function About() {
 
                 {/* 3. Phila Maison de Témoignages (PMT) */}
                 <div className="group bg-gradient-to-br from-primary/5 to-primary/10 rounded-3xl border-2 border-primary hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden">
-                  
                   <div>
                     {/* Image Header */}
                     <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
-                      <img 
-                        src="/Couple_Bonsky_mbala.jpeg" 
-                        alt="Couple Blonsky et Lydia Mbala" 
-                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" 
+                      <img
+                        src="/Couple_Bonsky_mbala.jpeg"
+                        alt="Couple Blonsky et Lydia Mbala"
+                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                       {/* Badge de génération */}
                       <div className="absolute top-4 left-4 z-10 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-md animate-pulse">
@@ -229,11 +295,16 @@ export default function About() {
                         <h3 className="text-2xl font-black font-serif text-slate-900 group-hover:text-primary transition-colors">
                           Phila Maison de Témoignages
                         </h3>
-                        <p className="text-xs text-primary font-bold tracking-wider uppercase">Phila MDT — Notre Église</p>
+                        <p className="text-xs text-primary font-bold tracking-wider uppercase">
+                          Phila MDT — Notre Église
+                        </p>
                       </div>
 
                       <p className="text-slate-600 text-sm leading-relaxed">
-                        Dernière-née de cette lignée spirituelle, notre église locale sous la conduite pastorale s'établit pour proclamer la grandeur de Dieu. Notre mission est de transformer les vies en de véritables monuments de témoignages.
+                        Dernière-née de cette lignée spirituelle, notre église locale sous la
+                        conduite pastorale s'établit pour proclamer la grandeur de Dieu. Notre
+                        mission est de transformer les vies en de véritables monuments de
+                        témoignages.
                       </p>
                     </div>
                   </div>
@@ -247,7 +318,6 @@ export default function About() {
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
@@ -258,7 +328,9 @@ export default function About() {
           <div className="max-w-6xl mx-auto space-y-12 lg:space-y-16">
             <div className="text-center max-w-2xl mx-auto space-y-4">
               <h2 className="text-slate-900 text-4xl font-black font-serif">Notre Identité</h2>
-              <p className="text-slate-500 text-lg">Ce qui nous anime et constitue le fondement de notre marche ensemble.</p>
+              <p className="text-slate-500 text-lg">
+                Ce qui nous anime et constitue le fondement de notre marche ensemble.
+              </p>
             </div>
 
             {/* Vision & Mission */}
@@ -272,7 +344,9 @@ export default function About() {
                   </div>
                   <h3 className="text-2xl font-black font-serif mb-4">Notre Vision</h3>
                   <p className="text-white/85 leading-relaxed">
-                    Voir des vies brisées transformées en témoignages vivants par la puissance de Dieu, et que ces témoignages deviennent une lumière pour Kinshasa, la RDC et les nations.
+                    Voir des vies brisées transformées en témoignages vivants par la puissance de
+                    Dieu, et que ces témoignages deviennent une lumière pour Kinshasa, la RDC et les
+                    nations.
                   </p>
                 </div>
               </div>
@@ -286,7 +360,9 @@ export default function About() {
                   </div>
                   <h3 className="text-2xl font-black font-serif mb-4">Notre Mission</h3>
                   <p className="text-slate-600 leading-relaxed">
-                    Prêcher l'évangile avec authenticité, faire des disciples engagés, et impacter notre génération en relevant des hommes et des femmes qui transforment leur environnement.
+                    Prêcher l'évangile avec authenticité, faire des disciples engagés, et impacter
+                    notre génération en relevant des hommes et des femmes qui transforment leur
+                    environnement.
                   </p>
                 </div>
               </div>
@@ -304,7 +380,7 @@ export default function About() {
                 {[
                   {
                     title: 'Vous êtes au cœur du plan de Dieu',
-                    desc: 'À PHILA Maison de Témoignages, nous croyons que vous n\'êtes pas ici par hasard. Vous êtes au centre du programme divin. Notre mission est de vous accompagner dans votre marche avec Dieu, vous aider à découvrir votre identité d\'enfant du Royaume, et à activer les dons et talents que le Seigneur a déposés en vous. Ici, vous êtes accueilli(e), reconnu(e) et propulsé(e).',
+                    desc: "À PHILA Maison de Témoignages, nous croyons que vous n'êtes pas ici par hasard. Vous êtes au centre du programme divin. Notre mission est de vous accompagner dans votre marche avec Dieu, vous aider à découvrir votre identité d'enfant du Royaume, et à activer les dons et talents que le Seigneur a déposés en vous. Ici, vous êtes accueilli(e), reconnu(e) et propulsé(e).",
                   },
                   {
                     title: 'Une croissance spirituelle guidée et profonde',
@@ -312,14 +388,17 @@ export default function About() {
                   },
                   {
                     title: 'Une église qui valorise la famille',
-                    desc: 'Nous croyons qu\'une famille forte est une bénédiction pour l\'Église et pour la société. C\'est pourquoi nous encourageons le service en couple, le soutien mutuel et l\'unité spirituelle dans les foyers. À travers des programmes adaptés, nous marchons aux côtés des familles pour bâtir des fondations solides, équilibrées et alignées sur la Parole.',
+                    desc: "Nous croyons qu'une famille forte est une bénédiction pour l'Église et pour la société. C'est pourquoi nous encourageons le service en couple, le soutien mutuel et l'unité spirituelle dans les foyers. À travers des programmes adaptés, nous marchons aux côtés des familles pour bâtir des fondations solides, équilibrées et alignées sur la Parole.",
                   },
                   {
                     title: 'Nous vous accueillons avec joie',
-                    desc: 'Envie d\'en savoir plus ou de faire un premier pas ? Nous serons ravis de vous rencontrer à PHILA Maison de Témoignages. Prenez contact avec notre équipe d\'accueil, visitez-nous en personne, ou fixez un rendez-vous pour une rencontre fraternelle et inspirante.',
+                    desc: "Envie d'en savoir plus ou de faire un premier pas ? Nous serons ravis de vous rencontrer à PHILA Maison de Témoignages. Prenez contact avec notre équipe d'accueil, visitez-nous en personne, ou fixez un rendez-vous pour une rencontre fraternelle et inspirante.",
                   },
                 ].map((v, i) => (
-                  <div key={i} className="flex gap-4 p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
+                  <div
+                    key={i}
+                    className="flex gap-4 p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all"
+                  >
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
                       <ArrowRight size={14} className="text-primary" />
                     </div>
@@ -331,7 +410,6 @@ export default function About() {
                 ))}
               </div>
             </div>
-
           </div>
         </section>
 
@@ -339,13 +417,18 @@ export default function About() {
         <section className="py-24 bg-background-off px-4">
           <div className="max-w-4xl mx-auto space-y-12">
             <div className="text-center space-y-3">
-              <span className="text-primary font-black uppercase tracking-widest text-xs">Ceux qui nous dirigent</span>
-              <h2 className="text-slate-900 text-4xl font-black font-serif">Notre couple pastoral</h2>
+              <span className="text-primary font-black uppercase tracking-widest text-xs">
+                Ceux qui nous dirigent
+              </span>
+              <h2 className="text-slate-900 text-4xl font-black font-serif">
+                Notre couple pastoral
+              </h2>
               <p className="text-slate-500 max-w-xl mx-auto">
-                Des serviteurs dévoués qui accompagnent chaque membre avec amour, sagesse et humilité.
+                Des serviteurs dévoués qui accompagnent chaque membre avec amour, sagesse et
+                humilité.
               </p>
             </div>
-            
+
             <div className="max-w-md mx-auto group">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[30px] shadow-2xl">
                 <img
@@ -355,15 +438,18 @@ export default function About() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col text-center">
-                  <span className="text-primary font-bold text-xs uppercase tracking-widest mb-2">{pastoralCouple.role}</span>
-                  <h3 className="text-2xl md:text-3xl font-black text-white">{pastoralCouple.nom}</h3>
+                  <span className="text-primary font-bold text-xs uppercase tracking-widest mb-2">
+                    {pastoralCouple.role}
+                  </span>
+                  <h3 className="text-2xl md:text-3xl font-black text-white">
+                    {pastoralCouple.nom}
+                  </h3>
                 </div>
               </div>
             </div>
           </div>
         </section>
-        
-        
+
         {/* ── FAQ ────────────────────────────────────────────────────── */}
         <FaqSection />
 
@@ -392,7 +478,6 @@ export default function About() {
             </div>
           </div>
         </section> */}
-
       </main>
     </>
   )
@@ -410,11 +495,10 @@ function FaqSection() {
           <span className="text-primary font-black uppercase tracking-widest text-xs">
             Vos questions
           </span>
-          <h2 className="text-slate-900 text-4xl font-black font-serif">
-            Foire aux questions
-          </h2>
+          <h2 className="text-slate-900 text-4xl font-black font-serif">Foire aux questions</h2>
           <p className="text-slate-500 max-w-xl mx-auto">
-            Trouvez rapidement les réponses aux questions les plus fréquemment posées sur notre communauté.
+            Trouvez rapidement les réponses aux questions les plus fréquemment posées sur notre
+            communauté.
           </p>
         </div>
 
@@ -461,9 +545,7 @@ function FaqSection() {
                     estOuvert ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'
                   }`}
                 >
-                  <p className="px-6 pb-6 text-slate-500 text-sm leading-relaxed">
-                    {faq.reponse}
-                  </p>
+                  <p className="px-6 pb-6 text-slate-500 text-sm leading-relaxed">{faq.reponse}</p>
                 </div>
               </div>
             )
@@ -473,10 +555,7 @@ function FaqSection() {
         {/* Lien contact */}
         <p className="text-center text-slate-500 text-sm">
           Vous ne trouvez pas votre réponse ?{' '}
-          <a
-            href="/contact"
-            className="text-primary font-semibold hover:underline"
-          >
+          <a href="/contact" className="text-primary font-semibold hover:underline">
             Contactez-nous →
           </a>
         </p>

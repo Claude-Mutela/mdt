@@ -4,8 +4,19 @@ import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
 import CloudinaryImage from '../../components/CloudinaryImage'
 import {
-  Plus, Search, Pencil, Trash2, X, Check,
-  CalendarDays, MapPin, Tag, Save, AlertCircle, ImageIcon, Upload
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  X,
+  Check,
+  CalendarDays,
+  MapPin,
+  Tag,
+  Save,
+  AlertCircle,
+  ImageIcon,
+  Upload,
 } from 'lucide-react'
 
 type Status = 'a_venir' | 'en_cours' | 'termine' | 'annule'
@@ -48,7 +59,7 @@ const statusLabels: Record<Status, string> = {
 export default function AdminEvenements({
   events,
   categories,
-  filters
+  filters,
 }: {
   events: Evenement[]
   categories: CatEvent[]
@@ -56,7 +67,7 @@ export default function AdminEvenements({
 }) {
   const [modal, setModal] = useState<'add' | 'edit' | 'delete' | 'category' | null>(null)
   const [selected, setSelected] = useState<Evenement | null>(null)
-  
+
   // Local filter states
   const [search, setSearch] = useState(filters.search || '')
   const [statusFilter, setStatusFilter] = useState(filters.status || 'all')
@@ -98,7 +109,7 @@ export default function AdminEvenements({
 
   // Category Form
   const catForm = useForm({
-    name: ''
+    name: '',
   })
 
   // Pagination states
@@ -113,7 +124,7 @@ export default function AdminEvenements({
     perPage,
     currentPage,
     lastPage,
-    firstPage: 1
+    firstPage: 1,
   }
 
   // Handle live filters
@@ -196,13 +207,13 @@ export default function AdminEvenements({
     if (modal === 'add') {
       eventForm.post('/admin/evenements', {
         forceFormData: true,
-        onSuccess: () => closeModal()
+        onSuccess: () => closeModal(),
       })
     } else if (modal === 'edit' && selected) {
       // Put with file uploads in Inertia requires POST spoofing
       eventForm.post(`/admin/evenements/${selected.id}?_method=PUT`, {
         forceFormData: true,
-        onSuccess: () => closeModal()
+        onSuccess: () => closeModal(),
       })
     }
   }
@@ -210,7 +221,7 @@ export default function AdminEvenements({
   function handleDeleteEvent() {
     if (selected) {
       router.delete(`/admin/evenements/${selected.id}`, {
-        onSuccess: () => closeModal()
+        onSuccess: () => closeModal(),
       })
     }
   }
@@ -221,7 +232,7 @@ export default function AdminEvenements({
     catForm.post('/admin/evenements/categories', {
       onSuccess: () => {
         catForm.reset()
-      }
+      },
     })
   }
 
@@ -232,11 +243,15 @@ export default function AdminEvenements({
 
   function handleSaveCategoryName(id: number) {
     if (!editingCatName.trim()) return
-    router.put(`/admin/evenements/categories/${id}`, { name: editingCatName }, {
-      onSuccess: () => {
-        setEditingCatId(null)
+    router.put(
+      `/admin/evenements/categories/${id}`,
+      { name: editingCatName },
+      {
+        onSuccess: () => {
+          setEditingCatId(null)
+        },
       }
-    })
+    )
   }
 
   function handleDeleteCategory(id: number) {
@@ -249,7 +264,6 @@ export default function AdminEvenements({
     <>
       <Head title="Événements — Admin Phila MDT" />
       <AdminLayout title="Gestion des Événements">
-
         {/* Main Toolbar */}
         <div className="flex flex-col md:flex-row gap-3 mb-6 bg-slate-900/40 p-4 border border-slate-800/80 rounded-2xl">
           <div className="relative flex-1">
@@ -296,12 +310,24 @@ export default function AdminEvenements({
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-slate-950/80 border-b border-slate-800">
-                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">Titre / Description</th>
-                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">Dates (Début - Fin)</th>
-                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">Lieu</th>
-                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">Catégorie</th>
-                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">Statut</th>
-                  <th className="text-center text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider w-24">Actions</th>
+                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">
+                    Titre / Description
+                  </th>
+                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">
+                    Dates (Début - Fin)
+                  </th>
+                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">
+                    Lieu
+                  </th>
+                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">
+                    Catégorie
+                  </th>
+                  <th className="text-left text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider">
+                    Statut
+                  </th>
+                  <th className="text-center text-slate-400 font-bold px-6 py-4 text-xs uppercase tracking-wider w-24">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60">
@@ -324,7 +350,9 @@ export default function AdminEvenements({
                         )}
                         <div>
                           <p className="text-white font-bold text-sm">{e.name}</p>
-                          <p className="text-slate-500 text-xs mt-1 line-clamp-1 max-w-sm">{e.description || 'Aucune description'}</p>
+                          <p className="text-slate-500 text-xs mt-1 line-clamp-1 max-w-sm">
+                            {e.description || 'Aucune description'}
+                          </p>
                         </div>
                       </div>
                     </td>
@@ -332,9 +360,18 @@ export default function AdminEvenements({
                       <div className="flex items-center gap-2 text-slate-300">
                         <CalendarDays size={14} className="text-primary shrink-0" />
                         <span className="text-xs font-semibold">
-                          {e.date ? new Date(e.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '...'}
-                          {e.dateFin && e.dateFin !== e.date && ` au ${new Date(e.dateFin).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}`}
-                          {(!e.dateFin || e.dateFin === e.date) && e.date && ` ${new Date(e.date).getFullYear()}`}
+                          {e.date
+                            ? new Date(e.date).toLocaleDateString('fr-FR', {
+                                day: 'numeric',
+                                month: 'short',
+                              })
+                            : '...'}
+                          {e.dateFin &&
+                            e.dateFin !== e.date &&
+                            ` au ${new Date(e.dateFin).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}`}
+                          {(!e.dateFin || e.dateFin === e.date) &&
+                            e.date &&
+                            ` ${new Date(e.date).getFullYear()}`}
                           {e.startTime && ` (${e.startTime}${e.endTime ? ` - ${e.endTime}` : ''})`}
                         </span>
                       </div>
@@ -351,7 +388,9 @@ export default function AdminEvenements({
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${statusStyles[e.status]}`}>
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-xs font-bold border ${statusStyles[e.status]}`}
+                      >
                         {statusLabels[e.status]}
                       </span>
                     </td>
@@ -387,9 +426,7 @@ export default function AdminEvenements({
               </tbody>
             </table>
           </div>
-          {lastPage > 1 && (
-            <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
-          )}
+          {lastPage > 1 && <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />}
         </div>
 
         {/* Modal: Add or Edit Event */}
@@ -397,14 +434,26 @@ export default function AdminEvenements({
           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
               <div className="flex items-center justify-between px-8 py-5 border-b border-slate-800 bg-slate-950/20">
-                <h3 className="text-white text-lg font-black">{modal === 'add' ? 'Créer un Événement' : 'Modifier l\'Événement'}</h3>
-                <button onClick={closeModal} className="text-slate-500 hover:text-white transition-colors"><X size={20} /></button>
+                <h3 className="text-white text-lg font-black">
+                  {modal === 'add' ? 'Créer un Événement' : "Modifier l'Événement"}
+                </h3>
+                <button
+                  onClick={closeModal}
+                  className="text-slate-500 hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
-              <form onSubmit={handleSaveEvent} className="p-8 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
+              <form
+                onSubmit={handleSaveEvent}
+                className="p-8 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar"
+              >
                 {/* Title */}
                 <div>
-                  <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Titre de l'événement <span className="text-red-500">*</span></label>
+                  <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                    Titre de l'événement <span className="text-red-500">*</span>
+                  </label>
                   <input
                     value={eventForm.data.name}
                     onChange={(e) => eventForm.setData('name', e.target.value)}
@@ -412,13 +461,16 @@ export default function AdminEvenements({
                     placeholder="Ex: Conférence des Couples"
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                   />
-                  {eventForm.errors.name && <p className="text-red-400 text-xs mt-1">{eventForm.errors.name}</p>}
+                  {eventForm.errors.name && (
+                    <p className="text-red-400 text-xs mt-1">{eventForm.errors.name}</p>
+                  )}
                 </div>
 
                 {/* Images Upload & Preview */}
                 <div className="space-y-2">
                   <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block flex items-center gap-2">
-                    <ImageIcon size={12} /> Image de couverture {modal === 'add' && <span className="text-red-500">*</span>}
+                    <ImageIcon size={12} /> Image de couverture{' '}
+                    {modal === 'add' && <span className="text-red-500">*</span>}
                   </label>
                   <div className="flex gap-4 items-center">
                     <div
@@ -429,30 +481,47 @@ export default function AdminEvenements({
                         type="file"
                         ref={imageInputRef}
                         className="hidden"
-                        onChange={e => eventForm.setData('urlImg', e.target.files ? e.target.files[0] : null)}
+                        onChange={(e) =>
+                          eventForm.setData('urlImg', e.target.files ? e.target.files[0] : null)
+                        }
                       />
-                      <Upload size={20} className="text-slate-500 group-hover:text-primary transition-colors" />
+                      <Upload
+                        size={20}
+                        className="text-slate-500 group-hover:text-primary transition-colors"
+                      />
                       <span className="text-[11px] text-slate-400 mt-2 text-center px-4 truncate w-full">
-                        {eventForm.data.urlImg ? eventForm.data.urlImg.name : 'Cliquez pour uploader (JPG, PNG, WEBP)'}
+                        {eventForm.data.urlImg
+                          ? eventForm.data.urlImg.name
+                          : 'Cliquez pour uploader (JPG, PNG, WEBP)'}
                       </span>
                     </div>
 
                     {preview && (
                       <div className="w-28 h-28 rounded-xl overflow-hidden border border-slate-800 shrink-0 relative group">
-                        <CloudinaryImage src={preview} width={200} height={200} alt="Preview" className="w-full h-full object-cover" />
+                        <CloudinaryImage
+                          src={preview}
+                          width={200}
+                          height={200}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                        />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <span className="text-[10px] text-white font-bold uppercase">Aperçu</span>
                         </div>
                       </div>
                     )}
                   </div>
-                  {eventForm.errors.urlImg && <p className="text-red-400 text-xs mt-1">{eventForm.errors.urlImg}</p>}
+                  {eventForm.errors.urlImg && (
+                    <p className="text-red-400 text-xs mt-1">{eventForm.errors.urlImg}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   {/* Date Début */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Date de début <span className="text-red-500">*</span></label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Date de début <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="date"
                       value={eventForm.data.date}
@@ -460,12 +529,16 @@ export default function AdminEvenements({
                       required
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
-                    {eventForm.errors.date && <p className="text-red-400 text-xs mt-1">{eventForm.errors.date}</p>}
+                    {eventForm.errors.date && (
+                      <p className="text-red-400 text-xs mt-1">{eventForm.errors.date}</p>
+                    )}
                   </div>
 
                   {/* Date Fin */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Date de fin <span className="text-red-500">*</span></label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Date de fin <span className="text-red-500">*</span>
+                    </label>
                     <input
                       type="date"
                       value={eventForm.data.dateFin}
@@ -473,72 +546,92 @@ export default function AdminEvenements({
                       required
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
-                    {eventForm.errors.dateFin && <p className="text-red-400 text-xs mt-1">{eventForm.errors.dateFin}</p>}
+                    {eventForm.errors.dateFin && (
+                      <p className="text-red-400 text-xs mt-1">{eventForm.errors.dateFin}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   {/* Heure de début */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Heure de début</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Heure de début
+                    </label>
                     <input
                       type="time"
                       value={eventForm.data.startTime}
                       onChange={(e) => eventForm.setData('startTime', e.target.value)}
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
-                    {eventForm.errors.startTime && <p className="text-red-400 text-xs mt-1">{eventForm.errors.startTime}</p>}
+                    {eventForm.errors.startTime && (
+                      <p className="text-red-400 text-xs mt-1">{eventForm.errors.startTime}</p>
+                    )}
                   </div>
 
                   {/* Heure de fin */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Heure de fin</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Heure de fin
+                    </label>
                     <input
                       type="time"
                       value={eventForm.data.endTime}
                       onChange={(e) => eventForm.setData('endTime', e.target.value)}
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
-                    {eventForm.errors.endTime && <p className="text-red-400 text-xs mt-1">{eventForm.errors.endTime}</p>}
+                    {eventForm.errors.endTime && (
+                      <p className="text-red-400 text-xs mt-1">{eventForm.errors.endTime}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   {/* Place */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Lieu</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Lieu
+                    </label>
                     <input
                       value={eventForm.data.place}
                       onChange={(e) => eventForm.setData('place', e.target.value)}
                       placeholder="Ex: Temple principal"
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
-                    {eventForm.errors.place && <p className="text-red-400 text-xs mt-1">{eventForm.errors.place}</p>}
+                    {eventForm.errors.place && (
+                      <p className="text-red-400 text-xs mt-1">{eventForm.errors.place}</p>
+                    )}
                   </div>
 
                   {/* Category */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Catégorie</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Catégorie
+                    </label>
                     <select
                       value={eventForm.data.catEventId}
                       onChange={(e) => eventForm.setData('catEventId', Number(e.target.value))}
                       className="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary cursor-pointer"
                     >
                       {categories.map((c) => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
                       ))}
-                      {categories.length === 0 && (
-                        <option value={0}>Aucune catégorie</option>
-                      )}
+                      {categories.length === 0 && <option value={0}>Aucune catégorie</option>}
                     </select>
-                    {eventForm.errors.catEventId && <p className="text-red-400 text-xs mt-1">{eventForm.errors.catEventId}</p>}
+                    {eventForm.errors.catEventId && (
+                      <p className="text-red-400 text-xs mt-1">{eventForm.errors.catEventId}</p>
+                    )}
                   </div>
                 </div>
 
                 {/* Status - Render ONLY in EDIT modal */}
                 {modal === 'edit' && (
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Statut</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Statut
+                    </label>
                     <select
                       value={eventForm.data.status}
                       onChange={(e) => eventForm.setData('status', e.target.value as Status)}
@@ -549,13 +642,17 @@ export default function AdminEvenements({
                       <option value="termine">Passé (Terminé)</option>
                       <option value="annule">Annulé</option>
                     </select>
-                    {eventForm.errors.status && <p className="text-red-400 text-xs mt-1">{eventForm.errors.status}</p>}
+                    {eventForm.errors.status && (
+                      <p className="text-red-400 text-xs mt-1">{eventForm.errors.status}</p>
+                    )}
                   </div>
                 )}
 
                 {/* Description */}
                 <div>
-                  <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Description courte <span className="text-red-500">*</span></label>
+                  <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                    Description courte <span className="text-red-500">*</span>
+                  </label>
                   <textarea
                     rows={2}
                     value={eventForm.data.description}
@@ -564,12 +661,16 @@ export default function AdminEvenements({
                     placeholder="Brève description de l'événement (min. 10 caract.)..."
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary resize-none transition-colors"
                   />
-                  {eventForm.errors.description && <p className="text-red-400 text-xs mt-1">{eventForm.errors.description}</p>}
+                  {eventForm.errors.description && (
+                    <p className="text-red-400 text-xs mt-1">{eventForm.errors.description}</p>
+                  )}
                 </div>
 
                 {/* Content */}
                 <div>
-                  <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Contenu complet (Détails de l'événement) <span className="text-red-500">*</span></label>
+                  <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                    Contenu complet (Détails de l'événement) <span className="text-red-500">*</span>
+                  </label>
                   <textarea
                     rows={4}
                     value={eventForm.data.content}
@@ -578,7 +679,9 @@ export default function AdminEvenements({
                     placeholder="Détails complets, programme, orateurs, etc..."
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary resize-none transition-colors"
                   />
-                  {eventForm.errors.content && <p className="text-red-400 text-xs mt-1">{eventForm.errors.content}</p>}
+                  {eventForm.errors.content && (
+                    <p className="text-red-400 text-xs mt-1">{eventForm.errors.content}</p>
+                  )}
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
@@ -607,8 +710,15 @@ export default function AdminEvenements({
           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
               <div className="flex items-center justify-between px-8 py-5 border-b border-slate-800 bg-slate-950/20">
-                <h3 className="text-white text-lg font-black flex items-center gap-2"><Tag size={18} className="text-primary" /> Gérer les Catégories</h3>
-                <button onClick={closeModal} className="text-slate-500 hover:text-white transition-colors"><X size={20} /></button>
+                <h3 className="text-white text-lg font-black flex items-center gap-2">
+                  <Tag size={18} className="text-primary" /> Gérer les Catégories
+                </h3>
+                <button
+                  onClick={closeModal}
+                  className="text-slate-500 hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
               <div className="p-8">
@@ -629,15 +739,22 @@ export default function AdminEvenements({
                     Ajouter
                   </button>
                 </form>
-                {catForm.errors.name && <p className="text-red-400 text-xs mb-4">{catForm.errors.name}</p>}
+                {catForm.errors.name && (
+                  <p className="text-red-400 text-xs mb-4">{catForm.errors.name}</p>
+                )}
 
                 {/* Categories List */}
                 <div className="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
                   {categories.length === 0 && (
-                    <p className="text-slate-500 text-sm text-center py-6">Aucune catégorie disponible.</p>
+                    <p className="text-slate-500 text-sm text-center py-6">
+                      Aucune catégorie disponible.
+                    </p>
                   )}
                   {categories.map((c) => (
-                    <div key={c.id} className="flex items-center gap-2 bg-slate-950/40 border border-slate-800/80 px-4 py-3 rounded-xl">
+                    <div
+                      key={c.id}
+                      className="flex items-center gap-2 bg-slate-950/40 border border-slate-800/80 px-4 py-3 rounded-xl"
+                    >
                       {editingCatId === c.id ? (
                         <>
                           <input
@@ -667,7 +784,9 @@ export default function AdminEvenements({
                         </>
                       ) : (
                         <>
-                          <span className="flex-1 text-slate-200 text-sm font-medium">{c.name}</span>
+                          <span className="flex-1 text-slate-200 text-sm font-medium">
+                            {c.name}
+                          </span>
                           <button
                             onClick={() => startEditCategory(c)}
                             className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
@@ -702,7 +821,9 @@ export default function AdminEvenements({
               <div className="text-center">
                 <h3 className="text-white font-black text-xl">Supprimer l'Événement</h3>
                 <p className="text-slate-400 text-sm mt-2">
-                  Êtes-vous sûr de vouloir supprimer <strong className="text-white">"{selected.name}"</strong> ? Cette action est irréversible.
+                  Êtes-vous sûr de vouloir supprimer{' '}
+                  <strong className="text-white">"{selected.name}"</strong> ? Cette action est
+                  irréversible.
                 </p>
               </div>
               <div className="flex gap-3 pt-2">
@@ -722,15 +843,18 @@ export default function AdminEvenements({
             </div>
           </div>
         )}
-
       </AdminLayout>
-      
-      <style dangerouslySetInnerHTML={{ __html: `
+
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #334155; }
-      `}} />
+      `,
+        }}
+      />
     </>
   )
 }

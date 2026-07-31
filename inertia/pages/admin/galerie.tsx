@@ -371,7 +371,10 @@ export default function AdminGalerie({
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <FolderOpen size={18} className={activeTab === 'albums' ? 'text-primary' : 'text-slate-500'} />
+              <FolderOpen
+                size={18}
+                className={activeTab === 'albums' ? 'text-primary' : 'text-slate-500'}
+              />
               <span>Albums ({allGaleries.length})</span>
             </button>
             <button
@@ -382,7 +385,10 @@ export default function AdminGalerie({
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <ImageIcon size={18} className={activeTab === 'photos' ? 'text-primary' : 'text-slate-500'} />
+              <ImageIcon
+                size={18}
+                className={activeTab === 'photos' ? 'text-primary' : 'text-slate-500'}
+              />
               <span>Photos</span>
             </button>
           </div>
@@ -444,7 +450,13 @@ export default function AdminGalerie({
                 setCatFilter(e.target.value)
                 router.get(
                   '/admin/galerie',
-                  { tab: activeTab, search, catId: e.target.value, galeryId: galeryFilter, page: 1 },
+                  {
+                    tab: activeTab,
+                    search,
+                    catId: e.target.value,
+                    galeryId: galeryFilter,
+                    page: 1,
+                  },
                   { preserveState: true }
                 )
               }}
@@ -526,7 +538,9 @@ export default function AdminGalerie({
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-slate-900 to-slate-950 flex flex-col items-center justify-center text-slate-750">
                         <FolderOpen size={48} className="opacity-10 mb-2" />
-                        <span className="text-[10px] uppercase font-bold tracking-widest opacity-20">Aucune couverture</span>
+                        <span className="text-[10px] uppercase font-bold tracking-widest opacity-20">
+                          Aucune couverture
+                        </span>
                       </div>
                     )}
 
@@ -550,7 +564,12 @@ export default function AdminGalerie({
                         {g.title}
                       </h4>
                       <p className="text-slate-500 text-[10px] font-bold">
-                        Créé le {new Date(g.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        Créé le{' '}
+                        {new Date(g.createdAt).toLocaleDateString('fr-FR', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
                       </p>
                     </div>
 
@@ -580,7 +599,9 @@ export default function AdminGalerie({
               <div className="flex flex-col items-center justify-center py-28 text-slate-650 bg-slate-900/10 border border-dashed border-slate-800 rounded-3xl">
                 <FolderOpen size={48} className="mb-4 opacity-20 text-primary" />
                 <p className="font-bold text-sm">Aucun album trouvé</p>
-                <p className="text-xs text-slate-500 mt-1">Essayez d'ajuster vos filtres ou créez votre premier album.</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Essayez d'ajuster vos filtres ou créez votre premier album.
+                </p>
               </div>
             )}
           </>
@@ -647,7 +668,13 @@ export default function AdminGalerie({
                     {p.date && (
                       <p className="text-slate-600 text-[9px] mt-2 font-bold flex items-center gap-1">
                         <Calendar size={9} />
-                        <span>{new Date(p.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        <span>
+                          {new Date(p.date).toLocaleDateString('fr-FR', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </span>
                       </p>
                     )}
                   </div>
@@ -659,7 +686,9 @@ export default function AdminGalerie({
               <div className="flex flex-col items-center justify-center py-28 text-slate-650 bg-slate-900/10 border border-dashed border-slate-800 rounded-3xl">
                 <ImageIcon size={48} className="mb-4 opacity-20 text-primary" />
                 <p className="font-bold text-sm">Aucune photo trouvée</p>
-                <p className="text-xs text-slate-500 mt-1">Vous pouvez ajouter des photos à vos albums existants.</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Vous pouvez ajouter des photos à vos albums existants.
+                </p>
               </div>
             )}
           </>
@@ -683,7 +712,7 @@ export default function AdminGalerie({
             <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
               <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-800/20">
                 <h3 className="text-white font-black text-sm uppercase tracking-wider">
-                  {selectedAlbum ? 'Modifier l\'album' : 'Créer un album'}
+                  {selectedAlbum ? "Modifier l'album" : 'Créer un album'}
                 </h3>
                 <button
                   onClick={() => setAlbumModalOpen(false)}
@@ -710,7 +739,9 @@ export default function AdminGalerie({
                     }`}
                   />
                   {albumForm.errors.title && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">{albumForm.errors.title}</p>
+                    <p className="text-red-400 text-xs mt-1 font-semibold">
+                      {albumForm.errors.title}
+                    </p>
                   )}
                 </div>
 
@@ -733,7 +764,9 @@ export default function AdminGalerie({
                     ))}
                   </select>
                   {albumForm.errors.catGaleryId && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">{albumForm.errors.catGaleryId}</p>
+                    <p className="text-red-400 text-xs mt-1 font-semibold">
+                      {albumForm.errors.catGaleryId}
+                    </p>
                   )}
                 </div>
 
@@ -745,15 +778,27 @@ export default function AdminGalerie({
                   <div
                     onClick={() => coverInputRef.current?.click()}
                     className={`relative border-2 border-dashed rounded-2xl p-6 cursor-pointer transition-all flex flex-col items-center justify-center gap-2 bg-slate-950/40 hover:bg-slate-950/70 group ${
-                      (albumForm.errors as any).file ? 'border-red-400' : 'border-slate-800 hover:border-primary'
+                      (albumForm.errors as any).file
+                        ? 'border-red-400'
+                        : 'border-slate-800 hover:border-primary'
                     }`}
                   >
                     {previewUrl ? (
                       <div className="relative w-full h-40 rounded-xl overflow-hidden shadow-lg border border-slate-800">
                         {previewUrl.startsWith('blob:') || previewUrl.startsWith('data:') ? (
-                          <img src={previewUrl} alt="preview" className="w-full h-full object-cover" />
+                          <img
+                            src={previewUrl}
+                            alt="preview"
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
-                          <CloudinaryImage src={previewUrl} width={400} height={300} alt="Cover preview" className="w-full h-full object-cover" />
+                          <CloudinaryImage
+                            src={previewUrl}
+                            width={400}
+                            height={300}
+                            alt="Cover preview"
+                            className="w-full h-full object-cover"
+                          />
                         )}
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                           <Plus size={24} className="text-white" />
@@ -761,7 +806,10 @@ export default function AdminGalerie({
                       </div>
                     ) : (
                       <>
-                        <Upload size={24} className="text-slate-500 group-hover:text-primary transition-colors" />
+                        <Upload
+                          size={24}
+                          className="text-slate-500 group-hover:text-primary transition-colors"
+                        />
                         <p className="text-slate-400 text-xs font-bold text-center">
                           Cliquez pour choisir une couverture
                         </p>
@@ -779,7 +827,9 @@ export default function AdminGalerie({
                     />
                   </div>
                   {(albumForm.errors as any).file && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">{(albumForm.errors as any).file}</p>
+                    <p className="text-red-400 text-xs mt-1 font-semibold">
+                      {(albumForm.errors as any).file}
+                    </p>
                   )}
                 </div>
 
@@ -838,7 +888,9 @@ export default function AdminGalerie({
                     }`}
                   />
                   {photoForm.errors.title && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">{photoForm.errors.title}</p>
+                    <p className="text-red-400 text-xs mt-1 font-semibold">
+                      {photoForm.errors.title}
+                    </p>
                   )}
                 </div>
 
@@ -861,7 +913,9 @@ export default function AdminGalerie({
                     ))}
                   </select>
                   {photoForm.errors.galeryId && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">{photoForm.errors.galeryId}</p>
+                    <p className="text-red-400 text-xs mt-1 font-semibold">
+                      {photoForm.errors.galeryId}
+                    </p>
                   )}
                 </div>
 
@@ -879,7 +933,9 @@ export default function AdminGalerie({
                     }`}
                   />
                   {photoForm.errors.date && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">{photoForm.errors.date}</p>
+                    <p className="text-red-400 text-xs mt-1 font-semibold">
+                      {photoForm.errors.date}
+                    </p>
                   )}
                 </div>
 
@@ -891,15 +947,27 @@ export default function AdminGalerie({
                   <div
                     onClick={() => fileInputRef.current?.click()}
                     className={`relative border-2 border-dashed rounded-2xl p-6 cursor-pointer transition-all flex flex-col items-center justify-center gap-2 bg-slate-950/40 hover:bg-slate-950/70 group ${
-                      (photoForm.errors as any).file ? 'border-red-400' : 'border-slate-800 hover:border-primary'
+                      (photoForm.errors as any).file
+                        ? 'border-red-400'
+                        : 'border-slate-800 hover:border-primary'
                     }`}
                   >
                     {previewUrl ? (
                       <div className="relative w-full h-40 rounded-xl overflow-hidden shadow-lg border border-slate-800">
                         {previewUrl.startsWith('blob:') || previewUrl.startsWith('data:') ? (
-                          <img src={previewUrl} alt="preview" className="w-full h-full object-cover" />
+                          <img
+                            src={previewUrl}
+                            alt="preview"
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
-                          <CloudinaryImage src={previewUrl} width={400} height={300} alt="Photo preview" className="w-full h-full object-cover" />
+                          <CloudinaryImage
+                            src={previewUrl}
+                            width={400}
+                            height={300}
+                            alt="Photo preview"
+                            className="w-full h-full object-cover"
+                          />
                         )}
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                           <Plus size={24} className="text-white" />
@@ -907,7 +975,10 @@ export default function AdminGalerie({
                       </div>
                     ) : (
                       <>
-                        <Upload size={24} className="text-slate-500 group-hover:text-primary transition-colors" />
+                        <Upload
+                          size={24}
+                          className="text-slate-500 group-hover:text-primary transition-colors"
+                        />
                         <p className="text-slate-400 text-xs font-bold text-center">
                           Cliquez pour choisir un cliché
                         </p>
@@ -925,7 +996,9 @@ export default function AdminGalerie({
                     />
                   </div>
                   {(photoForm.errors as any).file && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">{(photoForm.errors as any).file}</p>
+                    <p className="text-red-400 text-xs mt-1 font-semibold">
+                      {(photoForm.errors as any).file}
+                    </p>
                   )}
                 </div>
 
@@ -977,13 +1050,17 @@ export default function AdminGalerie({
                       required
                       value={catForm.data.name}
                       onChange={(e) => catForm.setData('name', e.target.value)}
-                      placeholder={selectedCat ? 'Renommer la catégorie...' : 'Nom de la nouvelle catégorie...'}
+                      placeholder={
+                        selectedCat ? 'Renommer la catégorie...' : 'Nom de la nouvelle catégorie...'
+                      }
                       className={`w-full bg-slate-950 border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors ${
                         catForm.errors.name ? 'border-red-400' : 'border-slate-800'
                       }`}
                     />
                     {catForm.errors.name && (
-                      <p className="text-red-400 text-xs mt-1 font-semibold">{catForm.errors.name}</p>
+                      <p className="text-red-400 text-xs mt-1 font-semibold">
+                        {catForm.errors.name}
+                      </p>
                     )}
                   </div>
                   <button
@@ -1039,7 +1116,9 @@ export default function AdminGalerie({
                   ))}
 
                   {categories.length === 0 && (
-                    <p className="text-slate-500 text-xs text-center py-4">Aucune catégorie pour l'instant.</p>
+                    <p className="text-slate-500 text-xs text-center py-4">
+                      Aucune catégorie pour l'instant.
+                    </p>
                   )}
                 </div>
               </div>
@@ -1084,28 +1163,32 @@ export default function AdminGalerie({
               <div className="text-center">
                 <h3 className="text-white font-black text-sm uppercase tracking-wider">
                   {deleteModal === 'album'
-                    ? 'Supprimer l\'album'
+                    ? "Supprimer l'album"
                     : deleteModal === 'photo'
-                    ? 'Supprimer la photo'
-                    : 'Supprimer la catégorie'}
+                      ? 'Supprimer la photo'
+                      : 'Supprimer la catégorie'}
                 </h3>
                 <p className="text-slate-400 text-xs mt-2 leading-relaxed">
                   {deleteModal === 'album' && selectedAlbum ? (
                     <>
-                      Êtes-vous sûr de vouloir supprimer l'album <strong className="text-white">{selectedAlbum.title}</strong> ?
+                      Êtes-vous sûr de vouloir supprimer l'album{' '}
+                      <strong className="text-white">{selectedAlbum.title}</strong> ?
                       <br />
                       <span className="text-red-400 font-bold block mt-2">
-                        ⚠️ Cette action supprimera également toutes les photos contenues dans cet album physiquement sur Cloudinary.
+                        ⚠️ Cette action supprimera également toutes les photos contenues dans cet
+                        album physiquement sur Cloudinary.
                       </span>
                     </>
                   ) : deleteModal === 'photo' && selectedPhoto ? (
                     <>
-                      Voulez-vous supprimer cette photo ? Elle sera détruite définitivement de votre stockage Cloudinary.
+                      Voulez-vous supprimer cette photo ? Elle sera détruite définitivement de votre
+                      stockage Cloudinary.
                     </>
                   ) : (
                     selectedCat && (
                       <>
-                        Voulez-vous supprimer la catégorie d'album <strong className="text-white">{selectedCat.name}</strong> ?
+                        Voulez-vous supprimer la catégorie d'album{' '}
+                        <strong className="text-white">{selectedCat.name}</strong> ?
                       </>
                     )
                   )}
@@ -1128,8 +1211,8 @@ export default function AdminGalerie({
                     deleteModal === 'album'
                       ? confirmDeleteAlbum
                       : deleteModal === 'photo'
-                      ? confirmDeletePhoto
-                      : confirmDeleteCategory
+                        ? confirmDeletePhoto
+                        : confirmDeleteCategory
                   }
                   className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-black transition-all shadow-lg shadow-red-500/10"
                 >

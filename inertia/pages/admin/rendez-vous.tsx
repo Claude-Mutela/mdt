@@ -3,9 +3,20 @@ import { useState, useEffect } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
 import {
-  Search, Calendar, Printer,
-  CheckCircle2, XCircle, Mail, Phone, Trash2,
-  Pencil, X, Clock, CalendarDays, Check, Loader2
+  Search,
+  Calendar,
+  Printer,
+  CheckCircle2,
+  XCircle,
+  Mail,
+  Phone,
+  Trash2,
+  Pencil,
+  X,
+  Clock,
+  CalendarDays,
+  Check,
+  Loader2,
 } from 'lucide-react'
 
 interface Appointment {
@@ -36,7 +47,9 @@ export default function AdminAppointments({ appointments: initialAppointments = 
   const [printModal, setPrintModal] = useState(false)
   const [printPeriod, setPrintPeriod] = useState<'jour' | 'semaine' | 'mois' | 'annee'>('mois')
   const [printRef, setPrintRef] = useState(() => new Date().toISOString().slice(0, 7))
-  const [printStatus, setPrintStatus] = useState<'all' | 'confirmed' | 'pending' | 'cancelled'>('all')
+  const [printStatus, setPrintStatus] = useState<'all' | 'confirmed' | 'pending' | 'cancelled'>(
+    'all'
+  )
 
   // ── Reschedule modal ───────────────────────────────────────
   const [rescheduleTarget, setRescheduleTarget] = useState<Appointment | null>(null)
@@ -74,12 +87,14 @@ export default function AdminAppointments({ appointments: initialAppointments = 
   }
 
   const handleDelete = (id: number) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer définitivement cette demande de rendez-vous ?')) {
+    if (
+      confirm('Êtes-vous sûr de vouloir supprimer définitivement cette demande de rendez-vous ?')
+    ) {
       router.delete(`/admin/rendez-vous/${id}`)
     }
   }
 
-  const filtered = appointments.filter(app => {
+  const filtered = appointments.filter((app) => {
     const matchesSearch =
       app.clientName.toLowerCase().includes(search.toLowerCase()) ||
       app.subject.toLowerCase().includes(search.toLowerCase()) ||
@@ -106,10 +121,14 @@ export default function AdminAppointments({ appointments: initialAppointments = 
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'confirmed': return 'bg-green-500/10 text-green-400 border border-green-500/20'
-      case 'pending': return 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
-      case 'cancelled': return 'bg-red-500/10 text-red-400 border border-red-500/20'
-      default: return 'bg-slate-700 text-slate-300 border border-slate-600'
+      case 'confirmed':
+        return 'bg-green-500/10 text-green-400 border border-green-500/20'
+      case 'pending':
+        return 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+      case 'cancelled':
+        return 'bg-red-500/10 text-red-400 border border-red-500/20'
+      default:
+        return 'bg-slate-700 text-slate-300 border border-slate-600'
     }
   }
 
@@ -117,16 +136,21 @@ export default function AdminAppointments({ appointments: initialAppointments = 
     <>
       <Head title="Rendez-vous — Admin Phila MDT" />
       <AdminLayout title="Gestion des Rendez-vous">
-
         {/* ── Toolbar ── */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6 print:hidden">
           <div className="flex flex-1 gap-3 min-w-[300px]">
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
               <input
                 type="text"
                 value={search}
-                onChange={(e) => { setSearch(e.target.value); setCurrentPage(1) }}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
                 placeholder="Rechercher (nom, motif, email, téléphone)..."
                 className="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors"
               />
@@ -135,7 +159,10 @@ export default function AdminAppointments({ appointments: initialAppointments = 
               <Calendar size={16} className="text-slate-400" />
               <select
                 value={filterDate}
-                onChange={(e) => { setFilterDate(e.target.value); setCurrentPage(1) }}
+                onChange={(e) => {
+                  setFilterDate(e.target.value)
+                  setCurrentPage(1)
+                }}
                 className="bg-transparent border-none text-sm text-slate-300 focus:ring-0 py-2 outline-none"
               >
                 <option value="all">Toutes les dates</option>
@@ -157,7 +184,8 @@ export default function AdminAppointments({ appointments: initialAppointments = 
           <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-800/20">
             <h2 className="text-white font-bold flex items-center gap-2">
               <Calendar size={18} className="text-primary" />
-              Planning des rendez-vous <span className="text-slate-500 font-normal text-sm">({total})</span>
+              Planning des rendez-vous{' '}
+              <span className="text-slate-500 font-normal text-sm">({total})</span>
             </h2>
           </div>
           <div className="overflow-x-auto">
@@ -167,11 +195,21 @@ export default function AdminAppointments({ appointments: initialAppointments = 
               <table className="w-full text-sm text-left">
                 <thead>
                   <tr className="bg-slate-900/50 border-b border-slate-800">
-                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Client</th>
-                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Date & Heure</th>
-                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Motif</th>
-                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">Statut</th>
-                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px] print:hidden">Actions</th>
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">
+                      Client
+                    </th>
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">
+                      Date & Heure
+                    </th>
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">
+                      Motif
+                    </th>
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px]">
+                      Statut
+                    </th>
+                    <th className="px-6 py-3 text-slate-400 font-medium uppercase tracking-wider text-[11px] print:hidden">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/50">
@@ -193,7 +231,11 @@ export default function AdminAppointments({ appointments: initialAppointments = 
                       <td className="px-6 py-4">
                         <div className="flex flex-col text-slate-300">
                           <span className="font-medium">
-                            {new Date(app.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
+                            {new Date(app.date).toLocaleDateString('fr-FR', {
+                              weekday: 'short',
+                              day: 'numeric',
+                              month: 'short',
+                            })}
                           </span>
                           <span className="text-primary text-xs font-bold">{app.time}</span>
                         </div>
@@ -202,8 +244,14 @@ export default function AdminAppointments({ appointments: initialAppointments = 
                         <span className="text-slate-400 italic">"{app.subject}"</span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter ${getStatusBadge(app.status)}`}>
-                          {app.status === 'confirmed' ? 'Confirmé' : app.status === 'pending' ? 'En attente' : 'Annulé'}
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter ${getStatusBadge(app.status)}`}
+                        >
+                          {app.status === 'confirmed'
+                            ? 'Confirmé'
+                            : app.status === 'pending'
+                              ? 'En attente'
+                              : 'Annulé'}
                         </span>
                       </td>
                       <td className="px-6 py-4 print:hidden">
@@ -253,9 +301,7 @@ export default function AdminAppointments({ appointments: initialAppointments = 
               </table>
             )}
           </div>
-          {lastPage > 1 && (
-            <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />
-          )}
+          {lastPage > 1 && <Pagination meta={meta} onPageChange={(p) => setCurrentPage(p)} />}
         </div>
       </AdminLayout>
 
@@ -295,10 +341,10 @@ export default function AdminAppointments({ appointments: initialAppointments = 
                       onClick={() => {
                         setPrintPeriod(p)
                         const today = new Date()
-                        if (p === 'jour')    setPrintRef(today.toISOString().slice(0, 10))
+                        if (p === 'jour') setPrintRef(today.toISOString().slice(0, 10))
                         if (p === 'semaine') setPrintRef(today.toISOString().slice(0, 10))
-                        if (p === 'mois')    setPrintRef(today.toISOString().slice(0, 7))
-                        if (p === 'annee')   setPrintRef(String(today.getFullYear()))
+                        if (p === 'mois') setPrintRef(today.toISOString().slice(0, 7))
+                        if (p === 'annee') setPrintRef(String(today.getFullYear()))
                       }}
                       className={`py-2 rounded-xl text-xs font-semibold capitalize transition-all border ${
                         printPeriod === p
@@ -315,10 +361,10 @@ export default function AdminAppointments({ appointments: initialAppointments = 
               {/* Input de référence dynamique selon la période */}
               <div>
                 <label className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-2 block">
-                  {printPeriod === 'jour'    && 'Date'}
-                  {printPeriod === 'semaine' && 'N\'importe quel jour de la semaine'}
-                  {printPeriod === 'mois'    && 'Mois'}
-                  {printPeriod === 'annee'   && 'Année'}
+                  {printPeriod === 'jour' && 'Date'}
+                  {printPeriod === 'semaine' && "N'importe quel jour de la semaine"}
+                  {printPeriod === 'mois' && 'Mois'}
+                  {printPeriod === 'annee' && 'Année'}
                 </label>
 
                 {(printPeriod === 'jour' || printPeriod === 'semaine') && (
@@ -429,7 +475,9 @@ export default function AdminAppointments({ appointments: initialAppointments = 
                   className={`w-full px-4 py-2.5 bg-slate-800 border ${rescheduleForm.errors.appointmentDate ? 'border-red-500' : 'border-slate-700'} rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors`}
                 />
                 {rescheduleForm.errors.appointmentDate && (
-                  <p className="text-red-400 text-xs mt-1">{rescheduleForm.errors.appointmentDate}</p>
+                  <p className="text-red-400 text-xs mt-1">
+                    {rescheduleForm.errors.appointmentDate}
+                  </p>
                 )}
               </div>
 
@@ -446,7 +494,9 @@ export default function AdminAppointments({ appointments: initialAppointments = 
                   className={`w-full px-4 py-2.5 bg-slate-800 border ${rescheduleForm.errors.appointmentTime ? 'border-red-500' : 'border-slate-700'} rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors`}
                 />
                 {rescheduleForm.errors.appointmentTime && (
-                  <p className="text-red-400 text-xs mt-1">{rescheduleForm.errors.appointmentTime}</p>
+                  <p className="text-red-400 text-xs mt-1">
+                    {rescheduleForm.errors.appointmentTime}
+                  </p>
                 )}
               </div>
 

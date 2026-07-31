@@ -5,7 +5,11 @@ export default function HeroAbout() {
   return (
     <header className="relative">
       <div className="relative h-[400px] md:h-[500px] lg:h-[560px] flex items-center justify-center text-center text-white overflow-hidden">
-        <img src="/about-mdt.jpg" alt="PHILA banner" className="absolute inset-0 w-full h-full object-cover transform scale-100 md:scale-105 lg:scale-110" />
+        <img
+          src="/about-mdt.jpg"
+          alt="PHILA banner"
+          className="absolute inset-0 w-full h-full object-cover transform scale-100 md:scale-105 lg:scale-110"
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-[#7a3218]/35 to-[#5b2010]/75" />
 
         <div className="relative z-10 max-w-6xl px-6 sm:px-8 lg:px-12">
@@ -19,14 +23,23 @@ export default function HeroAbout() {
           </h1>
 
           <p className="mt-6 max-w-3xl mx-auto text-sm sm:text-lg md:text-xl text-white/90">
-            Une communauté authentique, ancrée dans la Parole, passionnée par Dieu et engagée pour la cité.
+            Une communauté authentique, ancrée dans la Parole, passionnée par Dieu et engagée pour
+            la cité.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/contact" className="px-8 py-3.5 bg-white text-[#7a3218] font-semibold rounded-full shadow-lg hover:shadow-xl transition-transform transform hover:-translate-y-1">
+            <Link
+              href="/contact"
+              className="px-8 py-3.5 bg-white text-[#7a3218] font-semibold rounded-full shadow-lg hover:shadow-xl transition-transform transform hover:-translate-y-1"
+            >
               Nous contacter
             </Link>
-            <a href="#nos-statistiques" className="px-8 py-3.5 bg-white/10 border border-white/20 text-white font-semibold rounded-full hover:bg-white/12 transition">Découvrir</a>
+            <a
+              href="#nos-statistiques"
+              className="px-8 py-3.5 bg-white/10 border border-white/20 text-white font-semibold rounded-full hover:bg-white/12 transition"
+            >
+              Découvrir
+            </a>
           </div>
         </div>
       </div>
@@ -39,7 +52,9 @@ export default function HeroAbout() {
               <Users size={20} />
             </div>
             <div className="text-3xl md:text-4xl font-black">500+</div>
-            <div className="text-xs mt-1 uppercase tracking-widest text-white/80">Membres actifs</div>
+            <div className="text-xs mt-1 uppercase tracking-widest text-white/80">
+              Membres actifs
+            </div>
           </div>
 
           <div>
@@ -55,7 +70,9 @@ export default function HeroAbout() {
               <BookOpen size={20} />
             </div>
             <div className="text-3xl md:text-4xl font-black">3</div>
-            <div className="text-xs mt-1 uppercase tracking-widest text-white/80">Cultes par semaine</div>
+            <div className="text-xs mt-1 uppercase tracking-widest text-white/80">
+              Cultes par semaine
+            </div>
           </div>
 
           <div>
@@ -63,7 +80,9 @@ export default function HeroAbout() {
               <Star size={20} />
             </div>
             <div className="text-3xl md:text-4xl font-black">8</div>
-            <div className="text-xs mt-1 uppercase tracking-widest text-white/80">Ministères actifs</div>
+            <div className="text-xs mt-1 uppercase tracking-widest text-white/80">
+              Ministères actifs
+            </div>
           </div>
         </div>
       </div>

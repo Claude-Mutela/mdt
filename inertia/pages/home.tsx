@@ -15,25 +15,47 @@ declare global {
   }
 }
 
-const CulteCard = ({ day, title, description, time, location, highlight = false, tag = 'EN DIRECT' }: any) => {
+const CulteCard = ({
+  day,
+  title,
+  description,
+  time,
+  location,
+  highlight = false,
+  tag = 'EN DIRECT',
+}: any) => {
   return (
-    <div className={`p-8 rounded-2xl flex flex-col justify-between shadow-lg h-full min-h-[260px] transform hover:-translate-y-2 transition-transform duration-300 border ${highlight ? 'bg-[#C35100] text-white border-transparent' : 'bg-white border-slate-100 text-slate-900'}`}>
+    <div
+      className={`p-8 rounded-2xl flex flex-col justify-between shadow-lg h-full min-h-[260px] transform hover:-translate-y-2 transition-transform duration-300 border ${highlight ? 'bg-[#C35100] text-white border-transparent' : 'bg-white border-slate-100 text-slate-900'}`}
+    >
       <div>
         <div className="flex justify-between items-start mb-2">
-          <span className={`font-bold ${highlight ? 'text-white/90' : 'text-slate-600'} text-lg`}>{day}</span>
-          <span className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full ${highlight ? 'bg-white/20 text-white' : 'bg-orange-50 text-accent-orange'}`}>
+          <span className={`font-bold ${highlight ? 'text-white/90' : 'text-slate-600'} text-lg`}>
+            {day}
+          </span>
+          <span
+            className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full ${highlight ? 'bg-white/20 text-white' : 'bg-orange-50 text-accent-orange'}`}
+          >
             {tag}
           </span>
         </div>
-        <h3 className={`text-2xl font-serif font-black mb-8 ${highlight ? 'text-white' : 'text-slate-900'}`}>{title}</h3>
+        <h3
+          className={`text-2xl font-serif font-black mb-8 ${highlight ? 'text-white' : 'text-slate-900'}`}
+        >
+          {title}
+        </h3>
       </div>
       <div className="space-y-4">
-        <div className={`flex items-center gap-3 text-sm ${highlight ? 'text-white/90' : 'text-slate-600'}`}>
+        <div
+          className={`flex items-center gap-3 text-sm ${highlight ? 'text-white/90' : 'text-slate-600'}`}
+        >
           <span className="font-semibold">{description}</span>
           <Clock size={16} className="flex-shrink-0" />
           <span className="font-semibold">{time}</span>
         </div>
-        <div className={`flex items-start gap-3 text-sm ${highlight ? 'text-white/80' : 'text-slate-500'}`}>
+        <div
+          className={`flex items-start gap-3 text-sm ${highlight ? 'text-white/80' : 'text-slate-500'}`}
+        >
           <MapPin size={16} className="mt-0.5 flex-shrink-0" />
           <span className="leading-snug">{location}</span>
         </div>
@@ -126,8 +148,13 @@ function getCloudinaryUrl(url: string, transformations: string): string {
 }
 
 const DAYS_FR: Record<string, string> = {
-  '1': 'Lundi', '2': 'Mardi', '3': 'Mercredi', '4': 'Jeudi',
-  '5': 'Vendredi', '6': 'Samedi', '7': 'Dimanche'
+  '1': 'Lundi',
+  '2': 'Mardi',
+  '3': 'Mercredi',
+  '4': 'Jeudi',
+  '5': 'Vendredi',
+  '6': 'Samedi',
+  '7': 'Dimanche',
 }
 
 /* ── Composant façade YouTube ─────────────────────────────────────────────
@@ -138,7 +165,7 @@ const DAYS_FR: Record<string, string> = {
 const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
   const [playing, setPlaying] = useState(false)
   const thumbnail = getYoutubeThumbnail(url)
-  const embedSrc  = getYoutubeEmbedUrl(url)
+  const embedSrc = getYoutubeEmbedUrl(url)
 
   return (
     <div className="aspect-video relative bg-black">
@@ -175,8 +202,10 @@ const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
 
           {/* Bouton Play */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-20 h-20 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xl
-                            group-hover/play:scale-110 group-hover/play:bg-white transition-all duration-300">
+            <div
+              className="w-20 h-20 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-2xl
+                            group-hover/play:scale-110 group-hover/play:bg-white transition-all duration-300"
+            >
               {/* Triangle play YouTube-style */}
               <svg
                 className="w-8 h-8 text-primary ml-1"
@@ -190,9 +219,16 @@ const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
           </div>
 
           {/* Badge YouTube */}
-          <div className="absolute bottom-4 right-4 flex items-center gap-1.5 bg-black/70 backdrop-blur-sm
-                          text-white text-xs font-bold px-3 py-1.5 rounded-full">
-            <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div
+            className="absolute bottom-4 right-4 flex items-center gap-1.5 bg-black/70 backdrop-blur-sm
+                          text-white text-xs font-bold px-3 py-1.5 rounded-full"
+          >
+            <svg
+              className="w-4 h-4 text-red-500"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z" />
             </svg>
             Regarder sur YouTube
@@ -210,26 +246,38 @@ const Home: FC<{
   allMinistries: Ministry[]
   currentWeekLabel: string
   recaptchaSiteKey?: string
-}> = ({ activeHero, lastPreach, weekAgendas, allMinistries, currentWeekLabel, recaptchaSiteKey = '' }) => {
+}> = ({
+  activeHero,
+  lastPreach,
+  weekAgendas,
+  allMinistries,
+  currentWeekLabel,
+  recaptchaSiteKey = '',
+}) => {
   const sliderRef = useRef<HTMLDivElement>(null)
 
   /* ── Newsletter reCAPTCHA ── */
   const newsletterRecaptchaRef = useRef<HTMLDivElement>(null)
-  const newsletterWidgetRef    = useRef<number | null>(null)
-  const [newsletterToken, setNewsletterToken]   = useState('')
-  const [newsletterEmail, setNewsletterEmail]   = useState('')
-  const [newsletterSent,  setNewsletterSent]    = useState(false)
-  const [newsletterError, setNewsletterError]   = useState<string | null>(null)
+  const newsletterWidgetRef = useRef<number | null>(null)
+  const [newsletterToken, setNewsletterToken] = useState('')
+  const [newsletterEmail, setNewsletterEmail] = useState('')
+  const [newsletterSent, setNewsletterSent] = useState(false)
+  const [newsletterError, setNewsletterError] = useState<string | null>(null)
   const [newsletterLoading, setNewsletterLoading] = useState(false)
 
   const renderNewsletterWidget = useCallback(() => {
-    if (!newsletterRecaptchaRef.current || !recaptchaSiteKey || newsletterWidgetRef.current !== null) return
+    if (
+      !newsletterRecaptchaRef.current ||
+      !recaptchaSiteKey ||
+      newsletterWidgetRef.current !== null
+    )
+      return
     newsletterWidgetRef.current = window.grecaptcha.render(newsletterRecaptchaRef.current, {
-      sitekey: recaptchaSiteKey,
-      theme: 'light',
-      callback:        (token: string) => setNewsletterToken(token),
-      'expired-callback': ()           => setNewsletterToken(''),
-      'error-callback':   ()           => setNewsletterToken(''),
+      'sitekey': recaptchaSiteKey,
+      'theme': 'light',
+      'callback': (token: string) => setNewsletterToken(token),
+      'expired-callback': () => setNewsletterToken(''),
+      'error-callback': () => setNewsletterToken(''),
     })
   }, [recaptchaSiteKey])
 
@@ -243,12 +291,14 @@ const Home: FC<{
     const existing = document.querySelector('script[src*="recaptcha"]')
     if (!existing) {
       const script = document.createElement('script')
-      script.src   = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit'
+      script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit'
       script.async = true
       script.defer = true
       document.head.appendChild(script)
     }
-    return () => { delete (window as any).onRecaptchaLoad }
+    return () => {
+      delete (window as any).onRecaptchaLoad
+    }
   }, [newsletterSent, recaptchaSiteKey, renderNewsletterWidget])
 
   function handleNewsletterSubmit(e: React.FormEvent) {
@@ -287,10 +337,12 @@ const Home: FC<{
     const interval = setInterval(() => {
       if (sliderRef.current) {
         const slider = sliderRef.current
-        const scrollDistance = slider.children[0]?.clientWidth ? slider.children[0].clientWidth + 24 : 344
-        
+        const scrollDistance = slider.children[0]?.clientWidth
+          ? slider.children[0].clientWidth + 24
+          : 344
+
         // If we reached the end, go back to start
-        if (slider.scrollLeft >= (slider.scrollWidth - slider.clientWidth - 10)) {
+        if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 10) {
           slider.scrollTo({ left: 0, behavior: 'smooth' })
         } else {
           // Otherwise scroll by the width of one card + gap
@@ -305,7 +357,10 @@ const Home: FC<{
   return (
     <>
       <Head title="Phila Maison de Témoignages">
-        <meta name="description" content="Bienvenue à la Phila Maison de Témoignages (MDT), un lieu où Dieu transforme des vies en temoiganges vivants. Rejoignez-nous pour nos cultes, nos enseignements et partagez notre communion fraternelle." />
+        <meta
+          name="description"
+          content="Bienvenue à la Phila Maison de Témoignages (MDT), un lieu où Dieu transforme des vies en temoiganges vivants. Rejoignez-nous pour nos cultes, nos enseignements et partagez notre communion fraternelle."
+        />
       </Head>
 
       {/* Hero Section */}
@@ -329,9 +384,7 @@ const Home: FC<{
                   src={getCloudinaryUrl(activeHero.filePath, 'w_854,q_auto,f_auto')}
                   media="(min-width: 640px)"
                 />
-                <source
-                  src={getCloudinaryUrl(activeHero.filePath, 'w_480,q_auto,f_auto')}
-                />
+                <source src={getCloudinaryUrl(activeHero.filePath, 'w_480,q_auto,f_auto')} />
               </video>
             ) : (
               <picture className="w-full h-full">
@@ -368,7 +421,9 @@ const Home: FC<{
           <h1 className="text-4xl md:text-6xl font-serif font-bold mb-6 tracking-tight leading-tight">
             Bienvenu à la Maison de Témoignages
           </h1>
-          <p className="text-lg md:text-3xl text-gray-200 mb-10 max-w-2xl mx-auto">Un lieu où Dieu Transforme Nos Vies en Témoignages Vivants</p>
+          <p className="text-lg md:text-3xl text-gray-200 mb-10 max-w-2xl mx-auto">
+            Un lieu où Dieu Transforme Nos Vies en Témoignages Vivants
+          </p>
           {/* <p className="text-lg md:text-3xl text-gray-200 mb-10 max-w-2xl mx-auto">
             Rejoignez la Maison de Témoignages pour vivre une expérience authentique de louange, de partage et de foi.
           </p> */}
@@ -402,16 +457,26 @@ const Home: FC<{
           </div>
           <div className="space-y-6">
             <div className="space-y-2">
-              <span className="text-primary font-black uppercase tracking-widest text-xs">À propos de nous</span>
-              <h2 className="text-slate-900 text-4xl md:text-5xl font-black font-serif leading-tight">Qui sommes-nous ?</h2>
+              <span className="text-primary font-black uppercase tracking-widest text-xs">
+                À propos de nous
+              </span>
+              <h2 className="text-slate-900 text-4xl md:text-5xl font-black font-serif leading-tight">
+                Qui sommes-nous ?
+              </h2>
             </div>
             <p className="text-slate-600 text-lg leading-relaxed">
-              L'église PHILA est bien plus qu'un bâtiment, c'est une communauté authentique, passionnée par les témoignages de vie et la croissance spirituelle. Nous croyons en une foi qui transforme les cœurs et restaure les familles.
+              L'église PHILA est bien plus qu'un bâtiment, c'est une communauté authentique,
+              passionnée par les témoignages de vie et la croissance spirituelle. Nous croyons en
+              une foi qui transforme les cœurs et restaure les familles.
             </p>
             <p className="text-slate-600 text-base leading-relaxed">
-              Depuis notre fondation, notre désir est de voir chacun découvrir son identité en Christ et manifester l'amour de Dieu dans sa sphère d'influence.
+              Depuis notre fondation, notre désir est de voir chacun découvrir son identité en
+              Christ et manifester l'amour de Dieu dans sa sphère d'influence.
             </p>
-            <Link href="/a-propos" className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all">
+            <Link
+              href="/a-propos"
+              className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all"
+            >
               En savoir plus sur nous
               <ArrowRight size={18} />
             </Link>
@@ -424,11 +489,20 @@ const Home: FC<{
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-10">
             <div className="space-y-2">
-              <span className="text-primary font-black uppercase tracking-widest text-xs">Message récent</span>
-              <h2 className="text-slate-900 text-4xl font-black font-serif">Dernière prédication</h2>
-              <p className="text-slate-500">Revivez notre dernier moment d'enseignement et d'édification.</p>
+              <span className="text-primary font-black uppercase tracking-widest text-xs">
+                Message récent
+              </span>
+              <h2 className="text-slate-900 text-4xl font-black font-serif">
+                Dernière prédication
+              </h2>
+              <p className="text-slate-500">
+                Revivez notre dernier moment d'enseignement et d'édification.
+              </p>
             </div>
-            <Link href="/allContent" className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all">
+            <Link
+              href="/allContent"
+              className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all"
+            >
               Voir tous les messages
               <ArrowRight size={18} />
             </Link>
@@ -439,22 +513,16 @@ const Home: FC<{
               {/* Lecteur média */}
               <div className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black max-w-5xl mx-auto">
                 {lastPreach.url && lastPreach.format === 'video' && isYoutubeUrl(lastPreach.url) ? (
-                  <YoutubeFacade
-                    url={lastPreach.url}
-                    title={lastPreach.title}
-                  />
+                  <YoutubeFacade url={lastPreach.url} title={lastPreach.title} />
                 ) : lastPreach.url && lastPreach.format === 'video' ? (
                   <div className="aspect-video">
-                    <video
-                      controls
-                      className="w-full h-full object-cover"
-                      preload="metadata"
-                    >
+                    <video controls className="w-full h-full object-cover" preload="metadata">
                       <source src={getCloudinaryUrl(lastPreach.url, 'q_auto,f_auto')} />
                       Votre navigateur ne supporte pas la lecture vidéo.
                     </video>
                   </div>
-                ) : lastPreach.url && (lastPreach.format === 'audio' || lastPreach.format === 'podcast') ? (
+                ) : lastPreach.url &&
+                  (lastPreach.format === 'audio' || lastPreach.format === 'podcast') ? (
                   <div className="flex flex-col items-center justify-center gap-6 p-10 md:p-16 bg-gradient-to-br from-slate-900 to-slate-800">
                     <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center ring-4 ring-primary/30">
                       <Play size={40} className="text-primary ml-2" />
@@ -462,11 +530,7 @@ const Home: FC<{
                     <p className="text-white/70 text-sm font-semibold uppercase tracking-widest">
                       {lastPreach.format === 'podcast' ? 'Podcast' : 'Audio'}
                     </p>
-                    <audio
-                      controls
-                      className="w-full max-w-lg"
-                      preload="metadata"
-                    >
+                    <audio controls className="w-full max-w-lg" preload="metadata">
                       <source src={lastPreach.url} />
                       Votre navigateur ne supporte pas la lecture audio.
                     </audio>
@@ -477,7 +541,9 @@ const Home: FC<{
                     <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
                       <Play size={36} className="text-white/50 ml-1" />
                     </div>
-                    <p className="text-white/50 text-sm">Contenu textuel — consultez nos ressources en ligne</p>
+                    <p className="text-white/50 text-sm">
+                      Contenu textuel — consultez nos ressources en ligne
+                    </p>
                   </div>
                 )}
               </div>
@@ -485,11 +551,19 @@ const Home: FC<{
               {/* Métadonnées */}
               <div className="mt-8 max-w-5xl mx-auto grid md:grid-cols-3 gap-8 items-start">
                 <div className="md:col-span-2 space-y-3">
-                  <h3 className="text-2xl font-black font-serif text-slate-900">{lastPreach.title}</h3>
+                  <h3 className="text-2xl font-black font-serif text-slate-900">
+                    {lastPreach.title}
+                  </h3>
                   {lastPreach.date && (
                     <div className="flex items-center gap-2 text-slate-500 text-sm">
                       <Calendar size={14} className="text-primary" />
-                      <span>{new Date(lastPreach.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                      <span>
+                        {new Date(lastPreach.date).toLocaleDateString('fr-FR', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -500,7 +574,9 @@ const Home: FC<{
                         <Play size={18} className="text-primary" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Orateur</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                          Orateur
+                        </p>
                         <p className="font-bold text-slate-900">{lastPreach.orateur}</p>
                       </div>
                     </div>
@@ -511,8 +587,12 @@ const Home: FC<{
                         <Clock size={16} className="text-slate-500" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Durée</p>
-                        <p className="font-bold text-slate-900">{formatDuration(lastPreach.duree)}</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                          Durée
+                        </p>
+                        <p className="font-bold text-slate-900">
+                          {formatDuration(lastPreach.duree)}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -532,8 +612,13 @@ const Home: FC<{
               <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
                 <Play size={36} className="text-primary ml-1" />
               </div>
-              <p className="text-slate-500 text-lg">Aucune prédication disponible pour le moment.</p>
-              <Link href="/allContent" className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all">
+              <p className="text-slate-500 text-lg">
+                Aucune prédication disponible pour le moment.
+              </p>
+              <Link
+                href="/allContent"
+                className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all"
+              >
                 Voir tous les messages <ArrowRight size={18} />
               </Link>
             </div>
@@ -546,8 +631,12 @@ const Home: FC<{
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-8 lg:mb-12">
             <div className="space-y-2">
-              <h2 className="text-slate-900 text-4xl font-black font-serif">Programme des cultes</h2>
-              <p className="text-slate-500">Rejoignez-nous pour nos temps de célébration et d'enseignement.</p>
+              <h2 className="text-slate-900 text-4xl font-black font-serif">
+                Programme des cultes
+              </h2>
+              <p className="text-slate-500">
+                Rejoignez-nous pour nos temps de célébration et d'enseignement.
+              </p>
             </div>
             {/* <Link href="/agenda" className="flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-primary/20 text-primary font-bold hover:bg-primary hover:text-white transition-all">
               Voir tout l'agenda
@@ -588,9 +677,15 @@ const Home: FC<{
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-10">
             <div className="space-y-2">
-              <span className="text-primary font-black uppercase tracking-widest text-xs">Agenda de la semaine</span>
-              <h2 className="text-slate-900 text-4xl font-black font-serif">Cette semaine à Phila MDT</h2>
-              <p className="text-slate-500">{currentWeekLabel} · Ne manquez aucun rendez-vous spirituel.</p>
+              <span className="text-primary font-black uppercase tracking-widest text-xs">
+                Agenda de la semaine
+              </span>
+              <h2 className="text-slate-900 text-4xl font-black font-serif">
+                Cette semaine à Phila MDT
+              </h2>
+              <p className="text-slate-500">
+                {currentWeekLabel} · Ne manquez aucun rendez-vous spirituel.
+              </p>
             </div>
             <Link
               href="/agenda"
@@ -601,84 +696,104 @@ const Home: FC<{
             </Link>
           </div>
 
-          {weekAgendas && weekAgendas.length > 0 ? (() => {
-            // Groupe les événements par jour
-            const todayISO = new Date().toISOString().slice(0, 10)
-            const grouped: Record<string, AgendaItem[]> = {}
-            weekAgendas.forEach((item) => {
-              if (!grouped[item.day]) grouped[item.day] = []
-              grouped[item.day].push(item)
-            })
-            return (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {Object.entries(grouped).map(([date, items]) => {
-                  const isToday = date === todayISO
-                  const dateObj = new Date(date + 'T00:00:00')
-                  const dayNum = String(dateObj.getDay() === 0 ? 7 : dateObj.getDay())
-                  const dayName = DAYS_FR[dayNum] ?? date
-                  return (
-                    <Link
-                      key={date}
-                      href="/agenda"
-                      className={`group p-6 rounded-2xl border-2 bg-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col gap-4 ${
-                        isToday ? 'border-primary/40 shadow-md shadow-primary/10' : 'border-slate-100'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg ${
-                          isToday ? 'bg-primary text-white' : 'bg-slate-100 text-slate-500'
-                        }`}>
-                          {isToday ? "Aujourd'hui" : dayName}
-                        </span>
-                        <span className="text-slate-400 text-xs font-bold">
-                          {dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-                        </span>
-                      </div>
-                      <div className="space-y-3">
-                        {items.map((ev) => (
-                          <div key={ev.id} className="flex flex-col gap-1">
-                            <h3 className={`text-lg font-black font-serif transition-colors ${
-                              isToday ? 'text-primary' : 'text-slate-900 group-hover:text-primary'
-                            }`}>
-                              {ev.title}
-                            </h3>
-                            {ev.category && (
-                              <span className="text-[10px] font-bold uppercase tracking-widest text-primary/80 bg-primary/10 px-2 py-0.5 rounded w-max">
-                                {ev.category.name}
-                              </span>
-                            )}
-                            {(ev.hourStart || ev.hourEnd) && (
-                              <div className="flex items-center gap-2 text-slate-500 text-sm">
-                                <Clock size={13} className="text-primary" />
-                                <span className="font-semibold">
-                                  {ev.hourStart}{ev.hourEnd ? ` – ${ev.hourEnd}` : ''}
+          {weekAgendas && weekAgendas.length > 0 ? (
+            (() => {
+              // Groupe les événements par jour
+              const todayISO = new Date().toISOString().slice(0, 10)
+              const grouped: Record<string, AgendaItem[]> = {}
+              weekAgendas.forEach((item) => {
+                if (!grouped[item.day]) grouped[item.day] = []
+                grouped[item.day].push(item)
+              })
+              return (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {Object.entries(grouped).map(([date, items]) => {
+                    const isToday = date === todayISO
+                    const dateObj = new Date(date + 'T00:00:00')
+                    const dayNum = String(dateObj.getDay() === 0 ? 7 : dateObj.getDay())
+                    const dayName = DAYS_FR[dayNum] ?? date
+                    return (
+                      <Link
+                        key={date}
+                        href="/agenda"
+                        className={`group p-6 rounded-2xl border-2 bg-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col gap-4 ${
+                          isToday
+                            ? 'border-primary/40 shadow-md shadow-primary/10'
+                            : 'border-slate-100'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg ${
+                              isToday ? 'bg-primary text-white' : 'bg-slate-100 text-slate-500'
+                            }`}
+                          >
+                            {isToday ? "Aujourd'hui" : dayName}
+                          </span>
+                          <span className="text-slate-400 text-xs font-bold">
+                            {dateObj.toLocaleDateString('fr-FR', {
+                              day: 'numeric',
+                              month: 'short',
+                            })}
+                          </span>
+                        </div>
+                        <div className="space-y-3">
+                          {items.map((ev) => (
+                            <div key={ev.id} className="flex flex-col gap-1">
+                              <h3
+                                className={`text-lg font-black font-serif transition-colors ${
+                                  isToday
+                                    ? 'text-primary'
+                                    : 'text-slate-900 group-hover:text-primary'
+                                }`}
+                              >
+                                {ev.title}
+                              </h3>
+                              {ev.category && (
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-primary/80 bg-primary/10 px-2 py-0.5 rounded w-max">
+                                  {ev.category.name}
                                 </span>
-                              </div>
-                            )}
-                            {ev.place && (
-                              <div className="flex items-center gap-2 text-slate-400 text-xs">
-                                <MapPin size={12} />
-                                <span>{ev.place}</span>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="mt-auto pt-2 flex justify-end">
-                        <ArrowRight size={16} className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  )
-                })}
-              </div>
-            )
-          })() : (
+                              )}
+                              {(ev.hourStart || ev.hourEnd) && (
+                                <div className="flex items-center gap-2 text-slate-500 text-sm">
+                                  <Clock size={13} className="text-primary" />
+                                  <span className="font-semibold">
+                                    {ev.hourStart}
+                                    {ev.hourEnd ? ` – ${ev.hourEnd}` : ''}
+                                  </span>
+                                </div>
+                              )}
+                              {ev.place && (
+                                <div className="flex items-center gap-2 text-slate-400 text-xs">
+                                  <MapPin size={12} />
+                                  <span>{ev.place}</span>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-auto pt-2 flex justify-end">
+                          <ArrowRight
+                            size={16}
+                            className="text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                          />
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              )
+            })()
+          ) : (
             <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                 <Calendar size={28} className="text-primary" />
               </div>
               <p className="text-slate-500">Aucun événement prévu cette semaine.</p>
-              <Link href="/agenda" className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all">
+              <Link
+                href="/agenda"
+                className="flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all"
+              >
                 Voir tout l'agenda <ArrowRight size={16} />
               </Link>
             </div>
@@ -711,28 +826,41 @@ const Home: FC<{
                 Club <span className="text-primary-light">365</span>
               </h2>
               <p className="text-white/70 text-lg leading-relaxed">
-                Le Club 365 est notre programme de lecture intégrale de la Bible en une année. Chaque jour, un passage, un chapitre, une rencontre avec la Parole de Dieu. Un voyage spirituel structuré pour grandir en connaissance, en foi et en maturité chrétienne.
+                Le Club 365 est notre programme de lecture intégrale de la Bible en une année.
+                Chaque jour, un passage, un chapitre, une rencontre avec la Parole de Dieu. Un
+                voyage spirituel structuré pour grandir en connaissance, en foi et en maturité
+                chrétienne.
               </p>
               <p className="text-white/60 text-base leading-relaxed">
-                Que vous soyez débutant ou croyant aguerri, le Club 365 vous guide pas à pas à travers les 66 livres de la Bible. <span className="text-white font-semibold">Une discipline quotidienne qui transforme votre vie.</span>
+                Que vous soyez débutant ou croyant aguerri, le Club 365 vous guide pas à pas à
+                travers les 66 livres de la Bible.{' '}
+                <span className="text-white font-semibold">
+                  Une discipline quotidienne qui transforme votre vie.
+                </span>
               </p>
             </div>
 
             {/* Stats */}
             <div className="space-y-4">
-              <p className="text-white/50 uppercase text-xs font-black tracking-widest">Le défi en chiffres</p>
+              <p className="text-white/50 uppercase text-xs font-black tracking-widest">
+                Le défi en chiffres
+              </p>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { value: "66", label: "Livres de la Bible" },
-                  { value: "1 189", label: "Chapitres à lire" },
-                  { value: "365", label: "Jours pour y arriver" },
+                  { value: '66', label: 'Livres de la Bible' },
+                  { value: '1 189', label: 'Chapitres à lire' },
+                  { value: '365', label: 'Jours pour y arriver' },
                 ].map((stat) => (
                   <div
                     key={stat.label}
                     className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 text-center gap-1"
                   >
-                    <p className="text-primary-light font-black text-2xl leading-none">{stat.value}</p>
-                    <p className="text-white/50 text-[10px] uppercase tracking-wider font-bold leading-snug">{stat.label}</p>
+                    <p className="text-primary-light font-black text-2xl leading-none">
+                      {stat.value}
+                    </p>
+                    <p className="text-white/50 text-[10px] uppercase tracking-wider font-bold leading-snug">
+                      {stat.label}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -772,9 +900,15 @@ const Home: FC<{
             {/* Bottom card */}
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-2">
-                <p className="text-primary-light font-black uppercase text-xs tracking-widest">Guide de la lecture annuelle</p>
-                <p className="text-white font-bold text-xl font-serif">Toute la Bible en 365 jours</p>
-                <p className="text-white/60 text-sm">Formation · Maturité · Connaissance · Transformation</p>
+                <p className="text-primary-light font-black uppercase text-xs tracking-widest">
+                  Guide de la lecture annuelle
+                </p>
+                <p className="text-white font-bold text-xl font-serif">
+                  Toute la Bible en 365 jours
+                </p>
+                <p className="text-white/60 text-sm">
+                  Formation · Maturité · Connaissance · Transformation
+                </p>
               </div>
             </div>
           </div>
@@ -787,34 +921,51 @@ const Home: FC<{
           <h2 className="text-slate-900 text-4xl font-black font-serif mb-2">Nos Ministères</h2>
           <p className="text-slate-500">Il y a une place pour chacun à l'Église Phila MDT.</p>
         </div>
-        
+
         <div className="max-w-6xl mx-auto">
-          <div ref={sliderRef} className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {allMinistries ? allMinistries.map((min) => (
-                <div key={min.id} className="shrink-0 w-[320px] md:w-[360px] snap-start bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-shadow duration-300 flex flex-col group">
-                <div className="h-48 relative overflow-hidden bg-slate-100">
-                  {/* <img src={min.urlImg ?? undefined} alt={min.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /> */}
-                  <CloudinaryImage
-                    src={min.urlImg || '/mdt-banner.jpg'}
-                    width={400}
-                    height={300}
-                    alt={min.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className={`absolute bottom-3 left-4 px-3 py-1 rounded-[6px] text-[10px] font-black uppercase tracking-wider text-white ${min.badgeColor}`}>
-                    {min.tag}
+          <div
+            ref={sliderRef}
+            className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {allMinistries
+              ? allMinistries.map((min) => (
+                  <div
+                    key={min.id}
+                    className="shrink-0 w-[320px] md:w-[360px] snap-start bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-shadow duration-300 flex flex-col group"
+                  >
+                    <div className="h-48 relative overflow-hidden bg-slate-100">
+                      {/* <img src={min.urlImg ?? undefined} alt={min.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /> */}
+                      <CloudinaryImage
+                        src={min.urlImg || '/mdt-banner.jpg'}
+                        width={400}
+                        height={300}
+                        alt={min.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div
+                        className={`absolute bottom-3 left-4 px-3 py-1 rounded-[6px] text-[10px] font-black uppercase tracking-wider text-white ${min.badgeColor}`}
+                      >
+                        {min.tag}
+                      </div>
+                    </div>
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="font-serif font-black text-xl text-slate-900 mb-2 group-hover:text-primary transition-colors">
+                        {min.name}
+                      </h3>
+                      <p className="text-sm text-slate-500 leading-relaxed mb-6 flex-grow">
+                        {min.description}
+                      </p>
+                      <Link
+                        href="/ministries"
+                        className="text-primary font-bold text-sm hover:text-primary-light transition-colors flex items-center gap-1 w-max group-hover:gap-2"
+                      >
+                        En savoir plus
+                        <ArrowRight size={16} />
+                      </Link>
+                    </div>
                   </div>
-                </div>
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="font-serif font-black text-xl text-slate-900 mb-2 group-hover:text-primary transition-colors">{min.name}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed mb-6 flex-grow">{min.description}</p>
-                  <Link href="/ministries" className="text-primary font-bold text-sm hover:text-primary-light transition-colors flex items-center gap-1 w-max group-hover:gap-2">
-                    En savoir plus
-                    <ArrowRight size={16} />
-                  </Link>
-                </div>
-              </div>
-            )) : null}
+                ))
+              : null}
           </div>
         </div>
       </section>
@@ -822,7 +973,6 @@ const Home: FC<{
       {/* Cellules Section */}
       <section className="py-12 lg:py-20 bg-primary/5 px-4 overflow-hidden relative">
         <div className="max-w-6xl mx-auto relative z-10 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          
           {/* Left – Image */}
           <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group order-2 lg:order-1">
             <img
@@ -833,9 +983,15 @@ const Home: FC<{
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <div className="bg-white/90 backdrop-blur-md border border-white/20 rounded-2xl p-5 space-y-2 shadow-lg">
-                <p className="text-primary font-black uppercase text-xs tracking-widest">Proximité</p>
-                <p className="text-slate-900 font-bold text-xl font-serif">Une famille spirituelle près de chez vous</p>
-                <p className="text-slate-600 text-sm">Des rencontres conviviales pour grandir ensemble</p>
+                <p className="text-primary font-black uppercase text-xs tracking-widest">
+                  Proximité
+                </p>
+                <p className="text-slate-900 font-bold text-xl font-serif">
+                  Une famille spirituelle près de chez vous
+                </p>
+                <p className="text-slate-600 text-sm">
+                  Des rencontres conviviales pour grandir ensemble
+                </p>
               </div>
             </div>
           </div>
@@ -843,7 +999,9 @@ const Home: FC<{
           {/* Right – Description */}
           <div className="space-y-8 order-1 lg:order-2">
             <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/10 text-primary rounded-full">
-              <span className="font-black uppercase tracking-widest text-xs">Communion Fraternelle</span>
+              <span className="font-black uppercase tracking-widest text-xs">
+                Communion Fraternelle
+              </span>
             </div>
 
             <div className="space-y-4">
@@ -851,10 +1009,14 @@ const Home: FC<{
                 Nos Cellules de <span className="text-primary">Maison</span>
               </h2>
               <p className="text-slate-600 text-lg leading-relaxed">
-                L'église, ce n'est pas seulement le dimanche au temple ! Rejoignez l'une de nos cellules réparties à travers la ville pour vivre la communion fraternelle, partager la Parole et prier ensemble dans un cadre plus intime.
+                L'église, ce n'est pas seulement le dimanche au temple ! Rejoignez l'une de nos
+                cellules réparties à travers la ville pour vivre la communion fraternelle, partager
+                la Parole et prier ensemble dans un cadre plus intime.
               </p>
               <p className="text-slate-600 text-base leading-relaxed">
-                Les cellules de maison sont le lieu idéal pour grandir spirituellement, tisser des liens forts avec d'autres croyants et développer vos dons. Il y a forcément une cellule près de chez vous.
+                Les cellules de maison sont le lieu idéal pour grandir spirituellement, tisser des
+                liens forts avec d'autres croyants et développer vos dons. Il y a forcément une
+                cellule près de chez vous.
               </p>
             </div>
 
@@ -874,18 +1036,21 @@ const Home: FC<{
         <div className="max-w-6xl mx-auto rounded-3xl bg-primary text-white p-8 relative overflow-hidden sm:p-12 lg:p-16 lg:py-20 shadow-2xl">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-          
+
           <div className="relative z-10 grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 text-white text-sm font-bold tracking-wider uppercase mb-2">
                 <Mail size={16} /> Restons Connectés
               </div>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black font-serif leading-tight">Abonnez-vous à notre Newsletter</h2>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black font-serif leading-tight">
+                Abonnez-vous à notre Newsletter
+              </h2>
               <p className="text-lg text-white/80 leading-relaxed max-w-md">
-                Recevez nos dernières actualités, des mots d'encouragement et nos annonces directement dans votre boîte e-mail.
+                Recevez nos dernières actualités, des mots d'encouragement et nos annonces
+                directement dans votre boîte e-mail.
               </p>
             </div>
-            
+
             <div className="w-full max-w-md md:ml-auto">
               {newsletterSent ? (
                 /* ── Confirmation ── */
@@ -938,13 +1103,31 @@ const Home: FC<{
                   >
                     {newsletterLoading ? (
                       <>
-                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8z"
+                          />
                         </svg>
                         Envoi en cours…
                       </>
-                    ) : "S'inscrire"}
+                    ) : (
+                      "S'inscrire"
+                    )}
                   </button>
 
                   {/* Message d'erreur */}

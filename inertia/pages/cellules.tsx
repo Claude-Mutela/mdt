@@ -68,17 +68,16 @@ function PublicPagination({
     <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-between sm:gap-0">
       {/* Compteur */}
       <p className="text-sm text-slate-500 order-2 sm:order-1">
-        Affichage de{' '}
-        <span className="font-semibold text-slate-700">{from}</span>
-        {' '}à{' '}
-        <span className="font-semibold text-slate-700">{to}</span>
-        {' '}sur{' '}
-        <span className="font-semibold text-slate-700">{total}</span>
-        {' '}cellule{total > 1 ? 's' : ''}
+        Affichage de <span className="font-semibold text-slate-700">{from}</span> à{' '}
+        <span className="font-semibold text-slate-700">{to}</span> sur{' '}
+        <span className="font-semibold text-slate-700">{total}</span> cellule{total > 1 ? 's' : ''}
       </p>
 
       {/* Boutons de navigation */}
-      <nav className="flex items-center gap-1 order-1 sm:order-2" aria-label="Pagination des cellules">
+      <nav
+        className="flex items-center gap-1 order-1 sm:order-2"
+        aria-label="Pagination des cellules"
+      >
         {/* Précédent */}
         <button
           onClick={() => onPageChange(currentPage - 1)}
@@ -93,7 +92,10 @@ function PublicPagination({
         <div className="hidden sm:flex items-center gap-1">
           {pageNumbers.map((page, idx) =>
             page === '...' ? (
-              <span key={`ellipsis-${idx}`} className="w-9 h-9 flex items-center justify-center text-slate-400 text-sm">
+              <span
+                key={`ellipsis-${idx}`}
+                className="w-9 h-9 flex items-center justify-center text-slate-400 text-sm"
+              >
                 …
               </span>
             ) : (
@@ -147,7 +149,10 @@ export default function Cellules({ cellules = [] }: Props) {
   return (
     <>
       <Head title="Nos Cellules de Maison — Phila MDT">
-        <meta name="description" content="Rejoignez une cellule de maison de la Phila MDT près de chez vous pour grandir dans la foi, la prière et la communion fraternelle." />
+        <meta
+          name="description"
+          content="Rejoignez une cellule de maison de la Phila MDT près de chez vous pour grandir dans la foi, la prière et la communion fraternelle."
+        />
       </Head>
       <main className="bg-background-off min-h-screen">
         {/* ── Hero Section ── */}
@@ -165,12 +170,14 @@ export default function Cellules({ cellules = [] }: Props) {
               Nos <span className="text-accent-orange italic">Cellules</span> de Maison
             </h1>
             <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light leading-relaxed">
-              Rejoignez une famille spirituelle près de chez vous. Priez, partagez la Parole de Dieu et grandissez ensemble dans la foi.
+              Rejoignez une famille spirituelle près de chez vous. Priez, partagez la Parole de Dieu
+              et grandissez ensemble dans la foi.
             </p>
             {cellules.length > 0 && (
               <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white/80 text-sm font-medium">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                {cellules.length} cellule{cellules.length > 1 ? 's' : ''} active{cellules.length > 1 ? 's' : ''}
+                {cellules.length} cellule{cellules.length > 1 ? 's' : ''} active
+                {cellules.length > 1 ? 's' : ''}
               </div>
             )}
           </div>
@@ -179,12 +186,13 @@ export default function Cellules({ cellules = [] }: Props) {
         {/* ── Grid Section ── */}
         <section id="cellules-grid" className="py-16 relative -mt-10 z-20 scroll-mt-8">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
             {cellules.length === 0 ? (
               <div className="text-center py-24 text-slate-500 bg-white rounded-3xl shadow-lg border border-slate-100">
                 <Users size={48} className="mx-auto mb-4 text-slate-300" />
                 <p className="text-xl font-semibold">Aucune cellule disponible pour le moment.</p>
-                <p className="text-sm mt-2">Revenez bientôt ou contactez-nous pour plus d'informations.</p>
+                <p className="text-sm mt-2">
+                  Revenez bientôt ou contactez-nous pour plus d'informations.
+                </p>
               </div>
             ) : (
               <>
@@ -215,8 +223,12 @@ export default function Cellules({ cellules = [] }: Props) {
                             <div className="flex gap-3">
                               <Clock size={16} className="text-primary shrink-0 mt-0.5" />
                               <div>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Horaire</p>
-                                <p className="text-slate-900 font-medium text-sm">{cellule.horaire}</p>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">
+                                  Horaire
+                                </p>
+                                <p className="text-slate-900 font-medium text-sm">
+                                  {cellule.horaire}
+                                </p>
                               </div>
                             </div>
                           )}
@@ -225,8 +237,12 @@ export default function Cellules({ cellules = [] }: Props) {
                             <div className="flex gap-3">
                               <MapPin size={16} className="text-primary shrink-0 mt-0.5" />
                               <div>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Adresse</p>
-                                <p className="text-slate-900 font-medium text-sm">{cellule.adresse}</p>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">
+                                  Adresse
+                                </p>
+                                <p className="text-slate-900 font-medium text-sm">
+                                  {cellule.adresse}
+                                </p>
                               </div>
                             </div>
                           )}
@@ -235,8 +251,12 @@ export default function Cellules({ cellules = [] }: Props) {
                             <div className="flex gap-3">
                               <Phone size={16} className="text-primary shrink-0 mt-0.5" />
                               <div>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Contact</p>
-                                <p className="text-slate-900 font-medium text-sm">{cellule.telephone}</p>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">
+                                  Contact
+                                </p>
+                                <p className="text-slate-900 font-medium text-sm">
+                                  {cellule.telephone}
+                                </p>
                               </div>
                             </div>
                           )}
@@ -245,8 +265,12 @@ export default function Cellules({ cellules = [] }: Props) {
                             <div className="flex gap-3">
                               <User size={16} className="text-primary shrink-0 mt-0.5" />
                               <div>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Responsable</p>
-                                <p className="text-slate-900 font-medium text-sm">{cellule.responsable}</p>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">
+                                  Responsable
+                                </p>
+                                <p className="text-slate-900 font-medium text-sm">
+                                  {cellule.responsable}
+                                </p>
                               </div>
                             </div>
                           )}
@@ -300,7 +324,8 @@ export default function Cellules({ cellules = [] }: Props) {
                 Vous ne trouvez pas de cellule dans votre quartier ?
               </h3>
               <p className="text-slate-600 mb-8 max-w-2xl mx-auto">
-                Contactez notre secrétariat pour être orienté vers la cellule la plus proche, ou découvrez comment ouvrir une nouvelle cellule chez vous.
+                Contactez notre secrétariat pour être orienté vers la cellule la plus proche, ou
+                découvrez comment ouvrir une nouvelle cellule chez vous.
               </p>
               <a
                 href="/contact"

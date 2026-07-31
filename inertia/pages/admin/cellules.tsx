@@ -3,8 +3,16 @@ import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
 import {
-  Plus, Pencil, Trash2, X, Check,
-  MapPin, Clock, Phone, Users, UserCheck,
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Check,
+  MapPin,
+  Clock,
+  Phone,
+  Users,
+  UserCheck,
 } from 'lucide-react'
 
 interface Responsable {
@@ -92,9 +100,7 @@ export default function AdminCellules({ cellules, responsables }: Props) {
 
   // ── Helpers ──────────────────────────────────────────────────
   const responsableName = (c: Cellule) =>
-    c.responsable
-      ? `${c.responsable.firstname} ${c.responsable.lastname}`
-      : null
+    c.responsable ? `${c.responsable.firstname} ${c.responsable.lastname}` : null
 
   const inputClass = (err?: string) =>
     `w-full mt-1 px-4 py-2.5 bg-slate-800 border ${err ? 'border-red-500' : 'border-slate-700'} rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors`
@@ -103,7 +109,6 @@ export default function AdminCellules({ cellules, responsables }: Props) {
     <>
       <Head title="Cellules — Admin Phila MDT" />
       <AdminLayout title="Gestion des cellules">
-
         {/* ── Header ── */}
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -121,13 +126,15 @@ export default function AdminCellules({ cellules, responsables }: Props) {
         </div>
 
         {/* ── Empty state ── */}
-        {(!cellules || cellules.length === 0) ? (
+        {!cellules || cellules.length === 0 ? (
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-16 text-center shadow-xl">
             <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4">
               <Users size={28} className="text-slate-500" />
             </div>
             <p className="text-slate-400 font-medium">Aucune cellule créée pour le moment.</p>
-            <p className="text-slate-600 text-sm mt-1">Cliquez sur « Ajouter une cellule » pour commencer.</p>
+            <p className="text-slate-600 text-sm mt-1">
+              Cliquez sur « Ajouter une cellule » pour commencer.
+            </p>
           </div>
         ) : (
           <>
@@ -146,7 +153,9 @@ export default function AdminCellules({ cellules, responsables }: Props) {
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                          <span className="text-primary font-black text-base">{c.name.charAt(0).toUpperCase()}</span>
+                          <span className="text-primary font-black text-base">
+                            {c.name.charAt(0).toUpperCase()}
+                          </span>
                         </div>
                         <div>
                           <h3 className="text-white font-bold text-sm leading-tight">{c.name}</h3>
@@ -166,7 +175,10 @@ export default function AdminCellules({ cellules, responsables }: Props) {
                           <Pencil size={14} />
                         </button>
                         <button
-                          onClick={() => { setSelected(c); setModal('delete') }}
+                          onClick={() => {
+                            setSelected(c)
+                            setModal('delete')
+                          }}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
                           title="Supprimer"
                         >
@@ -241,7 +253,10 @@ export default function AdminCellules({ cellules, responsables }: Props) {
 
               {/* Form */}
               <form
-                onSubmit={(e) => { e.preventDefault(); save() }}
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  save()
+                }}
                 className="p-6 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar"
               >
                 {/* Nom */}
@@ -424,15 +439,18 @@ export default function AdminCellules({ cellules, responsables }: Props) {
             </div>
           </div>
         )}
-
       </AdminLayout>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
-      `}} />
+      `,
+        }}
+      />
     </>
   )
 }

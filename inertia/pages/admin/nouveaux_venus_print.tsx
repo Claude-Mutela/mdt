@@ -34,11 +34,10 @@ const HEARD_ABOUT_OPTIONS = [
   { value: 'evangelisation', label: 'Action d’évangélisation' },
   { value: 'reseaux_sociaux', label: 'Réseaux sociaux' },
   { value: 'famille_philadelphie', label: 'Famille Philadelphie' },
-  { value: 'autre', label: 'Autre' }
+  { value: 'autre', label: 'Autre' },
 ]
 
 export default function AdminNewcomersPrint({ newcomers, filterTitle, printDate }: Props) {
-  
   useEffect(() => {
     const timer = setTimeout(() => {
       window.print()
@@ -47,23 +46,28 @@ export default function AdminNewcomersPrint({ newcomers, filterTitle, printDate 
   }, [])
 
   const getHeardAboutLabel = (value: string) => {
-    return HEARD_ABOUT_OPTIONS.find(opt => opt.value === value)?.label || value
+    return HEARD_ABOUT_OPTIONS.find((opt) => opt.value === value)?.label || value
   }
 
   return (
     <>
       <Head title={`${filterTitle} - Impression`} />
-      
+
       <div className="bg-white text-black min-h-screen p-8 max-w-[29.7cm] mx-auto print:p-8 print:max-w-none">
-        
         {/* En-tête */}
         <div className="flex items-center justify-between border-b-2 border-slate-200 pb-6 mb-8">
           <div className="flex items-center gap-4">
             <img src="/log-phila-mdt.png" alt="Logo Phila MDT" className="h-16 object-contain" />
             <div>
-              <h1 className="text-2xl font-bold text-slate-800 uppercase tracking-wide">Phila MAISON DE TÉMOIGNAGES</h1>
-              <p className="text-slate-600 font-semibold text-sm mb-1">Administration de l'église — Nouveaux Venus</p>
-              <p className="text-slate-500 text-xs">Avenue Zoao n°25, Q/Matonge, C/Kalamu, Kinshasa RDC</p>
+              <h1 className="text-2xl font-bold text-slate-800 uppercase tracking-wide">
+                Phila MAISON DE TÉMOIGNAGES
+              </h1>
+              <p className="text-slate-600 font-semibold text-sm mb-1">
+                Administration de l'église — Nouveaux Venus
+              </p>
+              <p className="text-slate-500 text-xs">
+                Avenue Zoao n°25, Q/Matonge, C/Kalamu, Kinshasa RDC
+              </p>
             </div>
           </div>
           <div className="text-right">
@@ -85,12 +89,24 @@ export default function AdminNewcomersPrint({ newcomers, filterTitle, printDate 
           <thead>
             <tr className="bg-slate-100 print:bg-slate-100">
               <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">Date</th>
-              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">Nom complet</th>
-              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">Genre</th>
-              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">Contact (Tél/Email)</th>
-              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">Ville / Adresse</th>
-              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">Comment connu</th>
-              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">Décisions spirituelles</th>
+              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">
+                Nom complet
+              </th>
+              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">
+                Genre
+              </th>
+              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">
+                Contact (Tél/Email)
+              </th>
+              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">
+                Ville / Adresse
+              </th>
+              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">
+                Comment connu
+              </th>
+              <th className="border border-slate-300 px-3 py-2.5 font-bold text-slate-750">
+                Décisions spirituelles
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -110,8 +126,14 @@ export default function AdminNewcomersPrint({ newcomers, filterTitle, printDate 
                       {new Date(n.date).toLocaleDateString('fr-FR')}
                     </td>
                     <td className="border border-slate-300 px-3 py-2">
-                      <div className="font-bold text-slate-800">{n.lastname} {n.firstname}</div>
-                      {n.profession && <div className="text-[10px] text-slate-500 capitalize">{n.profession} · {n.maritalStatus}</div>}
+                      <div className="font-bold text-slate-800">
+                        {n.lastname} {n.firstname}
+                      </div>
+                      {n.profession && (
+                        <div className="text-[10px] text-slate-500 capitalize">
+                          {n.profession} · {n.maritalStatus}
+                        </div>
+                      )}
                     </td>
                     <td className="border border-slate-300 px-3 py-2 text-slate-700">
                       {n.gender === 'M' ? 'Homme' : 'Femme'}
@@ -130,8 +152,11 @@ export default function AdminNewcomersPrint({ newcomers, filterTitle, printDate 
                     <td className="border border-slate-300 px-3 py-2">
                       <div className="flex flex-wrap gap-1">
                         {decisions.length > 0 ? (
-                          decisions.map(d => (
-                            <span key={d} className="inline-block px-1.5 py-0.5 text-[9px] font-bold border border-slate-400 bg-slate-100 text-slate-700 rounded">
+                          decisions.map((d) => (
+                            <span
+                              key={d}
+                              className="inline-block px-1.5 py-0.5 text-[9px] font-bold border border-slate-400 bg-slate-100 text-slate-700 rounded"
+                            >
                               {d}
                             </span>
                           ))
@@ -145,7 +170,10 @@ export default function AdminNewcomersPrint({ newcomers, filterTitle, printDate 
               })
             ) : (
               <tr>
-                <td colSpan={7} className="border border-slate-300 px-4 py-8 text-center text-slate-500 italic">
+                <td
+                  colSpan={7}
+                  className="border border-slate-300 px-4 py-8 text-center text-slate-500 italic"
+                >
                   Aucun nouveau venu trouvé pour cette sélection.
                 </td>
               </tr>
@@ -158,7 +186,6 @@ export default function AdminNewcomersPrint({ newcomers, filterTitle, printDate 
           <span>Document généré automatiquement par le système de gestion Phila MDT</span>
           <span>Phila MDT — Confidentiel</span>
         </div>
-
       </div>
 
       <style>{`

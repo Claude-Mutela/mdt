@@ -1,5 +1,16 @@
 import { Head, useForm } from '@inertiajs/react'
-import { CalendarDays, Clock, User, Phone, Mail, CheckCircle2, MessageSquare, Video, AlertCircle, ShieldCheck } from 'lucide-react'
+import {
+  CalendarDays,
+  Clock,
+  User,
+  Phone,
+  Mail,
+  CheckCircle2,
+  MessageSquare,
+  Video,
+  AlertCircle,
+  ShieldCheck,
+} from 'lucide-react'
 import { useState, useEffect, useRef, useCallback } from 'react'
 
 /* ── Types globaux reCAPTCHA ─────────────────────────────────────── */
@@ -66,8 +77,8 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
     if (!recaptchaContainerRef.current || !recaptchaSiteKey || widgetIdRef.current !== null) return
 
     widgetIdRef.current = window.grecaptcha.render(recaptchaContainerRef.current, {
-      sitekey: recaptchaSiteKey,
-      callback: (token: string) => {
+      'sitekey': recaptchaSiteKey,
+      'callback': (token: string) => {
         setData('recaptchaToken', token)
       },
       'expired-callback': () => {
@@ -76,8 +87,8 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
       'error-callback': () => {
         setData('recaptchaToken', '')
       },
-      theme: 'light',
-      size: 'normal',
+      'theme': 'light',
+      'size': 'normal',
     })
   }, [recaptchaSiteKey, setData])
 
@@ -139,7 +150,10 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
   return (
     <>
       <Head title="Rendez-vous Pastoral — Phila MDT">
-        <meta name="description" content="Prenez rendez-vous avec votre pasteur à la Phila Maison de Témoignages pour un entretien pastoral, un accompagnement spirituel ou une prière." />
+        <meta
+          name="description"
+          content="Prenez rendez-vous avec votre pasteur à la Phila Maison de Témoignages pour un entretien pastoral, un accompagnement spirituel ou une prière."
+        />
       </Head>
       <main>
         {/* ── Hero Section ── */}
@@ -156,7 +170,8 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
               Prenez un <span className="text-accent-orange italic">Rendez-vous</span> Pastoral
             </h1>
             <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light leading-relaxed">
-              Notre pasteur est disponible pour vous écouter, vous conseiller et prier avec vous. Remplissez le formulaire ci-dessous pour planifier une rencontre.
+              Notre pasteur est disponible pour vous écouter, vous conseiller et prier avec vous.
+              Remplissez le formulaire ci-dessous pour planifier une rencontre.
             </p>
           </div>
         </section>
@@ -165,15 +180,17 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
         <section className="py-20 bg-background-off relative -mt-10 z-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-[2rem] shadow-2xl p-8 md:p-12 border border-slate-100">
-
               {isSubmitted ? (
                 <div className="text-center py-12 animate-in fade-in zoom-in duration-500">
                   <div className="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle2 size={48} />
                   </div>
-                  <h2 className="text-3xl font-bold text-slate-900 mb-4 font-serif">Demande envoyée !</h2>
+                  <h2 className="text-3xl font-bold text-slate-900 mb-4 font-serif">
+                    Demande envoyée !
+                  </h2>
                   <p className="text-slate-600 mb-10 max-w-md mx-auto leading-relaxed">
-                    Nous avons bien reçu votre demande de rendez-vous pastoral. Notre secrétariat vous contactera très prochainement pour confirmer la date et l'heure exactes.
+                    Nous avons bien reçu votre demande de rendez-vous pastoral. Notre secrétariat
+                    vous contactera très prochainement pour confirmer la date et l'heure exactes.
                   </p>
                   <button
                     onClick={() => setIsSubmitted(false)}
@@ -185,8 +202,12 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
               ) : (
                 <>
                   <div className="mb-10 text-center">
-                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Formulaire de demande</h2>
-                    <p className="text-slate-500 text-sm">Tous les champs marqués d'un astérisque (*) sont obligatoires.</p>
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                      Formulaire de demande
+                    </h2>
+                    <p className="text-slate-500 text-sm">
+                      Tous les champs marqués d'un astérisque (*) sont obligatoires.
+                    </p>
                   </div>
 
                   {/* Résumé des erreurs si plusieurs champs invalides */}
@@ -194,7 +215,9 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                     <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
                       <AlertCircle size={18} className="text-red-500 shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-red-700 text-sm font-semibold">Veuillez corriger les erreurs ci-dessous avant de soumettre.</p>
+                        <p className="text-red-700 text-sm font-semibold">
+                          Veuillez corriger les erreurs ci-dessous avant de soumettre.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -203,7 +226,10 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                     {/* ── Nom & Prénom ── */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="nom" className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="nom"
+                          className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <User size={15} className="text-primary" /> Nom *
                         </label>
                         <input
@@ -220,7 +246,10 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                       </div>
 
                       <div>
-                        <label htmlFor="prenom" className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="prenom"
+                          className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <User size={15} className="text-primary" /> Prénom *
                         </label>
                         <input
@@ -240,7 +269,10 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                     {/* ── Téléphone & Email ── */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="telephone" className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="telephone"
+                          className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <Phone size={15} className="text-primary" /> Téléphone *
                         </label>
                         <input
@@ -257,7 +289,10 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                       </div>
 
                       <div>
-                        <label htmlFor="email" className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="email"
+                          className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <Mail size={15} className="text-slate-400" /> Email{' '}
                           <span className="text-slate-400 font-normal text-xs">(Optionnel)</span>
                         </label>
@@ -277,8 +312,12 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                     {/* ── Motif & Format ── */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="motif" className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5">
-                          <MessageSquare size={15} className="text-primary" /> Motif du rendez-vous *
+                        <label
+                          htmlFor="motif"
+                          className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
+                          <MessageSquare size={15} className="text-primary" /> Motif du rendez-vous
+                          *
                         </label>
                         <select
                           id="motif"
@@ -288,9 +327,13 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                           className={inputClass(errors.reason) + ' appearance-none'}
                         >
                           <option value="">Sélectionnez un motif</option>
-                          <option value="Prière et Soutien spirituel">Prière et Soutien spirituel</option>
+                          <option value="Prière et Soutien spirituel">
+                            Prière et Soutien spirituel
+                          </option>
                           <option value="Conseils pastoraux">Conseils pastoraux</option>
-                          <option value="Délivrance et Accompagnement">Délivrance et Accompagnement</option>
+                          <option value="Délivrance et Accompagnement">
+                            Délivrance et Accompagnement
+                          </option>
                           <option value="autre">Autre</option>
                         </select>
                         {motif === 'autre' && (
@@ -307,7 +350,10 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                       </div>
 
                       <div>
-                        <label htmlFor="format" className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="format"
+                          className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <Video size={15} className="text-primary" /> Format *
                         </label>
                         <select
@@ -329,7 +375,10 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                     {/* ── Date & Heure ── */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="jour" className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="jour"
+                          className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <CalendarDays size={15} className="text-primary" /> Jour souhaité *
                         </label>
                         <input
@@ -344,7 +393,10 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                       </div>
 
                       <div>
-                        <label htmlFor="heure" className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="heure"
+                          className="text-sm font-semibold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <Clock size={15} className="text-primary" /> Heure souhaitée *
                         </label>
                         <input
@@ -378,7 +430,8 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
                         {!data.recaptchaToken && !errors.recaptchaToken && (
                           <p className="flex items-center gap-1.5 text-slate-400 text-xs font-medium">
                             <ShieldCheck size={13} className="shrink-0" />
-                            Veuillez cocher la case ci-dessus pour confirmer que vous n'êtes pas un robot.
+                            Veuillez cocher la case ci-dessus pour confirmer que vous n'êtes pas un
+                            robot.
                           </p>
                         )}
                       </div>

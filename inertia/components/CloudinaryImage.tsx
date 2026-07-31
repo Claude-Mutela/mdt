@@ -8,21 +8,19 @@ interface CloudinaryImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageEle
   quality?: string
 }
 
-
 /**
  * Composant pour afficher une image Cloudinary optimisée
  */
-export default function CloudinaryImage({ 
-  src, 
-  width, 
-  height, 
-  crop = 'fill', 
-  quality = 'auto', 
+export default function CloudinaryImage({
+  src,
+  width,
+  height,
+  crop = 'fill',
+  quality = 'auto',
   className,
   alt = '',
-  ...props 
+  ...props
 }: CloudinaryImageProps) {
-  
   if (!src) return null
 
   // Si l'image ne vient pas de Cloudinary, on l'affiche telle quelle
@@ -34,7 +32,7 @@ export default function CloudinaryImage({
   // f_auto : format automatique (WebP/AVIF)
   // q_auto : qualité automatique
   let transformations = `f_auto,q_${quality}`
-  
+
   if (width) transformations += `,w_${width}`
   if (height) transformations += `,h_${height}`
   if (width || height) transformations += `,c_${crop}`
@@ -43,13 +41,5 @@ export default function CloudinaryImage({
   // On cherche l'endroit après '/upload/' pour insérer les paramètres
   const optimizedSrc = src.replace('/upload/', `/upload/${transformations}/`)
 
-  return (
-    <img 
-      src={optimizedSrc} 
-      alt={alt} 
-      className={className}
-      loading="lazy"
-      {...props} 
-    />
-  )
+  return <img src={optimizedSrc} alt={alt} className={className} loading="lazy" {...props} />
 }

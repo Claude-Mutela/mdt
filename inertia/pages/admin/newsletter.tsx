@@ -2,7 +2,17 @@ import { Head, router } from '@inertiajs/react'
 import { useState } from 'react'
 import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
-import { Search, Filter, Mail, Users, UserCheck, Clock, Download, Calendar, Trash2 } from 'lucide-react'
+import {
+  Search,
+  Filter,
+  Mail,
+  Users,
+  UserCheck,
+  Clock,
+  Download,
+  Calendar,
+  Trash2,
+} from 'lucide-react'
 
 type StatutAbonne = 'actif' | 'en_attente'
 
@@ -48,19 +58,29 @@ export default function AdminNewsletter({
   stats: Stats
   filters: Filters
 }) {
-  const [search, setSearch]           = useState(filters.search ?? '')
+  const [search, setSearch] = useState(filters.search ?? '')
   const [filtreStatut, setFiltreStatut] = useState<StatutAbonne | 'Tous'>(filters.statut ?? 'Tous')
-  const [deletingId, setDeletingId]   = useState<number | null>(null)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const data = subscribers?.data ?? []
-  const meta: PaginationMeta = subscribers?.meta ?? { total: 0, perPage: 15, currentPage: 1, lastPage: 1, firstPage: 1 }
+  const meta: PaginationMeta = subscribers?.meta ?? {
+    total: 0,
+    perPage: 15,
+    currentPage: 1,
+    lastPage: 1,
+    firstPage: 1,
+  }
 
   /* ── Recherche / Filtre (côté serveur) ── */
   function applyFilters(newSearch: string, newStatut: StatutAbonne | 'Tous') {
-    router.get('/admin/newsletter', { search: newSearch, statut: newStatut }, {
-      preserveState: true,
-      preserveScroll: true,
-    })
+    router.get(
+      '/admin/newsletter',
+      { search: newSearch, statut: newStatut },
+      {
+        preserveState: true,
+        preserveScroll: true,
+      }
+    )
   }
 
   const handleSearch = (value: string) => {
@@ -86,8 +106,9 @@ export default function AdminNewsletter({
   const handleExport = () => {
     const rows = [
       'Email,Statut,Date Inscription,Confirmation',
-      ...data.map(a =>
-        `${a.email},${a.status === 'actif' ? 'Actif' : 'En attente'},${formatDate(a.createdAt)},${formatDate(a.confirmedAt)}`
+      ...data.map(
+        (a) =>
+          `${a.email},${a.status === 'actif' ? 'Actif' : 'En attente'},${formatDate(a.createdAt)},${formatDate(a.confirmedAt)}`
       ),
     ]
     const blob = new Blob([rows.join('\n')], { type: 'text/csv' })
@@ -103,7 +124,6 @@ export default function AdminNewsletter({
     <>
       <Head title="Newsletter — Admin Phila MDT" />
       <AdminLayout title="Newsletter">
-
         {/* ── Cartes Statistiques ── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           {/* Total */}
@@ -112,7 +132,9 @@ export default function AdminNewsletter({
               <Users size={22} className="text-primary" />
             </div>
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">Total abonnés</p>
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">
+                Total abonnés
+              </p>
               <p className="text-3xl font-black text-white">{stats?.total ?? 0}</p>
             </div>
           </div>
@@ -123,11 +145,16 @@ export default function AdminNewsletter({
               <UserCheck size={22} className="text-emerald-400" />
             </div>
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">Confirmés</p>
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">
+                Confirmés
+              </p>
               <div className="flex items-end gap-2">
                 <p className="text-3xl font-black text-white">{stats?.actifs ?? 0}</p>
                 <p className="text-xs text-emerald-400 font-bold mb-1">
-                  {(stats?.total ?? 0) > 0 ? Math.round(((stats?.actifs ?? 0) / stats.total) * 100) : 0}%
+                  {(stats?.total ?? 0) > 0
+                    ? Math.round(((stats?.actifs ?? 0) / stats.total) * 100)
+                    : 0}
+                  %
                 </p>
               </div>
             </div>
@@ -139,11 +166,16 @@ export default function AdminNewsletter({
               <Clock size={22} className="text-amber-400" />
             </div>
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">En attente</p>
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-0.5">
+                En attente
+              </p>
               <div className="flex items-end gap-2">
                 <p className="text-3xl font-black text-white">{stats?.attente ?? 0}</p>
                 <p className="text-xs text-amber-400 font-bold mb-1">
-                  {(stats?.total ?? 0) > 0 ? Math.round(((stats?.attente ?? 0) / stats.total) * 100) : 0}%
+                  {(stats?.total ?? 0) > 0
+                    ? Math.round(((stats?.attente ?? 0) / stats.total) * 100)
+                    : 0}
+                  %
                 </p>
               </div>
             </div>
@@ -203,16 +235,24 @@ export default function AdminNewsletter({
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-800 bg-slate-800/30">
-                  {['Adresse Email', 'Statut', 'Date d\'inscription', 'Confirmation', 'Actions'].map((h) => (
-                    <th key={h} className="text-left text-slate-400 font-semibold px-6 py-3 text-xs uppercase tracking-wider whitespace-nowrap">
-                      {h}
-                    </th>
-                  ))}
+                  {['Adresse Email', 'Statut', "Date d'inscription", 'Confirmation', 'Actions'].map(
+                    (h) => (
+                      <th
+                        key={h}
+                        className="text-left text-slate-400 font-semibold px-6 py-3 text-xs uppercase tracking-wider whitespace-nowrap"
+                      >
+                        {h}
+                      </th>
+                    )
+                  )}
                 </tr>
               </thead>
               <tbody>
                 {data.map((a) => (
-                  <tr key={a.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                  <tr
+                    key={a.id}
+                    className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors"
+                  >
                     {/* Email */}
                     <td className="px-6 py-3.5">
                       <div className="flex items-center gap-3">
@@ -225,12 +265,16 @@ export default function AdminNewsletter({
 
                     {/* Statut */}
                     <td className="px-6 py-3.5">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider ${
-                        a.status === 'actif'
-                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                      }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${a.status === 'actif' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider ${
+                          a.status === 'actif'
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                            : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${a.status === 'actif' ? 'bg-emerald-400' : 'bg-amber-400'}`}
+                        />
                         {a.status === 'actif' ? 'Confirmé' : 'En attente'}
                       </span>
                     </td>
@@ -290,10 +334,15 @@ export default function AdminNewsletter({
           {/* Pagination */}
           <Pagination
             meta={meta}
-            onPageChange={(p) => router.get('/admin/newsletter', { search, statut: filtreStatut, page: p }, { preserveState: true, preserveScroll: true })}
+            onPageChange={(p) =>
+              router.get(
+                '/admin/newsletter',
+                { search, statut: filtreStatut, page: p },
+                { preserveState: true, preserveScroll: true }
+              )
+            }
           />
         </div>
-
       </AdminLayout>
     </>
   )

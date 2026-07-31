@@ -24,13 +24,19 @@ export default function Pagination({ meta, links, onPageChange }: PaginationProp
   // Rendu pour la pagination locale (frontend only)
   if (onPageChange && !links) {
     const pages = Array.from({ length: meta.lastPage }, (_, i) => i + 1)
-    
+
     return (
       <div className="flex items-center justify-between px-6 py-4 bg-slate-900/50 border-t border-slate-800">
         <p className="text-sm text-slate-500">
-          Affichage de <span className="font-medium text-slate-300">{((meta.currentPage - 1) * meta.perPage) + 1}</span> à{' '}
-          <span className="font-medium text-slate-300">{Math.min(meta.currentPage * meta.perPage, meta.total)}</span> sur{' '}
-          <span className="font-medium text-slate-300">{meta.total}</span> résultats
+          Affichage de{' '}
+          <span className="font-medium text-slate-300">
+            {(meta.currentPage - 1) * meta.perPage + 1}
+          </span>{' '}
+          à{' '}
+          <span className="font-medium text-slate-300">
+            {Math.min(meta.currentPage * meta.perPage, meta.total)}
+          </span>{' '}
+          sur <span className="font-medium text-slate-300">{meta.total}</span> résultats
         </p>
         <div className="flex items-center gap-1">
           <button
@@ -74,34 +80,45 @@ export default function Pagination({ meta, links, onPageChange }: PaginationProp
       <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
         <div>
           <p className="text-sm text-slate-500">
-            Affichage de <span className="font-medium text-slate-300">{((meta.currentPage - 1) * meta.perPage) + 1}</span> à{' '}
-            <span className="font-medium text-slate-300">{Math.min(meta.currentPage * meta.perPage, meta.total)}</span> sur{' '}
-            <span className="font-medium text-slate-300">{meta.total}</span> résultats
+            Affichage de{' '}
+            <span className="font-medium text-slate-300">
+              {(meta.currentPage - 1) * meta.perPage + 1}
+            </span>{' '}
+            à{' '}
+            <span className="font-medium text-slate-300">
+              {Math.min(meta.currentPage * meta.perPage, meta.total)}
+            </span>{' '}
+            sur <span className="font-medium text-slate-300">{meta.total}</span> résultats
           </p>
         </div>
         <div>
-          <nav className="relative z-0 inline-flex rounded-xl shadow-sm space-x-1" aria-label="Pagination">
+          <nav
+            className="relative z-0 inline-flex rounded-xl shadow-sm space-x-1"
+            aria-label="Pagination"
+          >
             {links?.map((link, idx) => {
               // Nettoyage des labels (Adonis peut renvoyer &laquo; ou &raquo;)
               let label = link.label
-              if (label.includes('Previous')) return (
-                <Link
-                  key={idx}
-                  href={link.url || '#'}
-                  className={`relative inline-flex items-center p-2 rounded-lg border border-slate-700 bg-slate-900 text-sm font-medium text-slate-400 hover:bg-slate-800 ${!link.url ? 'opacity-30 cursor-not-allowed' : ''}`}
-                >
-                  <ChevronLeft size={18} />
-                </Link>
-              )
-              if (label.includes('Next')) return (
-                <Link
-                  key={idx}
-                  href={link.url || '#'}
-                  className={`relative inline-flex items-center p-2 rounded-lg border border-slate-700 bg-slate-900 text-sm font-medium text-slate-400 hover:bg-slate-800 ${!link.url ? 'opacity-30 cursor-not-allowed' : ''}`}
-                >
-                  <ChevronRight size={18} />
-                </Link>
-              )
+              if (label.includes('Previous'))
+                return (
+                  <Link
+                    key={idx}
+                    href={link.url || '#'}
+                    className={`relative inline-flex items-center p-2 rounded-lg border border-slate-700 bg-slate-900 text-sm font-medium text-slate-400 hover:bg-slate-800 ${!link.url ? 'opacity-30 cursor-not-allowed' : ''}`}
+                  >
+                    <ChevronLeft size={18} />
+                  </Link>
+                )
+              if (label.includes('Next'))
+                return (
+                  <Link
+                    key={idx}
+                    href={link.url || '#'}
+                    className={`relative inline-flex items-center p-2 rounded-lg border border-slate-700 bg-slate-900 text-sm font-medium text-slate-400 hover:bg-slate-800 ${!link.url ? 'opacity-30 cursor-not-allowed' : ''}`}
+                  >
+                    <ChevronRight size={18} />
+                  </Link>
+                )
 
               return (
                 <Link

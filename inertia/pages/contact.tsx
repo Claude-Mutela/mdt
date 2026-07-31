@@ -1,5 +1,18 @@
 import { Head, useForm } from '@inertiajs/react'
-import { MapPin, Phone, Clock, Send, ExternalLink, AlertCircle, CheckCircle2, User, Mail, MessageSquare, Tag, ShieldCheck } from 'lucide-react'
+import {
+  MapPin,
+  Phone,
+  Clock,
+  Send,
+  ExternalLink,
+  AlertCircle,
+  CheckCircle2,
+  User,
+  Mail,
+  MessageSquare,
+  Tag,
+  ShieldCheck,
+} from 'lucide-react'
 import { useState, useEffect, useRef, useCallback } from 'react'
 
 /* ── Types globaux reCAPTCHA ─────────────────────────────────────── */
@@ -58,8 +71,8 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
     if (!recaptchaContainerRef.current || !recaptchaSiteKey || widgetIdRef.current !== null) return
 
     widgetIdRef.current = window.grecaptcha.render(recaptchaContainerRef.current, {
-      sitekey: recaptchaSiteKey,
-      callback: (token: string) => {
+      'sitekey': recaptchaSiteKey,
+      'callback': (token: string) => {
         setData('recaptchaToken', token)
       },
       'expired-callback': () => {
@@ -68,8 +81,8 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
       'error-callback': () => {
         setData('recaptchaToken', '')
       },
-      theme: 'light',
-      size: 'normal',
+      'theme': 'light',
+      'size': 'normal',
     })
   }, [recaptchaSiteKey, setData])
 
@@ -129,34 +142,40 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
   return (
     <>
       <Head title="Contactez-nous — Phila MDT">
-        <meta name="description" content="Une question, une suggestion ou besoin d'informations ? Contactez l'équipe de la Phila Maison de Témoignages (MDT)." />
+        <meta
+          name="description"
+          content="Une question, une suggestion ou besoin d'informations ? Contactez l'équipe de la Phila Maison de Témoignages (MDT)."
+        />
       </Head>
       <div className="bg-background-off min-h-screen animate-in fade-in slide-in-from-left-4 duration-700">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-20">
-
           {/* ── En-tête ── */}
           <div className="text-center space-y-4 mb-16">
-            <h1 className="text-slate-900 text-4xl md:text-6xl font-black font-serif">Contactez-nous</h1>
+            <h1 className="text-slate-900 text-4xl md:text-6xl font-black font-serif">
+              Contactez-nous
+            </h1>
             <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-              Nous sommes là pour vous. Que ce soit pour une demande d'information, un témoignage ou un sujet de prière, n'hésitez pas à nous écrire.
+              Nous sommes là pour vous. Que ce soit pour une demande d'information, un témoignage ou
+              un sujet de prière, n'hésitez pas à nous écrire.
             </p>
           </div>
 
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
-
             {/* ── Formulaire ── */}
             <div className="lg:col-span-7">
               <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-slate-100">
-
                 {isSubmitted ? (
                   /* ── État de succès ── */
                   <div className="text-center py-12 animate-in fade-in zoom-in duration-500">
                     <div className="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
                       <CheckCircle2 size={48} />
                     </div>
-                    <h2 className="text-3xl font-bold text-slate-900 mb-4 font-serif">Message envoyé !</h2>
+                    <h2 className="text-3xl font-bold text-slate-900 mb-4 font-serif">
+                      Message envoyé !
+                    </h2>
                     <p className="text-slate-600 mb-10 max-w-md mx-auto leading-relaxed">
-                      Votre message a bien été reçu. Nous vous avons envoyé un accusé de réception et reviendrons vers vous très prochainement.
+                      Votre message a bien été reçu. Nous vous avons envoyé un accusé de réception
+                      et reviendrons vers vous très prochainement.
                     </p>
                     <button
                       onClick={() => setIsSubmitted(false)}
@@ -169,7 +188,9 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
                   /* ── Formulaire de saisie ── */
                   <>
                     <h3 className="text-2xl font-bold font-serif mb-2">Envoyez-nous un message</h3>
-                    <p className="text-slate-500 text-sm mb-8">Tous les champs sont obligatoires.</p>
+                    <p className="text-slate-500 text-sm mb-8">
+                      Tous les champs sont obligatoires.
+                    </p>
 
                     {/* Bannière d'erreur globale */}
                     {hasErrors && (
@@ -181,11 +202,18 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
                       </div>
                     )}
 
-                    <form id="contact-form" onSubmit={handleSubmit} className="space-y-6" noValidate>
-
+                    <form
+                      id="contact-form"
+                      onSubmit={handleSubmit}
+                      className="space-y-6"
+                      noValidate
+                    >
                       {/* Nom complet */}
                       <div>
-                        <label htmlFor="contact-name" className="text-sm font-bold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="contact-name"
+                          className="text-sm font-bold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <User size={14} className="text-primary" /> Nom complet
                         </label>
                         <input
@@ -203,7 +231,10 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
 
                       {/* Adresse Email */}
                       <div>
-                        <label htmlFor="contact-email" className="text-sm font-bold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="contact-email"
+                          className="text-sm font-bold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <Mail size={14} className="text-primary" /> Adresse Email
                         </label>
                         <input
@@ -221,7 +252,10 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
 
                       {/* Sujet */}
                       <div>
-                        <label htmlFor="contact-subject" className="text-sm font-bold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="contact-subject"
+                          className="text-sm font-bold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <Tag size={14} className="text-primary" /> Objet
                         </label>
                         <select
@@ -240,7 +274,10 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
 
                       {/* Message */}
                       <div>
-                        <label htmlFor="contact-message" className="text-sm font-bold text-slate-700 flex items-center gap-2 mb-1.5">
+                        <label
+                          htmlFor="contact-message"
+                          className="text-sm font-bold text-slate-700 flex items-center gap-2 mb-1.5"
+                        >
                           <MessageSquare size={14} className="text-primary" /> Message
                         </label>
                         <textarea
@@ -255,7 +292,9 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
                         {/* Compteur de caractères */}
                         <div className="flex justify-between items-center mt-1">
                           <FieldError message={errors.message} />
-                          <span className={`text-xs ml-auto ${data.message.length > 1800 ? 'text-red-500' : 'text-slate-400'}`}>
+                          <span
+                            className={`text-xs ml-auto ${data.message.length > 1800 ? 'text-red-500' : 'text-slate-400'}`}
+                          >
                             {data.message.length} / 2000
                           </span>
                         </div>
@@ -280,7 +319,8 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
                           {!data.recaptchaToken && !errors.recaptchaToken && (
                             <p className="flex items-center gap-1.5 text-slate-400 text-xs font-medium">
                               <ShieldCheck size={13} className="shrink-0" />
-                              Veuillez cocher la case ci-dessus pour confirmer que vous n'êtes pas un robot.
+                              Veuillez cocher la case ci-dessus pour confirmer que vous n'êtes pas
+                              un robot.
                             </p>
                           )}
                         </div>
@@ -296,8 +336,19 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
                         {processing ? (
                           <>
                             <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v8H4z"
+                              />
                             </svg>
                             Envoi en cours...
                           </>
@@ -374,14 +425,20 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <p className="font-black text-lg md:text-xl font-serif text-slate-900 leading-tight">Eglise Phila MDT</p>
-                  <p className="text-xs md:text-sm font-medium text-primary mt-0.5">Ouvrir dans Google Maps</p>
+                  <p className="font-black text-lg md:text-xl font-serif text-slate-900 leading-tight">
+                    Eglise Phila MDT
+                  </p>
+                  <p className="text-xs md:text-sm font-medium text-primary mt-0.5">
+                    Ouvrir dans Google Maps
+                  </p>
                 </div>
-                <ExternalLink size={18} className="text-slate-300 ml-auto shrink-0 hidden md:block" />
+                <ExternalLink
+                  size={18}
+                  className="text-slate-300 ml-auto shrink-0 hidden md:block"
+                />
               </a>
             </div>
           </div>
-
         </div>
       </div>
     </>
@@ -390,7 +447,17 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
 
 /* ── Sous-composants ─────────────────────────────────────────────── */
 
-const DetailItem = ({ icon, title, desc, sub }: { icon: React.ReactNode; title: string; desc: string; sub?: string }) => (
+const DetailItem = ({
+  icon,
+  title,
+  desc,
+  sub,
+}: {
+  icon: React.ReactNode
+  title: string
+  desc: string
+  sub?: string
+}) => (
   <div className="flex items-start gap-6 p-8 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all group">
     <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
       {icon}
@@ -398,7 +465,9 @@ const DetailItem = ({ icon, title, desc, sub }: { icon: React.ReactNode; title: 
     <div className="space-y-1">
       <h4 className="font-bold font-serif text-lg">{title}</h4>
       <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
-      {sub && <p className="text-primary font-bold text-sm hover:underline cursor-pointer pt-1">{sub}</p>}
+      {sub && (
+        <p className="text-primary font-bold text-sm hover:underline cursor-pointer pt-1">{sub}</p>
+      )}
     </div>
   </div>
 )

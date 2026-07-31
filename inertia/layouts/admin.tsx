@@ -24,21 +24,21 @@ import {
 } from 'lucide-react'
 
 const navItems = [
-  { label: 'Dashboard',   href: '/admin',            icon: LayoutDashboard },
-  { label: 'Utilisateurs',href: '/admin/users',      icon: UserCog },
-  { label: 'Membres',     href: '/admin/membres',     icon: Users },
+  { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { label: 'Utilisateurs', href: '/admin/users', icon: UserCog },
+  { label: 'Membres', href: '/admin/membres', icon: Users },
   { label: 'Nouveaux Venus', href: '/admin/nouveaux-venus', icon: UserPlus },
-  { label: 'Agenda',      href: '/admin/agenda',      icon: CalendarDays },
-  { label: 'Rendez-vous',  href: '/admin/rendez-vous', icon: CalendarDays },
-  { label: 'Assets',      href: '/admin/assets',      icon: Image },
-  { label: 'Ministères',  href: '/admin/ministeres',  icon: Church },
-  { label: 'Cellules',    href: '/admin/cellules',    icon: Grid3X3 },
-  { label: 'Événements',  href: '/admin/evenements',  icon: Ticket },
-  { label: 'Médias',      href: '/admin/medias',      icon: PlayCircle },
-  { label: 'Galerie',     href: '/admin/galerie',     icon: Image },
-  { label: 'Dons',        href: '/admin/donations',   icon: HeartHandshake },
-  { label: 'Finances',    href: '/admin/finances',    icon: Coins },
-  { label: 'Newsletter',  href: '/admin/newsletter',  icon: MailCheck },
+  { label: 'Agenda', href: '/admin/agenda', icon: CalendarDays },
+  { label: 'Rendez-vous', href: '/admin/rendez-vous', icon: CalendarDays },
+  { label: 'Assets', href: '/admin/assets', icon: Image },
+  { label: 'Ministères', href: '/admin/ministeres', icon: Church },
+  { label: 'Cellules', href: '/admin/cellules', icon: Grid3X3 },
+  { label: 'Événements', href: '/admin/evenements', icon: Ticket },
+  { label: 'Médias', href: '/admin/medias', icon: PlayCircle },
+  { label: 'Galerie', href: '/admin/galerie', icon: Image },
+  { label: 'Dons', href: '/admin/donations', icon: HeartHandshake },
+  { label: 'Finances', href: '/admin/finances', icon: Coins },
+  { label: 'Newsletter', href: '/admin/newsletter', icon: MailCheck },
 ]
 
 interface User {
@@ -47,7 +47,16 @@ interface User {
   firstname?: string
   lastname?: string
   email: string
-  role: 'superadmin' | 'admin' | 'pasteur' | 'user' | 'tresorier' | 'financier' | 'mdtcom' | 'administration' | 'porte_integration'
+  role:
+    | 'superadmin'
+    | 'admin'
+    | 'pasteur'
+    | 'user'
+    | 'tresorier'
+    | 'financier'
+    | 'mdtcom'
+    | 'administration'
+    | 'porte_integration'
   initials: string
 }
 
@@ -61,7 +70,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const { url, props } = usePage()
-  const flash = props.flash as { success?: string, error?: string }
+  const flash = props.flash as { success?: string; error?: string }
   const user = props.user as User
 
   useEffect(() => {
@@ -76,7 +85,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
   // Fonction pour vérifier si l'utilisateur peut voir un item de navigation
   const canAccess = (href: string) => {
     if (!user) return false
-    
+
     // Le superadmin et le pasteur ont accès à absolument tout
     if (user.role === 'superadmin' || user.role === 'pasteur') {
       return true
@@ -122,24 +131,30 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
 
     // Rôle "user" standard (hérité/fallback)
     if (user.role === 'user') {
-      const allowed = ['/admin/membres', '/admin/nouveaux-venus', '/admin/ministeres', '/admin/cellules', '/admin/donations']
+      const allowed = [
+        '/admin/membres',
+        '/admin/nouveaux-venus',
+        '/admin/ministeres',
+        '/admin/cellules',
+        '/admin/donations',
+      ]
       return allowed.includes(href)
     }
 
     return false
   }
 
-  const filteredNavItems = navItems.filter(item => canAccess(item.href))
+  const filteredNavItems = navItems.filter((item) => canAccess(item.href))
 
   return (
     <div className="flex h-screen bg-slate-950 text-white overflow-hidden font-sans">
-      <Toaster 
+      <Toaster
         position="top-right"
         toastOptions={{
           style: {
             background: '#1e293b',
             color: '#fff',
-            border: '1px solid #334155'
+            border: '1px solid #334155',
           },
         }}
       />
@@ -152,11 +167,16 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-5 border-b border-slate-800">
           <div className="w-9 h-9 shrink-0 flex items-center justify-center bg-white/5 rounded-xl border border-white/10 p-1">
-            <img src="/MDT LOGO ORANGE.png" alt="Phila MDT" className="w-full h-full object-contain drop-shadow-md" />
+            <img
+              src="/MDT LOGO ORANGE.png"
+              alt="Phila MDT"
+              className="w-full h-full object-contain drop-shadow-md"
+            />
           </div>
           {sidebarOpen && (
             <span className="font-black text-white tracking-tight leading-tight text-sm">
-              Phila MDT<br />
+              Phila MDT
+              <br />
               <span className="text-slate-400 font-normal text-xs">Administration</span>
             </span>
           )}
@@ -219,7 +239,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full" />
             </button>
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center gap-2 pl-3 border-l border-slate-700 hover:opacity-80 transition-opacity text-left focus:outline-none"
               >
@@ -228,7 +248,9 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
                 </div>
                 <div className="text-xs hidden sm:block">
                   <p className="text-white font-bold leading-none mb-0.5">
-                    {user?.firstname && user?.lastname ? `${user.firstname} ${user.lastname}` : (user?.fullName || 'Utilisateur')}
+                    {user?.firstname && user?.lastname
+                      ? `${user.firstname} ${user.lastname}`
+                      : user?.fullName || 'Utilisateur'}
                   </p>
                   <p className="text-slate-500 uppercase text-[9px] tracking-widest font-black">
                     {user?.role === 'superadmin' && 'Super Administrateur'}
@@ -238,9 +260,20 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
                     {user?.role === 'financier' && 'Financier'}
                     {user?.role === 'mdtcom' && 'Communication MDT'}
                     {user?.role === 'administration' && 'Administration'}
-                    {user?.role === 'porte_integration' && 'Porte d\'Intégration'}
+                    {user?.role === 'porte_integration' && "Porte d'Intégration"}
                     {user?.role === 'user' && 'Utilisateur'}
-                    {!['superadmin', 'admin', 'pasteur', 'tresorier', 'financier', 'mdtcom', 'administration', 'porte_integration', 'user'].includes(user?.role || '') && (user?.role || 'Inconnu')}
+                    {![
+                      'superadmin',
+                      'admin',
+                      'pasteur',
+                      'tresorier',
+                      'financier',
+                      'mdtcom',
+                      'administration',
+                      'porte_integration',
+                      'user',
+                    ].includes(user?.role || '') &&
+                      (user?.role || 'Inconnu')}
                   </p>
                 </div>
               </button>
@@ -277,15 +310,9 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto bg-slate-950 p-6">
-          {children}
-        </main>
+        <main className="flex-1 overflow-y-auto bg-slate-950 p-6">{children}</main>
       </div>
-      <SettingsModal 
-        isOpen={settingsOpen} 
-        onClose={() => setSettingsOpen(false)} 
-        user={user} 
-      />
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} user={user} />
     </div>
   )
 }

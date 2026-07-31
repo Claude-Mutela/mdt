@@ -14,11 +14,11 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
     remember: false,
     recaptchaToken: '',
   } as {
-    email: string;
-    password: string;
-    remember: boolean;
-    recaptchaToken: string;
-    auth?: string;
+    email: string
+    password: string
+    remember: boolean
+    recaptchaToken: string
+    auth?: string
   })
 
   /* ── Chargement dynamique du script reCAPTCHA ── */
@@ -26,8 +26,8 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
     if (!recaptchaContainerRef.current || !recaptchaSiteKey || widgetIdRef.current !== null) return
 
     widgetIdRef.current = window.grecaptcha.render(recaptchaContainerRef.current, {
-      sitekey: recaptchaSiteKey,
-      callback: (token: string) => {
+      'sitekey': recaptchaSiteKey,
+      'callback': (token: string) => {
         setData('recaptchaToken', token)
       },
       'expired-callback': () => {
@@ -36,8 +36,8 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
       'error-callback': () => {
         setData('recaptchaToken', '')
       },
-      theme: 'dark', // Thème sombre pour s'intégrer harmonieusement à la page
-      size: 'normal',
+      'theme': 'dark', // Thème sombre pour s'intégrer harmonieusement à la page
+      'size': 'normal',
     })
   }, [recaptchaSiteKey, setData])
 
@@ -76,7 +76,7 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
           window.grecaptcha.reset(widgetIdRef.current)
         }
         setData('recaptchaToken', '')
-      }
+      },
     })
   }
 
@@ -98,7 +98,10 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
           <form onSubmit={submit} className="space-y-6">
             {/* Email Field */}
             <div className="space-y-2">
-              <label htmlFor="email" className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">
+              <label
+                htmlFor="email"
+                className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1"
+              >
                 Adresse Email
               </label>
               <div className="relative group">
@@ -120,7 +123,10 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
 
             {/* Password Field */}
             <div className="space-y-2">
-              <label htmlFor="password" className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">
+              <label
+                htmlFor="password"
+                className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1"
+              >
                 Mot de passe
               </label>
               <div className="relative group">
@@ -144,7 +150,9 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              {errors.password && <p className="text-red-400 text-xs mt-1 ml-1">{errors.password}</p>}
+              {errors.password && (
+                <p className="text-red-400 text-xs mt-1 ml-1">{errors.password}</p>
+              )}
             </div>
 
             {/* reCAPTCHA Widget */}
@@ -176,9 +184,14 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
                   onChange={(e) => setData('remember', e.target.checked)}
                   className="w-4 h-4 rounded border-slate-800 bg-slate-950 text-primary focus:ring-offset-slate-900 focus:ring-primary"
                 />
-                <span className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">Se souvenir de moi</span>
+                <span className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">
+                  Se souvenir de moi
+                </span>
               </label>
-              <button type="button" className="text-sm text-primary hover:text-primary-dark font-semibold transition-colors">
+              <button
+                type="button"
+                className="text-sm text-primary hover:text-primary-dark font-semibold transition-colors"
+              >
                 Oublié ?
               </button>
             </div>

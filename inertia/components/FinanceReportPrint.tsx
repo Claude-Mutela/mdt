@@ -22,7 +22,7 @@ interface Operation {
 interface PrintStats {
   entrees: { USD: number; CDF: number; EUR: number; equivalent: number }
   sorties: { USD: number; CDF: number; EUR: number; equivalent: number }
-  solde:   { USD: number; CDF: number; EUR: number; equivalent: number }
+  solde: { USD: number; CDF: number; EUR: number; equivalent: number }
 }
 
 interface FinanceReportPrintProps {
@@ -35,8 +35,18 @@ interface FinanceReportPrintProps {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const MOIS_FR = [
-  'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+  'Janvier',
+  'Février',
+  'Mars',
+  'Avril',
+  'Mai',
+  'Juin',
+  'Juillet',
+  'Août',
+  'Septembre',
+  'Octobre',
+  'Novembre',
+  'Décembre',
 ]
 
 function formatDate(dateStr: string): string {
@@ -45,7 +55,10 @@ function formatDate(dateStr: string): string {
 }
 
 function fmtAmt(val: number, devise: 'USD' | 'CDF' | 'EUR'): string {
-  const abs = Math.abs(val).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const abs = Math.abs(val).toLocaleString('fr-FR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
   if (devise === 'USD') return `$ ${abs}`
   if (devise === 'EUR') return `€ ${abs}`
   return `${abs} FC`
@@ -53,7 +66,12 @@ function fmtAmt(val: number, devise: 'USD' | 'CDF' | 'EUR'): string {
 
 // ─── Composant ───────────────────────────────────────────────────────────────
 
-export default function FinanceReportPrint({ operations, stats, periodLabel, rates }: FinanceReportPrintProps) {
+export default function FinanceReportPrint({
+  operations,
+  stats,
+  periodLabel,
+  rates,
+}: FinanceReportPrintProps) {
   const now = new Date()
   const genAt = `${String(now.getDate()).padStart(2, '0')} ${MOIS_FR[now.getMonth()]} ${now.getFullYear()} à ${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}`
 
@@ -214,7 +232,6 @@ export default function FinanceReportPrint({ operations, stats, periodLabel, rat
       `}</style>
 
       <div id="finance-print-root">
-
         {/* En-tête */}
         <div className="rpt-header">
           <img src="/MDT LOGO ORANGE.png" alt="Logo MDT" className="rpt-logo" />
@@ -227,7 +244,9 @@ export default function FinanceReportPrint({ operations, stats, periodLabel, rat
             <p>Généré le {genAt}</p>
             <p>1 $ = {rates.CDF.toLocaleString('fr-FR')} FC</p>
             <p>1 € = {rates.EUR.toLocaleString('fr-FR')} $</p>
-            <p style={{ fontWeight: 700, marginTop: '3pt' }}>{operations.length} opération{operations.length > 1 ? 's' : ''}</p>
+            <p style={{ fontWeight: 700, marginTop: '3pt' }}>
+              {operations.length} opération{operations.length > 1 ? 's' : ''}
+            </p>
           </div>
         </div>
 
@@ -235,31 +254,37 @@ export default function FinanceReportPrint({ operations, stats, periodLabel, rat
         <div className="rpt-stats">
           <div className="rpt-stat-card s-entree">
             <div className="rpt-stat-label">▲ Total Entrées (Recettes)</div>
-            <div className="rpt-stat-main">{fmtAmt(Math.round(stats.entrees.equivalent), 'USD')}</div>
+            <div className="rpt-stat-main">
+              {fmtAmt(Math.round(stats.entrees.equivalent), 'USD')}
+            </div>
             <div className="rpt-stat-detail">
-              USD : {fmtAmt(stats.entrees.USD, 'USD')} &nbsp;|&nbsp;
-              CDF : {fmtAmt(stats.entrees.CDF, 'CDF')} &nbsp;|&nbsp;
-              EUR : {fmtAmt(stats.entrees.EUR, 'EUR')}
+              USD : {fmtAmt(stats.entrees.USD, 'USD')} &nbsp;|&nbsp; CDF :{' '}
+              {fmtAmt(stats.entrees.CDF, 'CDF')} &nbsp;|&nbsp; EUR :{' '}
+              {fmtAmt(stats.entrees.EUR, 'EUR')}
             </div>
           </div>
           <div className="rpt-stat-card s-sortie">
             <div className="rpt-stat-label">▼ Total Sorties (Dépenses)</div>
-            <div className="rpt-stat-main">{fmtAmt(Math.round(stats.sorties.equivalent), 'USD')}</div>
+            <div className="rpt-stat-main">
+              {fmtAmt(Math.round(stats.sorties.equivalent), 'USD')}
+            </div>
             <div className="rpt-stat-detail">
-              USD : {fmtAmt(stats.sorties.USD, 'USD')} &nbsp;|&nbsp;
-              CDF : {fmtAmt(stats.sorties.CDF, 'CDF')} &nbsp;|&nbsp;
-              EUR : {fmtAmt(stats.sorties.EUR, 'EUR')}
+              USD : {fmtAmt(stats.sorties.USD, 'USD')} &nbsp;|&nbsp; CDF :{' '}
+              {fmtAmt(stats.sorties.CDF, 'CDF')} &nbsp;|&nbsp; EUR :{' '}
+              {fmtAmt(stats.sorties.EUR, 'EUR')}
             </div>
           </div>
-          <div className={`rpt-stat-card ${stats.solde.equivalent >= 0 ? 's-solde' : 's-solde-neg'}`}>
+          <div
+            className={`rpt-stat-card ${stats.solde.equivalent >= 0 ? 's-solde' : 's-solde-neg'}`}
+          >
             <div className="rpt-stat-label">= Solde Net</div>
             <div className="rpt-stat-main">
-              {stats.solde.equivalent < 0 ? '− ' : ''}{fmtAmt(Math.abs(Math.round(stats.solde.equivalent)), 'USD')}
+              {stats.solde.equivalent < 0 ? '− ' : ''}
+              {fmtAmt(Math.abs(Math.round(stats.solde.equivalent)), 'USD')}
             </div>
             <div className="rpt-stat-detail">
-              USD : {fmtAmt(stats.solde.USD, 'USD')} &nbsp;|&nbsp;
-              CDF : {fmtAmt(stats.solde.CDF, 'CDF')} &nbsp;|&nbsp;
-              EUR : {fmtAmt(stats.solde.EUR, 'EUR')}
+              USD : {fmtAmt(stats.solde.USD, 'USD')} &nbsp;|&nbsp; CDF :{' '}
+              {fmtAmt(stats.solde.CDF, 'CDF')} &nbsp;|&nbsp; EUR : {fmtAmt(stats.solde.EUR, 'EUR')}
             </div>
           </div>
         </div>
@@ -274,7 +299,9 @@ export default function FinanceReportPrint({ operations, stats, periodLabel, rat
               <th style={{ width: '26%' }}>Description</th>
               <th style={{ width: '14%' }}>Catégorie</th>
               <th style={{ width: '12%' }}>Moyen paiement</th>
-              <th className="r" style={{ width: '14%' }}>Montant</th>
+              <th className="r" style={{ width: '14%' }}>
+                Montant
+              </th>
               <th style={{ width: '6%' }}>Devise</th>
               <th style={{ width: '8%' }}>Type</th>
             </tr>
@@ -282,7 +309,15 @@ export default function FinanceReportPrint({ operations, stats, periodLabel, rat
           <tbody>
             {operations.length === 0 ? (
               <tr>
-                <td colSpan={8} style={{ textAlign: 'center', padding: '12pt', color: '#999', fontStyle: 'italic' }}>
+                <td
+                  colSpan={8}
+                  style={{
+                    textAlign: 'center',
+                    padding: '12pt',
+                    color: '#999',
+                    fontStyle: 'italic',
+                  }}
+                >
                   Aucune opération pour cette période
                 </td>
               </tr>
@@ -298,14 +333,21 @@ export default function FinanceReportPrint({ operations, stats, periodLabel, rat
                     {fmtAmt(op.montant, op.devise)}
                   </td>
                   <td style={{ fontWeight: 700 }}>{op.devise}</td>
-                  <td><span className={op.type === 'entrée' ? 'b-e' : 'b-s'}>{op.type === 'entrée' ? 'Entrée' : 'Sortie'}</span></td>
+                  <td>
+                    <span className={op.type === 'entrée' ? 'b-e' : 'b-s'}>
+                      {op.type === 'entrée' ? 'Entrée' : 'Sortie'}
+                    </span>
+                  </td>
                 </tr>
               ))
             )}
           </tbody>
           <tfoot>
             <tr style={{ border: 'none' }}>
-              <td colSpan={8} style={{ height: '24pt', border: 'none', background: 'transparent' }}></td>
+              <td
+                colSpan={8}
+                style={{ height: '24pt', border: 'none', background: 'transparent' }}
+              ></td>
             </tr>
           </tfoot>
         </table>

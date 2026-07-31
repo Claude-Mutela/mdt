@@ -2,8 +2,16 @@ import { Head, useForm, router } from '@inertiajs/react'
 import { useRef, useState } from 'react'
 import AdminLayout from '../../layouts/admin'
 import {
-  Image as ImageIcon, Video, Plus, Trash2,
-  Eye, UploadCloud, FileVideo, FileImage, CheckCircle2, X
+  Image as ImageIcon,
+  Video,
+  Plus,
+  Trash2,
+  Eye,
+  UploadCloud,
+  FileVideo,
+  FileImage,
+  CheckCircle2,
+  X,
 } from 'lucide-react'
 
 interface Asset {
@@ -53,7 +61,7 @@ export default function AdminAssets({ assets }: { assets: Asset[] }) {
       onSuccess: () => {
         setModalOpen(false)
         form.reset()
-      }
+      },
     })
   }
 
@@ -77,11 +85,12 @@ export default function AdminAssets({ assets }: { assets: Asset[] }) {
     <>
       <Head title="Assets Hero — Admin Phila MDT" />
       <AdminLayout title="Gestion des Assets (Hero Section)">
-
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-xl font-bold text-white">Médias de la Hero Section</h2>
-            <p className="text-slate-400 text-sm mt-1">Gérez l'image ou la vidéo affichée en fond sur la page d'accueil.</p>
+            <p className="text-slate-400 text-sm mt-1">
+              Gérez l'image ou la vidéo affichée en fond sur la page d'accueil.
+            </p>
           </div>
           <button
             onClick={() => setModalOpen(true)}
@@ -119,9 +128,13 @@ export default function AdminAssets({ assets }: { assets: Asset[] }) {
                   />
                 )}
                 <div className="absolute top-3 right-3">
-                  <span className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-lg ${
-                    asset.status === 'active' ? 'bg-green-500 text-white' : 'bg-slate-800 text-slate-400'
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-lg ${
+                      asset.status === 'active'
+                        ? 'bg-green-500 text-white'
+                        : 'bg-slate-800 text-slate-400'
+                    }`}
+                  >
                     {asset.status === 'active' ? 'En ligne' : 'Inactif'}
                   </span>
                 </div>
@@ -137,10 +150,14 @@ export default function AdminAssets({ assets }: { assets: Asset[] }) {
               {/* Info */}
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-1">
-                  {asset.type === 'video'
-                    ? <Video size={14} className="text-primary" />
-                    : <ImageIcon size={14} className="text-blue-400" />}
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{asset.type}</span>
+                  {asset.type === 'video' ? (
+                    <Video size={14} className="text-primary" />
+                  ) : (
+                    <ImageIcon size={14} className="text-blue-400" />
+                  )}
+                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                    {asset.type}
+                  </span>
                 </div>
                 <h3 className="text-white font-bold truncate">{asset.name}</h3>
                 <p className="text-slate-500 text-[11px] mt-1 italic">
@@ -204,7 +221,10 @@ export default function AdminAssets({ assets }: { assets: Asset[] }) {
                     <p className="text-slate-400 text-sm">Téléchargez un fichier image ou vidéo.</p>
                   </div>
                   <button
-                    onClick={() => { setModalOpen(false); form.reset() }}
+                    onClick={() => {
+                      setModalOpen(false)
+                      form.reset()
+                    }}
                     className="text-slate-500 hover:text-white p-1"
                   >
                     <X size={22} />
@@ -230,26 +250,41 @@ export default function AdminAssets({ assets }: { assets: Asset[] }) {
                     />
                     {form.data.file ? (
                       <>
-                        {videoExtnames.includes(form.data.file.name.split('.').pop()?.toLowerCase() ?? '') ? (
+                        {videoExtnames.includes(
+                          form.data.file.name.split('.').pop()?.toLowerCase() ?? ''
+                        ) ? (
                           <FileVideo size={36} className="text-primary" />
                         ) : (
                           <FileImage size={36} className="text-primary" />
                         )}
-                        <span className="text-sm text-white font-medium text-center break-all">{form.data.file.name}</span>
-                        <span className="text-[10px] text-slate-500">{(form.data.file.size / 1024 / 1024).toFixed(1)} MB</span>
+                        <span className="text-sm text-white font-medium text-center break-all">
+                          {form.data.file.name}
+                        </span>
+                        <span className="text-[10px] text-slate-500">
+                          {(form.data.file.size / 1024 / 1024).toFixed(1)} MB
+                        </span>
                       </>
                     ) : (
                       <>
-                        <UploadCloud size={40} className="text-slate-600 group-hover:text-primary transition-colors" />
-                        <span className="text-xs text-slate-400">Cliquez ou glissez un fichier ici</span>
-                        <span className="text-[10px] text-slate-600 uppercase font-bold tracking-widest">MP4, JPG, PNG, WEBP (Max 50MB)</span>
+                        <UploadCloud
+                          size={40}
+                          className="text-slate-600 group-hover:text-primary transition-colors"
+                        />
+                        <span className="text-xs text-slate-400">
+                          Cliquez ou glissez un fichier ici
+                        </span>
+                        <span className="text-[10px] text-slate-600 uppercase font-bold tracking-widest">
+                          MP4, JPG, PNG, WEBP (Max 50MB)
+                        </span>
                       </>
                     )}
                   </div>
 
                   {/* Name */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Nom du média</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Nom du média
+                    </label>
                     <input
                       value={form.data.name}
                       onChange={(e) => form.setData('name', e.target.value)}
@@ -257,15 +292,21 @@ export default function AdminAssets({ assets }: { assets: Asset[] }) {
                       placeholder="Ex: Fond Culte Dominical"
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
-                    {form.errors.name && <p className="text-red-400 text-[10px] mt-1">{form.errors.name}</p>}
+                    {form.errors.name && (
+                      <p className="text-red-400 text-[10px] mt-1">{form.errors.name}</p>
+                    )}
                   </div>
 
                   {/* Status */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Statut initial</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Statut initial
+                    </label>
                     <select
                       value={form.data.status}
-                      onChange={(e) => form.setData('status', e.target.value as 'active' | 'inactive')}
+                      onChange={(e) =>
+                        form.setData('status', e.target.value as 'active' | 'inactive')
+                      }
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary"
                     >
                       <option value="inactive">Inactif (Brouillon)</option>
@@ -277,7 +318,8 @@ export default function AdminAssets({ assets }: { assets: Asset[] }) {
                     <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4 flex gap-3">
                       <span className="text-yellow-400 text-xs">⚠</span>
                       <p className="text-[11px] text-yellow-200/70">
-                        Un seul média peut être actif à la fois. Activer ce média désactivera automatiquement l'actuel.
+                        Un seul média peut être actif à la fois. Activer ce média désactivera
+                        automatiquement l'actuel.
                       </p>
                     </div>
                   )}
@@ -301,17 +343,30 @@ export default function AdminAssets({ assets }: { assets: Asset[] }) {
             className="fixed inset-0 bg-black/90 z-[200] flex items-center justify-center p-4"
             onClick={() => setPreview(null)}
           >
-            <button className="absolute top-5 right-5 text-white/60 hover:text-white" onClick={() => setPreview(null)}>
+            <button
+              className="absolute top-5 right-5 text-white/60 hover:text-white"
+              onClick={() => setPreview(null)}
+            >
               <X size={28} />
             </button>
             {preview.type === 'video' ? (
-              <video src={preview.url} controls autoPlay className="max-w-4xl max-h-[85vh] rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()} />
+              <video
+                src={preview.url}
+                controls
+                autoPlay
+                className="max-w-4xl max-h-[85vh] rounded-2xl shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              />
             ) : (
-              <img src={preview.url} alt="Preview" className="max-w-4xl max-h-[85vh] object-contain rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()} />
+              <img
+                src={preview.url}
+                alt="Preview"
+                className="max-w-4xl max-h-[85vh] object-contain rounded-2xl shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              />
             )}
           </div>
         )}
-
       </AdminLayout>
     </>
   )

@@ -4,8 +4,23 @@ import AdminLayout from '../../layouts/admin'
 import Pagination from '../../components/Pagination'
 import CloudinaryImage from '../../components/CloudinaryImage'
 import {
-  Plus, Search, Pencil, Trash2, X, Check,
-  Play, Tag, FileText, Music, Mic, Video, Link, CalendarDays, Clock, User2, Upload
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  X,
+  Check,
+  Play,
+  Tag,
+  FileText,
+  Music,
+  Mic,
+  Video,
+  Link,
+  CalendarDays,
+  Clock,
+  User2,
+  Upload,
 } from 'lucide-react'
 
 type FormatMedia = 'audio' | 'video' | 'texte' | 'podcast'
@@ -46,24 +61,24 @@ interface AdminMediasProps {
 }
 
 const formatColors: Record<FormatMedia, string> = {
-  video:   'bg-red-500/10 text-red-400 border-red-500/20',
-  audio:   'bg-purple-500/10 text-purple-400 border-purple-500/20',
+  video: 'bg-red-500/10 text-red-400 border-red-500/20',
+  audio: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
   podcast: 'bg-green-500/10 text-green-400 border-green-500/20',
-  texte:   'bg-blue-500/10 text-blue-400 border-blue-500/20',
+  texte: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
 }
 
 const formatLabels: Record<FormatMedia, string> = {
-  video:   'Vidéo',
-  audio:   'Audio',
+  video: 'Vidéo',
+  audio: 'Audio',
   podcast: 'Podcast',
-  texte:   'Document',
+  texte: 'Document',
 }
 
 function getYoutubeId(url: string | null): string | null {
   if (!url) return null
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
   const match = url.match(regExp)
-  return (match && match[2].length === 11) ? match[2] : null
+  return match && match[2].length === 11 ? match[2] : null
 }
 
 function getYoutubeThumbnail(url: string | null): string | null {
@@ -122,11 +137,7 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
   }
 
   function applyFilters(search: string, catId: string) {
-    router.get(
-      '/admin/medias',
-      { search, catId, page: 1 },
-      { preserveState: true, replace: true }
-    )
+    router.get('/admin/medias', { search, catId, page: 1 }, { preserveState: true, replace: true })
   }
 
   function handlePageChange(page: number) {
@@ -226,16 +237,24 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
   function handleSaveCategory(e: React.FormEvent) {
     e.preventDefault()
     if (selectedCat) {
-      router.put(`/admin/medias/categories/${selectedCat.id}`, { name: catForm.data.name }, {
-        onSuccess: () => {
-          setSelectedCat(null)
-          catForm.reset()
+      router.put(
+        `/admin/medias/categories/${selectedCat.id}`,
+        { name: catForm.data.name },
+        {
+          onSuccess: () => {
+            setSelectedCat(null)
+            catForm.reset()
+          },
         }
-      })
+      )
     } else {
-      router.post('/admin/medias/categories', { name: catForm.data.name }, {
-        onSuccess: () => catForm.reset()
-      })
+      router.post(
+        '/admin/medias/categories',
+        { name: catForm.data.name },
+        {
+          onSuccess: () => catForm.reset(),
+        }
+      )
     }
   }
 
@@ -252,10 +271,14 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
 
   function getFormatIcon(format: FormatMedia, size = 18) {
     switch (format) {
-      case 'video': return <Video size={size} />
-      case 'audio': return <Music size={size} />
-      case 'podcast': return <Mic size={size} />
-      case 'texte': return <FileText size={size} />
+      case 'video':
+        return <Video size={size} />
+      case 'audio':
+        return <Music size={size} />
+      case 'podcast':
+        return <Mic size={size} />
+      case 'texte':
+        return <FileText size={size} />
     }
   }
 
@@ -263,13 +286,15 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
     <>
       <Head title="Médias — Admin Phila MDT" />
       <AdminLayout title="Gestion de la Médiathèque">
-
         {/* ── Header Toolbar ─────────────────────────────────── */}
         <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center mb-8">
           <div className="flex flex-col md:flex-row gap-3 flex-1">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Search
+                size={16}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+              />
               <input
                 value={searchFilter}
                 onChange={handleSearchChange}
@@ -287,7 +312,9 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
               >
                 <option value="all">Toutes les catégories</option>
                 {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -324,9 +351,20 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                 {m.file ? (
                   // Cloudinary media file
                   m.format === 'video' ? (
-                    <video src={m.file} className="w-full h-full object-cover opacity-70 group-hover:opacity-90" muted preload="metadata" />
+                    <video
+                      src={m.file}
+                      className="w-full h-full object-cover opacity-70 group-hover:opacity-90"
+                      muted
+                      preload="metadata"
+                    />
                   ) : (
-                    <CloudinaryImage src={m.file} width={400} height={225} alt={m.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                    <CloudinaryImage
+                      src={m.file}
+                      width={400}
+                      height={225}
+                      alt={m.title}
+                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                    />
                   )
                 ) : m.urlFile && getYoutubeThumbnail(m.urlFile) ? (
                   // YouTube Video Thumbnail cover
@@ -339,12 +377,16 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                   // Fallback beautiful graphic
                   <div className="flex flex-col items-center justify-center gap-3 text-slate-600 group-hover:text-primary transition-colors">
                     {getFormatIcon(m.format, 36)}
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-500">{formatLabels[m.format]}</span>
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-500">
+                      {formatLabels[m.format]}
+                    </span>
                   </div>
                 )}
 
                 <div className="absolute top-3 left-3">
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border shadow-lg ${formatColors[m.format]}`}>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border shadow-lg ${formatColors[m.format]}`}
+                  >
                     {formatLabels[m.format]}
                   </span>
                 </div>
@@ -376,7 +418,10 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                       {m.catMedia ? m.catMedia.name : 'Sans catégorie'}
                     </span>
                   </div>
-                  <h3 className="text-white font-bold text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2" title={m.title}>
+                  <h3
+                    className="text-white font-bold text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2"
+                    title={m.title}
+                  >
                     {m.title}
                   </h3>
                 </div>
@@ -391,7 +436,15 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                     )}
                     <p className="text-slate-500 text-[10px] flex items-center gap-1.5">
                       <CalendarDays size={11} className="text-slate-600 shrink-0" />
-                      <span>{m.date ? new Date(m.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Date non définie'}</span>
+                      <span>
+                        {m.date
+                          ? new Date(m.date).toLocaleDateString('fr-FR', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                            })
+                          : 'Date non définie'}
+                      </span>
                       {m.duration && (
                         <>
                           <span className="text-slate-700">•</span>
@@ -431,8 +484,12 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
             <div className="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Plus size={24} />
             </div>
-            <span className="text-sm font-bold text-slate-400 group-hover:text-white transition-colors">Ajouter un nouveau média</span>
-            <p className="text-[10px] text-slate-600 mt-1 uppercase tracking-widest font-black">Audio, vidéo, podcast, texte</p>
+            <span className="text-sm font-bold text-slate-400 group-hover:text-white transition-colors">
+              Ajouter un nouveau média
+            </span>
+            <p className="text-[10px] text-slate-600 mt-1 uppercase tracking-widest font-black">
+              Audio, vidéo, podcast, texte
+            </p>
           </div>
         </div>
 
@@ -455,14 +512,26 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
               <div className="flex items-center justify-between px-8 py-5 border-b border-slate-800 bg-slate-950/20">
-                <h3 className="text-white text-lg font-black">{modal === 'add' ? 'Ajouter un Média' : 'Modifier le Média'}</h3>
-                <button onClick={closeModal} className="text-slate-500 hover:text-white transition-colors"><X size={20} /></button>
+                <h3 className="text-white text-lg font-black">
+                  {modal === 'add' ? 'Ajouter un Média' : 'Modifier le Média'}
+                </h3>
+                <button
+                  onClick={closeModal}
+                  className="text-slate-500 hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
-              <form onSubmit={handleSaveMedia} className="p-8 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
+              <form
+                onSubmit={handleSaveMedia}
+                className="p-8 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar"
+              >
                 {/* Title */}
                 <div>
-                  <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Titre du média <span className="text-red-500">*</span></label>
+                  <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                    Titre du média <span className="text-red-500">*</span>
+                  </label>
                   <input
                     value={mediaForm.data.title}
                     onChange={(e) => mediaForm.setData('title', e.target.value)}
@@ -470,13 +539,17 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                     placeholder="Ex: La puissance du Saint-Esprit"
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                   />
-                  {mediaForm.errors.title && <p className="text-red-400 text-xs mt-1">{mediaForm.errors.title}</p>}
+                  {mediaForm.errors.title && (
+                    <p className="text-red-400 text-xs mt-1">{mediaForm.errors.title}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   {/* Format */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Format du média <span className="text-red-500">*</span></label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Format du média <span className="text-red-500">*</span>
+                    </label>
                     <select
                       value={mediaForm.data.format}
                       onChange={(e) => mediaForm.setData('format', e.target.value as FormatMedia)}
@@ -487,58 +560,74 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                       <option value="podcast">Podcast</option>
                       <option value="texte">Texte/Document</option>
                     </select>
-                    {mediaForm.errors.format && <p className="text-red-400 text-xs mt-1">{mediaForm.errors.format}</p>}
+                    {mediaForm.errors.format && (
+                      <p className="text-red-400 text-xs mt-1">{mediaForm.errors.format}</p>
+                    )}
                   </div>
 
                   {/* Category */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Catégorie <span className="text-red-500">*</span></label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Catégorie <span className="text-red-500">*</span>
+                    </label>
                     <select
                       value={mediaForm.data.catMediaId}
                       onChange={(e) => mediaForm.setData('catMediaId', Number(e.target.value))}
                       className="w-full bg-slate-950 border border-slate-800 text-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary cursor-pointer"
                     >
                       {categories.map((c) => (
-                        <option key={c.id} value={c.id}>{c.name}</option>
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
                       ))}
-                      {categories.length === 0 && (
-                        <option value={0}>Aucune catégorie</option>
-                      )}
+                      {categories.length === 0 && <option value={0}>Aucune catégorie</option>}
                     </select>
-                    {mediaForm.errors.catMediaId && <p className="text-red-400 text-xs mt-1">{mediaForm.errors.catMediaId}</p>}
+                    {mediaForm.errors.catMediaId && (
+                      <p className="text-red-400 text-xs mt-1">{mediaForm.errors.catMediaId}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   {/* Orateur */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Orateur / Prédicateur</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Orateur / Prédicateur
+                    </label>
                     <input
                       value={mediaForm.data.orateur}
                       onChange={(e) => mediaForm.setData('orateur', e.target.value)}
                       placeholder="Ex: Pasteur Blonsky MBALA"
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
-                    {mediaForm.errors.orateur && <p className="text-red-400 text-xs mt-1">{mediaForm.errors.orateur}</p>}
+                    {mediaForm.errors.orateur && (
+                      <p className="text-red-400 text-xs mt-1">{mediaForm.errors.orateur}</p>
+                    )}
                   </div>
 
                   {/* Date */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Date du média</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Date du média
+                    </label>
                     <input
                       type="date"
                       value={mediaForm.data.date}
                       onChange={(e) => mediaForm.setData('date', e.target.value)}
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors animate-none"
                     />
-                    {mediaForm.errors.date && <p className="text-red-400 text-xs mt-1">{mediaForm.errors.date}</p>}
+                    {mediaForm.errors.date && (
+                      <p className="text-red-400 text-xs mt-1">{mediaForm.errors.date}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   {/* Duration in Minutes */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Durée (en minutes)</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Durée (en minutes)
+                    </label>
                     <input
                       type="number"
                       min={0}
@@ -547,19 +636,27 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                       placeholder="Ex: 52"
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
-                    {(mediaForm.errors as any).duration && <p className="text-red-400 text-xs mt-1">{(mediaForm.errors as any).duration}</p>}
+                    {(mediaForm.errors as any).duration && (
+                      <p className="text-red-400 text-xs mt-1">
+                        {(mediaForm.errors as any).duration}
+                      </p>
+                    )}
                   </div>
 
                   {/* External URL File */}
                   <div>
-                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">Lien YouTube / Externe</label>
+                    <label className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 block">
+                      Lien YouTube / Externe
+                    </label>
                     <input
                       value={mediaForm.data.urlFile}
                       onChange={(e) => mediaForm.setData('urlFile', e.target.value)}
                       placeholder="https://youtube.com/watch?v=..."
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
                     />
-                    {mediaForm.errors.urlFile && <p className="text-red-400 text-xs mt-1">{mediaForm.errors.urlFile}</p>}
+                    {mediaForm.errors.urlFile && (
+                      <p className="text-red-400 text-xs mt-1">{mediaForm.errors.urlFile}</p>
+                    )}
                   </div>
                 </div>
 
@@ -577,15 +674,24 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                         type="file"
                         ref={fileInputRef}
                         className="hidden"
-                        onChange={e => mediaForm.setData('file', e.target.files ? e.target.files[0] : null)}
+                        onChange={(e) =>
+                          mediaForm.setData('file', e.target.files ? e.target.files[0] : null)
+                        }
                       />
-                      <Upload size={20} className="text-slate-500 group-hover:text-primary transition-colors" />
+                      <Upload
+                        size={20}
+                        className="text-slate-500 group-hover:text-primary transition-colors"
+                      />
                       <span className="text-[11px] text-slate-400 mt-2 text-center px-4 truncate w-full">
-                        {mediaForm.data.file ? mediaForm.data.file.name : 'Cliquez pour uploader (JPG, MP3, MP4, PDF...)'}
+                        {mediaForm.data.file
+                          ? mediaForm.data.file.name
+                          : 'Cliquez pour uploader (JPG, MP3, MP4, PDF...)'}
                       </span>
                     </div>
                   </div>
-                  {mediaForm.errors.file && <p className="text-red-400 text-xs mt-1">{mediaForm.errors.file}</p>}
+                  {mediaForm.errors.file && (
+                    <p className="text-red-400 text-xs mt-1">{mediaForm.errors.file}</p>
+                  )}
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
@@ -618,8 +724,13 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
               </div>
               <div className="text-center">
                 <h3 className="text-white font-black text-lg">Supprimer ce média</h3>
-                <p className="text-slate-450 text-sm mt-1">Êtes-vous sûr de vouloir supprimer <strong className="text-white">"{selectedMedia.title}"</strong> ?</p>
-                <p className="text-slate-500 text-[11px] mt-2">Cette action supprimera également le fichier physique stocké sur Cloudinary.</p>
+                <p className="text-slate-450 text-sm mt-1">
+                  Êtes-vous sûr de vouloir supprimer{' '}
+                  <strong className="text-white">"{selectedMedia.title}"</strong> ?
+                </p>
+                <p className="text-slate-500 text-[11px] mt-2">
+                  Cette action supprimera également le fichier physique stocké sur Cloudinary.
+                </p>
               </div>
               <div className="flex gap-3 pt-2">
                 <button
@@ -644,8 +755,15 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
               <div className="flex items-center justify-between px-8 py-5 border-b border-slate-800 bg-slate-950/20">
-                <h3 className="text-white text-lg font-black flex items-center gap-2"><Tag size={18} className="text-primary" /> Catégories des Médias</h3>
-                <button onClick={closeModal} className="text-slate-500 hover:text-white transition-colors"><X size={20} /></button>
+                <h3 className="text-white text-lg font-black flex items-center gap-2">
+                  <Tag size={18} className="text-primary" /> Catégories des Médias
+                </h3>
+                <button
+                  onClick={closeModal}
+                  className="text-slate-500 hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
               <div className="p-8">
@@ -656,10 +774,12 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                       value={catForm.data.name}
                       onChange={(e) => catForm.setData('name', e.target.value)}
                       required
-                      placeholder={selectedCat ? "Modifier le nom..." : "Nouvelle catégorie..."}
+                      placeholder={selectedCat ? 'Modifier le nom...' : 'Nouvelle catégorie...'}
                       className="w-full bg-slate-950 border border-slate-850 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-primary transition-all"
                     />
-                    {catForm.errors.name && <p className="text-red-400 text-xs mt-1">{catForm.errors.name}</p>}
+                    {catForm.errors.name && (
+                      <p className="text-red-400 text-xs mt-1">{catForm.errors.name}</p>
+                    )}
                   </div>
                   <button
                     type="submit"
@@ -672,7 +792,10 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                   {selectedCat && (
                     <button
                       type="button"
-                      onClick={() => { setSelectedCat(null); catForm.reset() }}
+                      onClick={() => {
+                        setSelectedCat(null)
+                        catForm.reset()
+                      }}
                       className="px-3 rounded-xl border border-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
                     >
                       <X size={16} />
@@ -710,7 +833,9 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                   ))}
 
                   {categories.length === 0 && (
-                    <p className="text-slate-500 text-xs text-center py-4">Aucune catégorie pour l'instant.</p>
+                    <p className="text-slate-500 text-xs text-center py-4">
+                      Aucune catégorie pour l'instant.
+                    </p>
                   )}
                 </div>
               </div>
@@ -728,14 +853,23 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                   <span className="text-[10px] text-primary font-bold uppercase tracking-widest">
                     Lecture en cours · {formatLabels[playingMedia.format]}
                   </span>
-                  <h3 className="text-white text-base font-black truncate max-w-xl md:max-w-2xl mt-0.5">{playingMedia.title}</h3>
+                  <h3 className="text-white text-base font-black truncate max-w-xl md:max-w-2xl mt-0.5">
+                    {playingMedia.title}
+                  </h3>
                 </div>
-                <button onClick={() => setPlayingMedia(null)} className="text-slate-400 hover:text-white transition-colors bg-slate-850 p-2 rounded-xl border border-slate-800"><X size={20} /></button>
+                <button
+                  onClick={() => setPlayingMedia(null)}
+                  className="text-slate-400 hover:text-white transition-colors bg-slate-850 p-2 rounded-xl border border-slate-800"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
               {/* Player Container */}
               <div className="aspect-video w-full bg-black flex items-center justify-center relative">
-                {playingMedia.format === 'video' && playingMedia.urlFile && getYoutubeId(playingMedia.urlFile) ? (
+                {playingMedia.format === 'video' &&
+                playingMedia.urlFile &&
+                getYoutubeId(playingMedia.urlFile) ? (
                   // YouTube Video Player
                   <iframe
                     src={`https://www.youtube.com/embed/${getYoutubeId(playingMedia.urlFile)}?autoplay=1`}
@@ -753,24 +887,40 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                     autoPlay
                     className="w-full h-full object-contain"
                   ></video>
-                ) : (playingMedia.format === 'audio' || playingMedia.format === 'podcast') ? (
+                ) : playingMedia.format === 'audio' || playingMedia.format === 'podcast' ? (
                   // Audio Player with beautiful poster
                   <div className="w-full h-full flex flex-col items-center justify-center p-8 bg-slate-950 relative">
                     {/* Poster background blur */}
                     <div className="absolute inset-0 opacity-20 filter blur-3xl pointer-events-none">
                       {playingMedia.file ? (
-                        <CloudinaryImage src={playingMedia.file} width={200} height={200} alt="" className="w-full h-full object-cover" />
+                        <CloudinaryImage
+                          src={playingMedia.file}
+                          width={200}
+                          height={200}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-primary to-purple-600"></div>
                       )}
                     </div>
 
                     <div className="w-32 h-32 rounded-3xl bg-slate-900 border border-slate-800 flex items-center justify-center shadow-2xl mb-6 relative z-10 animate-pulse">
-                      {playingMedia.format === 'podcast' ? <Mic size={48} className="text-primary" /> : <Music size={48} className="text-primary" />}
+                      {playingMedia.format === 'podcast' ? (
+                        <Mic size={48} className="text-primary" />
+                      ) : (
+                        <Music size={48} className="text-primary" />
+                      )}
                     </div>
 
-                    <p className="text-white text-lg font-bold text-center relative z-10 px-6 max-w-lg truncate">{playingMedia.title}</p>
-                    {playingMedia.orateur && <p className="text-slate-400 text-sm font-semibold text-center relative z-10 mt-1">{playingMedia.orateur}</p>}
+                    <p className="text-white text-lg font-bold text-center relative z-10 px-6 max-w-lg truncate">
+                      {playingMedia.title}
+                    </p>
+                    {playingMedia.orateur && (
+                      <p className="text-slate-400 text-sm font-semibold text-center relative z-10 mt-1">
+                        {playingMedia.orateur}
+                      </p>
+                    )}
 
                     <audio
                       src={playingMedia.file || playingMedia.urlFile || undefined}
@@ -781,7 +931,9 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                   </div>
                 ) : (
                   // Fallback
-                  <div className="text-slate-500 text-sm">Le format du média ne peut pas être lu directement.</div>
+                  <div className="text-slate-500 text-sm">
+                    Le format du média ne peut pas être lu directement.
+                  </div>
                 )}
               </div>
 
@@ -795,7 +947,13 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                   {playingMedia.date && (
                     <div className="flex items-center gap-2">
                       <CalendarDays size={16} className="text-slate-500" />
-                      <span>{new Date(playingMedia.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                      <span>
+                        {new Date(playingMedia.date).toLocaleDateString('fr-FR', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -803,7 +961,6 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
             </div>
           </div>
         )}
-
       </AdminLayout>
     </>
   )

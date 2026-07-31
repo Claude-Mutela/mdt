@@ -39,7 +39,7 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
     if (!firstname.trim()) newErrors.firstname = 'Le prénom est requis'
     if (!lastname.trim()) newErrors.lastname = 'Le nom est requis'
     if (!email.trim()) newErrors.email = "L'adresse email est requise"
-    
+
     if (password) {
       if (password.length < 6) {
         newErrors.password = 'Le mot de passe doit faire au moins 6 caractères'
@@ -69,13 +69,12 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
       <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-        
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800/80 bg-slate-800/20">
           <h3 className="text-white font-bold text-lg">Paramètres du profil</h3>
-          <button 
-            type="button" 
-            onClick={onClose} 
+          <button
+            type="button"
+            onClick={onClose}
             className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800"
           >
             <X size={18} />
@@ -85,11 +84,12 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
         {/* Form */}
         <form onSubmit={handleSubmit}>
           <div className="p-6 space-y-5">
-            
             {/* Prénom & Nom */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Prénom</label>
+                <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
+                  Prénom
+                </label>
                 <input
                   type="text"
                   value={firstname}
@@ -99,11 +99,16 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
                   required
                 />
                 {errors.firstname && (
-                  <p className="text-red-400 text-xs flex items-center gap-1"><AlertCircle size={10} />{errors.firstname}</p>
+                  <p className="text-red-400 text-xs flex items-center gap-1">
+                    <AlertCircle size={10} />
+                    {errors.firstname}
+                  </p>
                 )}
               </div>
               <div className="space-y-1.5">
-                <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Nom</label>
+                <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
+                  Nom
+                </label>
                 <input
                   type="text"
                   value={lastname}
@@ -113,14 +118,19 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
                   required
                 />
                 {errors.lastname && (
-                  <p className="text-red-400 text-xs flex items-center gap-1"><AlertCircle size={10} />{errors.lastname}</p>
+                  <p className="text-red-400 text-xs flex items-center gap-1">
+                    <AlertCircle size={10} />
+                    {errors.lastname}
+                  </p>
                 )}
               </div>
             </div>
 
             {/* Email */}
             <div className="space-y-1.5">
-              <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Adresse email</label>
+              <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
+                Adresse email
+              </label>
               <input
                 type="email"
                 value={email}
@@ -130,7 +140,10 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
                 required
               />
               {errors.email && (
-                <p className="text-red-400 text-xs flex items-center gap-1"><AlertCircle size={10} />{errors.email}</p>
+                <p className="text-red-400 text-xs flex items-center gap-1">
+                  <AlertCircle size={10} />
+                  {errors.email}
+                </p>
               )}
             </div>
 
@@ -139,8 +152,12 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
             {/* Nouveau mot de passe */}
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Nouveau mot de passe</label>
-                <span className="text-[10px] text-slate-500 lowercase">(laisser vide si inchangé)</span>
+                <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
+                  Nouveau mot de passe
+                </label>
+                <span className="text-[10px] text-slate-500 lowercase">
+                  (laisser vide si inchangé)
+                </span>
               </div>
               <div className="relative">
                 <input
@@ -159,14 +176,19 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-400 text-xs flex items-center gap-1"><AlertCircle size={10} />{errors.password}</p>
+                <p className="text-red-400 text-xs flex items-center gap-1">
+                  <AlertCircle size={10} />
+                  {errors.password}
+                </p>
               )}
             </div>
 
             {/* Confirmer mot de passe */}
             {password && (
               <div className="space-y-1.5 animate-in fade-in duration-200">
-                <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Confirmer le mot de passe</label>
+                <label className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
+                  Confirmer le mot de passe
+                </label>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
@@ -176,24 +198,26 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
                   required
                 />
                 {errors.confirmPassword && (
-                  <p className="text-red-400 text-xs flex items-center gap-1"><AlertCircle size={10} />{errors.confirmPassword}</p>
+                  <p className="text-red-400 text-xs flex items-center gap-1">
+                    <AlertCircle size={10} />
+                    {errors.confirmPassword}
+                  </p>
                 )}
               </div>
             )}
-
           </div>
 
           {/* Footer Actions */}
           <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-800 bg-slate-800/20">
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
             >
               Annuler
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={processing}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm bg-primary hover:bg-primary-dark text-white font-semibold transition-colors shadow-lg shadow-primary/20 disabled:opacity-50"
             >
@@ -211,7 +235,6 @@ export default function SettingsModal({ isOpen, onClose, user }: SettingsModalPr
             </button>
           </div>
         </form>
-
       </div>
     </div>
   )

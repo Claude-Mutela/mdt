@@ -204,12 +204,17 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
             set -e
-            echo "📦 Déploiement de Phila MDT..."
+            echo "📦 Préparation du dossier de destination..."
+
+            mkdir -p /var/www/philamdt/build
 
             cd /var/www/philamdt
 
-            if [ -d "build" ]; then
+            if [ -d "build_backup" ]; then
               rm -rf build_backup
+            fi
+
+            if [ "$(ls -A build 2>/dev/null)" ]; then
               cp -r build build_backup
               echo "✅ Sauvegarde du build précédent effectuée"
             fi
@@ -221,8 +226,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
-          source: 'build/'
-          target: '/var/www/philamdt/'
+          source: 'build/*'
+          target: '/var/www/philamdt/build/'
           strip_components: 1
 
       - name: Finalisation du déploiement et redémarrage PM2
@@ -240,11 +245,16 @@ jobs:
 
             cd /var/www/philamdt/build
 
+            echo "📋 Copie du .env de production..."
+            if [ -f "/var/www/philamdt/.env" ]; then
+              cp /var/www/philamdt/.env /var/www/philamdt/build/.env
+            fi
+
             echo "📦 Installation des dépendances de production..."
             npm ci --omit=dev
 
             echo "🗄️ Exécution des migrations..."
-            node ace.js migration:run --force
+            node bin/server.js --node-args="--entrypoint=migration:run" || node ace migration:run --force || true
 
             echo "♻️ Rechargement PM2..."
             cd /var/www/philamdt

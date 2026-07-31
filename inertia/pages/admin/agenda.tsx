@@ -221,7 +221,7 @@ export default function AdminAgenda({ agendas, categories, currentWeek }: { agen
                 <h2 className="font-bold text-white uppercase text-xs tracking-widest">{formattedDay}</h2>
               </div>
               <div className="divide-y divide-slate-800/50">
-                {items.map((c, index) => (
+                {items.map((c) => (
                   <div key={c.id} className="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 hover:bg-slate-800/30 transition-colors group">
                     <div className="flex items-center gap-1.5 text-slate-400 min-w-[130px]">
                       <Clock size={14} className="text-primary" />

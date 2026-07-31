@@ -90,7 +90,7 @@ export default function IntercessionPriere() {
                 <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-6">
                   <div className="flex items-center gap-4 text-primary">
                     <Phone size={28} className="text-accent-orange" />
-                    <h3 className="text-2xl font-bold font-serif text-slate-900">Allô Prière Direct</h3>
+                    <h3 className="text-2xl font-bold font-serif text-slate-900">Allô Prière</h3>
                   </div>
                   <p className="text-slate-600 text-lg leading-relaxed">
                     Vous souhaitez parler directement à un intercesseur ou pasteur de garde ? Appelez-nous ou envoyez un message :
@@ -108,11 +108,11 @@ export default function IntercessionPriere() {
                       </div>
                       +243 810 004 488
                     </a>
-                    <a href="mailto:priere@philamdt.church" className="flex items-center gap-3 text-slate-700 hover:text-primary transition-colors font-bold text-sm">
+                    <a href="mailto:min_priere@philamdt.church" className="flex items-center gap-3 text-slate-700 hover:text-primary transition-colors font-bold text-sm">
                       <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-primary">
                         <Mail size={16} />
                       </div>
-                      priere@philamdt.church
+                      min_priere@philamdt.church
                     </a>
                   </div>
                 </div>

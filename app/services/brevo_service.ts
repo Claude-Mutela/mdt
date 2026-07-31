@@ -10,7 +10,9 @@ export class BrevoService {
     const senderName = env.get('BREVO_SENDER_NAME')
 
     if (!apiKey || !senderEmail || !senderName) {
-      console.warn('[BrevoService] Configuration Brevo incomplète dans le .env (BREVO_API_KEY, BREVO_SENDER_EMAIL, BREVO_SENDER_NAME). Envoi d\'e-mail ignoré.')
+      console.warn(
+        "[BrevoService] Configuration Brevo incomplète dans le .env (BREVO_API_KEY, BREVO_SENDER_EMAIL, BREVO_SENDER_NAME). Envoi d'e-mail ignoré."
+      )
       return
     }
 
@@ -32,12 +34,14 @@ export class BrevoService {
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.error(`[BrevoService] Échec de l'envoi de l'e-mail à ${toEmail}. Status: ${response.status}. Erreur: ${errorText}`)
+        console.error(
+          `[BrevoService] Échec de l'envoi de l'e-mail à ${toEmail}. Status: ${response.status}. Erreur: ${errorText}`
+        )
       } else {
         console.log(`[BrevoService] E-mail envoyé avec succès à ${toEmail} (Sujet: "${subject}")`)
       }
     } catch (error) {
-      console.error('[BrevoService] Erreur lors de l\'envoi de l\'e-mail:', error)
+      console.error("[BrevoService] Erreur lors de l'envoi de l'e-mail:", error)
     }
   }
 
@@ -159,7 +163,9 @@ export class BrevoService {
     const senderName = env.get('CONTACT_SENDER_NAME')
 
     if (!apiKey || !senderEmail || !senderName) {
-      console.warn('[BrevoService/Contact] Configuration Brevo contact incomplète (CONTACT_BREVO_API_KEY, CONTACT_SENDER_EMAIL, CONTACT_SENDER_NAME). Envoi ignoré.')
+      console.warn(
+        '[BrevoService/Contact] Configuration Brevo contact incomplète (CONTACT_BREVO_API_KEY, CONTACT_SENDER_EMAIL, CONTACT_SENDER_NAME). Envoi ignoré.'
+      )
       return
     }
 
@@ -181,12 +187,16 @@ export class BrevoService {
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.error(`[BrevoService/Contact] Échec envoi à ${toEmail}. Status: ${response.status}. Erreur: ${errorText}`)
+        console.error(
+          `[BrevoService/Contact] Échec envoi à ${toEmail}. Status: ${response.status}. Erreur: ${errorText}`
+        )
       } else {
-        console.log(`[BrevoService/Contact] E-mail envoyé avec succès à ${toEmail} (Sujet: "${subject}")`)
+        console.log(
+          `[BrevoService/Contact] E-mail envoyé avec succès à ${toEmail} (Sujet: "${subject}")`
+        )
       }
     } catch (error) {
-      console.error('[BrevoService/Contact] Erreur lors de l\'envoi:', error)
+      console.error("[BrevoService/Contact] Erreur lors de l'envoi:", error)
     }
   }
 
@@ -252,7 +262,8 @@ export class BrevoService {
     senderEmail: string,
     subject: string
   ) {
-    const logoUrl = 'https://res.cloudinary.com/philamdt/image/upload/v1782237514/mdt/logo_orange_suite.png'
+    const logoUrl =
+      'https://res.cloudinary.com/philamdt/image/upload/v1782237514/mdt/logo_orange_suite.png'
     const emailSubject = 'Votre message a bien été reçu — Phila MDT'
     const htmlContent = `
 <!DOCTYPE html>
@@ -395,7 +406,6 @@ export class BrevoService {
     await this.sendContact(senderEmail, senderName, emailSubject, htmlContent)
   }
 
-
   /**
    * Envoie un e-mail de notification au pasteur concernant un nouveau rendez-vous confirmé.
    */
@@ -476,7 +486,9 @@ export class BrevoService {
   ) {
     const secretariatEmail = env.get('SECRETARIAT_EMAIL')
     if (!secretariatEmail) {
-      console.warn('[BrevoService] SECRETARIAT_EMAIL non défini. Notification de demande au secrétariat ignorée.')
+      console.warn(
+        '[BrevoService] SECRETARIAT_EMAIL non défini. Notification de demande au secrétariat ignorée.'
+      )
       return
     }
 
@@ -542,7 +554,9 @@ export class BrevoService {
   ) {
     const secretariatEmail = env.get('SECRETARIAT_EMAIL')
     if (!secretariatEmail) {
-      console.warn('[BrevoService] SECRETARIAT_EMAIL non défini. Notification de confirmation au secrétariat ignorée.')
+      console.warn(
+        '[BrevoService] SECRETARIAT_EMAIL non défini. Notification de confirmation au secrétariat ignorée.'
+      )
       return
     }
 
@@ -632,7 +646,9 @@ export class BrevoService {
   ) {
     const secretariatEmail = env.get('SECRETARIAT_EMAIL')
     if (!secretariatEmail) {
-      console.warn('[BrevoService] SECRETARIAT_EMAIL non défini. Notification d\'annulation au secrétariat ignorée.')
+      console.warn(
+        "[BrevoService] SECRETARIAT_EMAIL non défini. Notification d'annulation au secrétariat ignorée."
+      )
       return
     }
 
@@ -838,7 +854,9 @@ export class BrevoService {
     const apiKey = env.get('BREVO_API_KEY')
 
     if (!apiKey) {
-      console.warn('[BrevoService] BREVO_API_KEY manquante. Synchronisation du contact Brevo ignorée.')
+      console.warn(
+        '[BrevoService] BREVO_API_KEY manquante. Synchronisation du contact Brevo ignorée.'
+      )
       return
     }
 
@@ -858,13 +876,16 @@ export class BrevoService {
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.error(`[BrevoService] Échec de la création du contact ${email} dans Brevo. Status: ${response.status}. Erreur: ${errorText}`)
+        console.error(
+          `[BrevoService] Échec de la création du contact ${email} dans Brevo. Status: ${response.status}. Erreur: ${errorText}`
+        )
       } else {
-        console.log(`[BrevoService] Contact ${email} ajouté/mis à jour avec succès dans les contacts Brevo.`)
+        console.log(
+          `[BrevoService] Contact ${email} ajouté/mis à jour avec succès dans les contacts Brevo.`
+        )
       }
     } catch (error) {
-      console.error('[BrevoService] Erreur lors de l\'ajout du contact dans Brevo:', error)
+      console.error("[BrevoService] Erreur lors de l'ajout du contact dans Brevo:", error)
     }
   }
 }
-

@@ -10,7 +10,9 @@ export class RecaptchaService {
 
     // Si la clé secrète n'est pas définie, on bypass la vérification pour ne pas bloquer le dev local
     if (!secretKey) {
-      console.warn('[RecaptchaService] RECAPTCHA_SECRET_KEY non configurée dans le .env. Validation reCAPTCHA ignorée.')
+      console.warn(
+        '[RecaptchaService] RECAPTCHA_SECRET_KEY non configurée dans le .env. Validation reCAPTCHA ignorée.'
+      )
       return true
     }
 
@@ -33,14 +35,19 @@ export class RecaptchaService {
       })
 
       if (!response.ok) {
-        console.error(`[RecaptchaService] Réponse HTTP invalide de Google verify API: ${response.status}`)
+        console.error(
+          `[RecaptchaService] Réponse HTTP invalide de Google verify API: ${response.status}`
+        )
         return false
       }
 
-      const data = await response.json() as { success: boolean; 'error-codes'?: string[] }
+      const data = (await response.json()) as { 'success': boolean; 'error-codes'?: string[] }
 
       if (!data.success) {
-        console.warn(`[RecaptchaService] Validation échouée. Erreurs renvoyées par Google:`, data['error-codes'] || [])
+        console.warn(
+          `[RecaptchaService] Validation échouée. Erreurs renvoyées par Google:`,
+          data['error-codes'] || []
+        )
         return false
       }
 

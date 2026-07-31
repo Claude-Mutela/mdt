@@ -7,7 +7,6 @@ cloudinary.config({
   api_secret: env.get('CLOUDINARY_API_SECRET')?.trim(),
 })
 
-
 export default class CloudinaryService {
   static upload(filePath: string, folder: string = 'mdt'): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -17,11 +16,11 @@ export default class CloudinaryService {
           folder: folder,
           resource_type: 'auto',
           chunk_size: 6000000, // Tronçonnage par blocs de 6 Mo
-          timeout: 120000,     // Timeout de 2 minutes
+          timeout: 120000, // Timeout de 2 minutes
           transformation: [
             { width: 1200, height: 1200, crop: 'limit' },
-            { quality: 'auto', fetch_format: 'auto' } // Optimisation automatique et limitation de taille
-          ]
+            { quality: 'auto', fetch_format: 'auto' }, // Optimisation automatique et limitation de taille
+          ],
         },
         (error, result) => {
           if (error) {
@@ -29,7 +28,9 @@ export default class CloudinaryService {
             return reject(error)
           }
           if (!result || !result.secure_url) {
-            return reject(new Error('Le téléversement a réussi mais aucune URL sécurisée n\'a été renvoyée.'))
+            return reject(
+              new Error("Le téléversement a réussi mais aucune URL sécurisée n'a été renvoyée.")
+            )
           }
           resolve(result.secure_url)
         }
@@ -56,7 +57,7 @@ export default class CloudinaryService {
       if (parts[startIndex].startsWith('v')) {
         startIndex++
       }
-      
+
       const publicIdWithExt = parts.slice(startIndex).join('/')
       return publicIdWithExt.split('.')[0]
     } catch {
@@ -64,4 +65,3 @@ export default class CloudinaryService {
     }
   }
 }
-

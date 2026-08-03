@@ -412,7 +412,7 @@ const Home: FC<{
               poster="/mdt-banner.jpg"
               className="w-full h-full object-cover"
             >
-              <source src="/MARDI MALAKISI _ La connaissance qui libère.mp4" type="video/mp4" />
+              <source src="/mardi-malakisi-ministeres.mp4" type="video/mp4" />
             </video>
           )}
           <div className="absolute inset-0 bg-black/60"></div>
@@ -879,7 +879,7 @@ const Home: FC<{
           {/* Right – Club 365 Image */}
           <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group">
             <img
-              src="/club.jpg"
+              src="/club.JPG"
               alt="Club 365 - Lecture intégrale de la Bible"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-75"
             />

@@ -27,6 +27,7 @@ yarn-error.log
 
 # Media files (consider using Git LFS for these)
 *.mp4
+!public/*.mp4
 *.mov
 *.avi
 *.wmv

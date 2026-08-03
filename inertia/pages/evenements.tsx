@@ -63,7 +63,7 @@ export default function Evenements({ events }: Props) {
               poster="/celebration-seminaire-puissant.JPG"
               className="w-full h-full object-cover transform scale-105 transition-transform duration-1000"
             >
-              <source src="/MARDI MALAKISI _ La connaissance qui libère.mp4" type="video/mp4" />
+              <source src="/mardi-malakisi-ministeres.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-primary-dark/40 to-slate-900/90" />
           </div>

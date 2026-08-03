@@ -71,7 +71,7 @@ export default function About() {
 
             <div className="relative">
               <img
-                src="/about-mdt-church.jpg"
+                src="/about-mdt-church.JPG"
                 alt="celebration puissant"
                 className="w-full h-80 object-cover rounded-2xl shadow-lg"
               />

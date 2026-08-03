@@ -419,7 +419,7 @@ const Home: FC<{
         </div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <h1 className="text-4xl md:text-6xl font-serif font-bold mb-6 tracking-tight leading-tight">
-            Bienvenu à la Maison de Témoignages
+            Bienvenue à la Maison de Témoignages
           </h1>
           <p className="text-lg md:text-3xl text-gray-200 mb-10 max-w-2xl mx-auto">
             Un lieu où Dieu Transforme Nos Vies en Témoignages Vivants
@@ -451,7 +451,7 @@ const Home: FC<{
             <div className="absolute -inset-4 bg-primary/5 rounded-3xl rotate-3" />
             <img
               className="relative w-full aspect-[4/3] object-cover rounded-2xl shadow-2xl"
-              src="/about-mdt.jpg"
+              src="/about-mdt -church.JPG"
               alt="Community"
             />
           </div>
@@ -460,7 +460,7 @@ const Home: FC<{
               <span className="text-primary font-black uppercase tracking-widest text-xs">
                 À propos de nous
               </span>
-              <h2 className="text-slate-900 text-4xl md:text-5xl font-black font-serif leading-tight">
+              <h2 className="text-slate-900 text-2xl md:text-5xl font-black font-serif leading-tight">
                 Qui sommes-nous ?
               </h2>
             </div>
@@ -879,7 +879,7 @@ const Home: FC<{
           {/* Right – Club 365 Image */}
           <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group">
             <img
-              src="/temple-jeudi-etoko.jpeg"
+              src="/club.jpg"
               alt="Club 365 - Lecture intégrale de la Bible"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-75"
             />

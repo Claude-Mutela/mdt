@@ -162,12 +162,12 @@ export default function RendezVous({ recaptchaSiteKey = '' }: { recaptchaSiteKey
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-[#1C1613] to-black/90" />
           </div>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-accent-orange text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-sm">
+            {/* <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-accent-orange text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-sm">
               <CalendarDays size={14} />
               Entretien Pastoral
-            </div>
+            </div> */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white font-serif mb-6 leading-[1.1]">
-              Prenez un <span className="text-accent-orange italic">Rendez-vous</span> Pastoral
+              <span className="text-accent-orange italic">Rendez-vous</span> Pastoral
             </h1>
             <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light leading-relaxed">
               Notre pasteur est disponible pour vous écouter, vous conseiller et prier avec vous.

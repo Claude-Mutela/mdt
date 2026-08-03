@@ -71,8 +71,8 @@ export default function About() {
 
             <div className="relative">
               <img
-                src="/aksanti-mungu-mdt.jpeg"
-                alt="Aksanti Mungu"
+                src="/about-mdt-church.jpg"
+                alt="celebration puissant"
                 className="w-full h-80 object-cover rounded-2xl shadow-lg"
               />
             </div>

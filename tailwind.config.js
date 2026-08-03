@@ -11,8 +11,10 @@ export default {
         'accent-orange': '#A33F00',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        serif: ['Playfair Display', 'serif'],
+        sans: ['Montserrat', 'Plus Jakarta Sans', 'sans-serif'],
+        serif: ['Montserrat', 'sans-serif'], /* override : tout en sans-serif */
+        heading: ['Montserrat', 'sans-serif'],
+        body: ['Montserrat', 'Plus Jakarta Sans', 'sans-serif'],
       },
     },
   },

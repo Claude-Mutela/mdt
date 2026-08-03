@@ -18,8 +18,7 @@ export default function HeroAbout() {
           </div> */}
 
           <h1 className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-black leading-tight">
-            L'Église PHILA —
-            <br /> Maison de Témoignages
+            Phila Maison de Témoignages
           </h1>
 
           <p className="mt-6 max-w-3xl mx-auto text-sm sm:text-lg md:text-xl text-white/90">

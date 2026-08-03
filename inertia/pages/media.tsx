@@ -103,8 +103,8 @@ const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
           <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12">
             <div className="flex justify-between items-end border-b border-slate-200 pb-4">
               <div>
-                <h2 className="text-slate-900 text-3xl font-bold font-serif">Dernières Vidéos</h2>
-                <p className="text-slate-500 mt-1">Cultes et moments de louange</p>
+                <h2 className="text-slate-900 text-xl md:text-3xl font-bold font-serif">Dernières Vidéos</h2>
+                <p className="text-slate-500 mt-1 text-sm md:text-base">Cultes et moments de louange</p>
               </div>
               <button className="hidden md:flex items-center gap-2 text-primary font-bold hover:underline">
                 Voir toute la chaîne
@@ -120,17 +120,17 @@ const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
                 />
               ))}
             </div>
-            <div className="flex justify-center mt-12 gap-4">
+            <div className="flex flex-col sm:flex-row justify-center mt-12 gap-3">
               <Link
                 href="/allContent"
-                className="flex items-center gap-3 bg-white border-2 border-primary/20 text-primary font-bold px-8 py-4 rounded-xl hover:bg-primary hover:text-white transition-all shadow-md"
+                className="flex items-center justify-center gap-2 bg-white border-2 border-primary/20 text-primary font-bold text-sm md:text-base px-5 py-3 md:px-8 md:py-4 rounded-xl hover:bg-primary hover:text-white transition-all shadow-md"
               >
-                <PlayCircle />
+                <PlayCircle size={18} />
                 Accéder à tous nos contenus
               </Link>
               <Link
                 href="/gallery"
-                className="flex items-center gap-3 bg-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-primary-light transition-all shadow-md"
+                className="flex items-center justify-center gap-2 bg-primary text-white font-bold text-sm md:text-base px-5 py-3 md:px-8 md:py-4 rounded-xl hover:bg-primary-light transition-all shadow-md"
               >
                 Explorer la Galerie
               </Link>
@@ -142,17 +142,17 @@ const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
         <section className="py-20 bg-white border-t border-[#EAE5DF]">
           <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-10">
             <div className="flex justify-between items-end">
-              <div className="text-left space-y-3">
-                <span className="text-primary font-bold text-sm tracking-wider uppercase">
+              <div className="text-left space-y-2">
+                <span className="text-primary font-bold text-xs md:text-sm tracking-wider uppercase">
                   Aperçu Galerie
                 </span>
-                <h2 className="text-slate-900 text-3xl font-bold font-serif">
+                <h2 className="text-slate-900 text-xl md:text-3xl font-bold font-serif">
                   Vie de la Communauté
                 </h2>
               </div>
               <Link
                 href="/gallery"
-                className="text-primary font-bold hover:underline flex items-center gap-2"
+                className="text-primary font-bold hover:underline flex items-center gap-2 text-sm md:text-base shrink-0 ml-4"
               >
                 Tout voir <ExternalLink size={16} />
               </Link>

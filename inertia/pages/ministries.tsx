@@ -49,10 +49,10 @@ const Activities: React.FC<Props> = ({ ministries = [], responsibles = [] }) => 
               muted
               loop
               playsInline
-              poster="https://lh3.googleusercontent.com/aida-public/AB6AXuDQJAp4d1FS3guwSJ81zpCGdDVOnC806zIuiaPezR0GsiQLLHqjCjQylY0peyAIDO1vYOGfzzOoe5U_NO2QTh1MbPzgG8WReUrFVFZyz3SoGe9Imc-ZxldUt0ETVRSJoHwh9m6Nf7-42_ptuohfHOugTWnn52ySVXrXFh1P5jauJJnts1ZzuCVvZ0K8Dmy_GE-XsGros5uvvS3Ies7EUkeGTxGVMJnz--2NoeH6w8Qm0aVx6AIpquwaWaCwYoqQbFVpb76PbZRr"
+              poster="/mardi-malakisi-mdt.jpeg"
               className="w-full h-full object-cover"
             >
-              <source src="/MARDI MALAKISI _ La connaissance qui libère.mp4" type="video/mp4" />
+              <source src="/mardi-malakisi-ministeres.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-[#7a3218]/35 to-[#5b2010]/75" />
           </div>

@@ -60,7 +60,7 @@ export default function Evenements({ events }: Props) {
               muted
               loop
               playsInline
-              poster="/mdt-banner.jpg"
+              poster="/celebration-seminaire-puissant.JPG"
               className="w-full h-full object-cover transform scale-105 transition-transform duration-1000"
             >
               <source src="/MARDI MALAKISI _ La connaissance qui libère.mp4" type="video/mp4" />

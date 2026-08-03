@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react'
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Eye, EyeOff, Lock, Mail, Loader2, LogIn, AlertCircle } from 'lucide-react'
+import { Eye, EyeOff, Lock, Mail, Loader2, AlertCircle, ArrowRight } from 'lucide-react'
 
 export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: string }) {
   const [showPassword, setShowPassword] = useState(false)
@@ -87,8 +87,12 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
       <div className="w-full max-w-[440px] animate-in fade-in zoom-in-95 duration-500">
         {/* Logo / Title Section */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 mb-6 group">
-            <LogIn className="w-8 h-8 text-primary group-hover:scale-110 transition-transform duration-300" />
+          <div className="flex justify-center mb-6">
+            <img
+              src="/log-phila-mdt.png"
+              alt="Logo Phila MDT"
+              className="h-20 w-auto object-contain drop-shadow-[0_0_18px_rgba(255,120,0,0.35)] hover:scale-105 transition-transform duration-300"
+            />
           </div>
           <h1 className="text-3xl font-black text-white tracking-tight mb-2">Bon retour</h1>
           <p className="text-slate-400">Accédez au tableau de bord Phila MDT</p>
@@ -188,12 +192,12 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
                   Se souvenir de moi
                 </span>
               </label>
-              <button
+              {/* <button
                 type="button"
                 className="text-sm text-primary hover:text-primary-dark font-semibold transition-colors"
               >
                 Oublié ?
-              </button>
+              </button> */}
             </div>
 
             {/* Submit Button */}
@@ -206,7 +210,7 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  <LogIn size={20} />
+                  <ArrowRight size={20} />
                   Se connecter
                 </>
               )}

@@ -27,25 +27,65 @@ export default function DetailEvenement({ event }: Props) {
     past: { label: 'Passé', color: 'bg-slate-400' },
   }
 
-  // URL canonique de la page courante
-  const pageUrl = typeof window !== 'undefined' ? window.location.href : `https://www.philamdt.church/evenements/${event.slug}`
+  // Helper pour garantir des URLs absolues (exigées par Facebook, X, LinkedIn, WhatsApp)
+  const getAbsoluteUrl = (path?: string) => {
+    if (!path) return 'https://www.philamdt.church/mdt-banner.jpg'
+    if (path.startsWith('http://') || path.startsWith('https://')) return path
+    const origin =
+      typeof window !== 'undefined' &&
+      window.location.origin.includes('http') &&
+      !window.location.origin.includes('localhost') &&
+      !window.location.origin.includes('127.0.0.1')
+        ? window.location.origin
+        : 'https://www.philamdt.church'
+    return `${origin}${path.startsWith('/') ? '' : '/'}${path}`
+  }
+
+  // URL canonique et publique de l'événement (Facebook/X exigent une URL publiquement accessible)
+  const isLocal =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+
+  const publicPageUrl = isLocal
+    ? `https://www.philamdt.church/evenements/${event.slug}`
+    : typeof window !== 'undefined'
+      ? window.location.href
+      : `https://www.philamdt.church/evenements/${event.slug}`
+
+  const absoluteImageUrl = getAbsoluteUrl(event.image)
   const shareText = `${event.title} — ${event.description ? event.description.slice(0, 120) : ''}`
 
   const shareLinks = {
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}&title=${encodeURIComponent(event.title)}&summary=${encodeURIComponent(shareText)}`,
-    x: `https://x.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(publicPageUrl)}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(publicPageUrl)}`,
+    x: `https://x.com/intent/tweet?url=${encodeURIComponent(publicPageUrl)}&text=${encodeURIComponent(shareText)}`,
+  }
+
+  const handleShare = async (platform: 'facebook' | 'linkedin' | 'x') => {
+    // Si l'API Web Share est dispo sur mobile, on l'utilise pour une intégration native parfaite
+    if (typeof navigator !== 'undefined' && navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
+      try {
+        await navigator.share({
+          title: event.title,
+          text: shareText,
+          url: publicPageUrl,
+        })
+        return
+      } catch {
+        // Fallback sur le lien web classique si l'utilisateur annule
+      }
+    }
+    window.open(shareLinks[platform], '_blank', 'noopener,noreferrer,width=600,height=500')
   }
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(pageUrl)
+      await navigator.clipboard.writeText(publicPageUrl)
       setCopied(true)
       setTimeout(() => setCopied(false), 2500)
     } catch {
-      // fallback si clipboard API non disponible
       const el = document.createElement('input')
-      el.value = pageUrl
+      el.value = publicPageUrl
       document.body.appendChild(el)
       el.select()
       document.execCommand('copy')
@@ -66,23 +106,29 @@ export default function DetailEvenement({ event }: Props) {
               : `Détails de l'événement "${event.title}" organisé par la Phila Maison de Témoignages.`
           }
         />
-        {/* Open Graph — partage réseaux sociaux */}
+        {/* Open Graph — partage réseaux sociaux (FB, LinkedIn, WhatsApp) */}
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={pageUrl} />
+        <meta property="og:site_name" content="Phila Maison de Témoignages" />
+        <meta property="og:url" content={publicPageUrl} />
         <meta property="og:title" content={event.title} />
         <meta
           property="og:description"
           content={event.description ? event.description.slice(0, 200) : `Événement organisé par Phila Maison de Témoignages.`}
         />
-        {event.image && <meta property="og:image" content={event.image} />}
-        {/* Twitter Card */}
+        <meta property="og:image" content={absoluteImageUrl} />
+        <meta property="og:image:secure_url" content={absoluteImageUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        {/* Twitter Card (X) */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={publicPageUrl} />
         <meta name="twitter:title" content={event.title} />
         <meta
           name="twitter:description"
           content={event.description ? event.description.slice(0, 200) : `Événement organisé par Phila Maison de Témoignages.`}
         />
-        {event.image && <meta name="twitter:image" content={event.image} />}
+        <meta name="twitter:image" content={absoluteImageUrl} />
       </Head>
 
       <main className="bg-white min-h-screen">
@@ -140,40 +186,34 @@ export default function DetailEvenement({ event }: Props) {
                 <div className="flex flex-wrap gap-3">
 
                   {/* Facebook */}
-                  <a
-                    href={shareLinks.facebook}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => handleShare('facebook')}
                     aria-label="Partager sur Facebook"
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#1877F2] text-white font-bold text-sm hover:bg-[#1465d1] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#1877F2] text-white font-bold text-sm hover:bg-[#1465d1] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
                   >
                     <svg width={17} height={17} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
                     Facebook
-                  </a>
+                  </button>
 
                   {/* LinkedIn */}
-                  <a
-                    href={shareLinks.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => handleShare('linkedin')}
                     aria-label="Partager sur LinkedIn"
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#0A66C2] text-white font-bold text-sm hover:bg-[#084d93] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#0A66C2] text-white font-bold text-sm hover:bg-[#084d93] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
                   >
                     <svg width={17} height={17} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
                     LinkedIn
-                  </a>
+                  </button>
 
                   {/* X / Twitter */}
-                  <a
-                    href={shareLinks.x}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => handleShare('x')}
                     aria-label="Partager sur X"
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-black text-white font-bold text-sm hover:bg-slate-800 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-black text-white font-bold text-sm hover:bg-slate-800 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
                   >
                     <svg width={17} height={17} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
                     X
-                  </a>
+                  </button>
 
                   {/* Copier le lien */}
                   <button

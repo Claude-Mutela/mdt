@@ -1141,8 +1141,9 @@ export default function AdminGalerie({
             <div className="relative max-w-4xl max-h-[85vh] w-full flex flex-col items-center justify-center">
               <CloudinaryImage
                 src={lightboxPhoto.url}
+                width={1600}
                 alt={lightboxPhoto.title || ''}
-                className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl border border-slate-900 animate-in zoom-in-95 duration-200"
+                className="max-w-full max-h-[80vh] w-auto object-contain rounded-2xl shadow-2xl border border-slate-900 animate-in zoom-in-95 duration-200"
               />
               {lightboxPhoto.title && (
                 <p className="text-white text-sm font-black text-center mt-4 bg-slate-900/60 backdrop-blur-md px-5 py-2.5 rounded-xl border border-slate-800 max-w-lg truncate">

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, Head } from '@inertiajs/react'
 import { Images, ChevronRight } from 'lucide-react'
+import { getOptimizedCloudinaryUrl } from '~/utils/cloudinary'
 
 interface Album {
   id: number
@@ -54,7 +55,7 @@ const Gallery: React.FC<{ albums?: Album[] }> = ({ albums = [] }) => {
                   <div className="relative aspect-square overflow-hidden bg-slate-200">
                     {album.coverImg ? (
                       <img
-                        src={album.coverImg}
+                        src={getOptimizedCloudinaryUrl(album.coverImg, 600)}
                         alt={album.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />

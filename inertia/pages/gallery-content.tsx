@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, Head } from '@inertiajs/react'
+import { getOptimizedCloudinaryUrl } from '~/utils/cloudinary'
 import { Maximize2, X, ChevronLeft, ChevronRight, ArrowLeft, Images } from 'lucide-react'
 
 interface GalleryImage {
@@ -78,7 +79,7 @@ const GalleryContent: React.FC<{ album?: Album }> = ({ album }) => {
                   className="group relative aspect-square rounded-2xl overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
                 >
                   <img
-                    src={img.url}
+                    src={getOptimizedCloudinaryUrl(img.url, 600)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 grayscale-[20%] group-hover:grayscale-0"
                     alt={img.title}
                     loading="lazy"
@@ -124,8 +125,8 @@ const GalleryContent: React.FC<{ album?: Album }> = ({ album }) => {
                 <ChevronLeft size={32} />
               </button>
               <img
-                src={images[selectedIdx].url}
-                className="max-w-full max-h-full object-contain shadow-2xl rounded-lg animate-in zoom-in-95 duration-500"
+                src={getOptimizedCloudinaryUrl(images[selectedIdx].url, 1600)}
+                className="max-w-full max-h-[80vh] w-auto object-contain shadow-2xl rounded-lg animate-in zoom-in-95 duration-500"
                 alt="Fullscreen"
               />
               <button

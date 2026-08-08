@@ -18,7 +18,7 @@ export default class CloudinaryService {
           chunk_size: 6000000, // Tronçonnage par blocs de 6 Mo
           timeout: 120000, // Timeout de 2 minutes
           transformation: [
-            { width: 1200, height: 1200, crop: 'limit' },
+            { width: 1920, crop: 'limit' },
             { quality: 'auto', fetch_format: 'auto' }, // Optimisation automatique et limitation de taille
           ],
         },

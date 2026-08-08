@@ -10,6 +10,7 @@ import {
   ExternalLink,
 } from 'lucide-react'
 import { Head } from '@inertiajs/react'
+import { getOptimizedCloudinaryUrl } from '~/utils/cloudinary'
 import type { MediaItem, MediaType } from '../../types'
 
 function isYoutubeUrl(url: string): boolean {
@@ -97,7 +98,7 @@ const MediaGridCard: React.FC<{ item: MediaItem; onSelect: (item: MediaItem) => 
     >
       <div className="relative aspect-video overflow-hidden bg-slate-100">
         <img
-          src={displayThumbnail}
+          src={getOptimizedCloudinaryUrl(displayThumbnail, 600)}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           alt={item.title}
         />
@@ -359,9 +360,9 @@ const AllContent: React.FC<{ items?: MediaItem[] }> = ({ items = [] }) => {
               {selectedItem.type === 'image' && (
                 <div className="max-h-[85vh] flex items-center justify-center bg-black relative">
                   <img
-                    src={selectedItem.url}
+                    src={getOptimizedCloudinaryUrl(selectedItem.url, 1600)}
                     alt={selectedItem.title}
-                    className="max-w-full max-h-[80vh] object-contain"
+                    className="max-w-full max-h-[80vh] w-auto object-contain"
                   />
                   <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/95 to-transparent text-white">
                     <h3 className="font-serif font-bold text-lg">{selectedItem.title}</h3>

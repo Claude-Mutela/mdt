@@ -377,7 +377,7 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
               <DetailItem
                 icon={<Phone size={24} />}
                 title="Contact Direct"
-                desc="+243 9 999 51 032"
+                desc="+243 999 951 032"
                 sub="contact@philamdt.chrurch"
               />
               <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
@@ -396,7 +396,7 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
                   </li>
                   <li className="flex justify-between text-sm">
                     <span className="font-medium text-slate-500">Jeudi:</span>
-                    <span className="font-bold text-slate-900">17h30 - Intercession</span>
+                    <span className="font-bold text-slate-900">17h30 - Prière</span>
                   </li>
                 </ul>
               </div>

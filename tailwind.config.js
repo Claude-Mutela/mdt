@@ -12,7 +12,7 @@ export default {
       },
       fontFamily: {
         sans: ['Montserrat', 'Plus Jakarta Sans', 'sans-serif'],
-        serif: ['Montserrat', 'sans-serif'], /* override : tout en sans-serif */
+        serif: ['Montserrat', 'sans-serif'] /* override : tout en sans-serif */,
         heading: ['Montserrat', 'sans-serif'],
         body: ['Montserrat', 'Plus Jakarta Sans', 'sans-serif'],
       },

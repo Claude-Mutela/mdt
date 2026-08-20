@@ -103,8 +103,12 @@ const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
           <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12">
             <div className="flex justify-between items-end border-b border-slate-200 pb-4">
               <div>
-                <h2 className="text-slate-900 text-xl md:text-3xl font-bold font-serif">Dernières Vidéos</h2>
-                <p className="text-slate-500 mt-1 text-sm md:text-base">Cultes et moments de louange</p>
+                <h2 className="text-slate-900 text-xl md:text-3xl font-bold font-serif">
+                  Dernières Vidéos
+                </h2>
+                <p className="text-slate-500 mt-1 text-sm md:text-base">
+                  Cultes et moments de louange
+                </p>
               </div>
               <button className="hidden md:flex items-center gap-2 text-primary font-bold hover:underline">
                 Voir toute la chaîne

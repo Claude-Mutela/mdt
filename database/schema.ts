@@ -8,7 +8,17 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AgendaSchema extends BaseModel {
-  static $columns = ['catActivityId', 'createdAt', 'day', 'hourEnd', 'hourStart', 'id', 'place', 'title', 'updatedAt'] as const
+  static $columns = [
+    'catActivityId',
+    'createdAt',
+    'day',
+    'hourEnd',
+    'hourStart',
+    'id',
+    'place',
+    'title',
+    'updatedAt',
+  ] as const
   $columns = AgendaSchema.$columns
   @column()
   declare catActivityId: number
@@ -31,7 +41,20 @@ export class AgendaSchema extends BaseModel {
 }
 
 export class AppointmentSchema extends BaseModel {
-  static $columns = ['appointmentDate', 'appointmentTime', 'createdAt', 'email', 'firstName', 'format', 'id', 'lastName', 'phone', 'reason', 'status', 'updatedAt'] as const
+  static $columns = [
+    'appointmentDate',
+    'appointmentTime',
+    'createdAt',
+    'email',
+    'firstName',
+    'format',
+    'id',
+    'lastName',
+    'phone',
+    'reason',
+    'status',
+    'updatedAt',
+  ] as const
   $columns = AppointmentSchema.$columns
   @column.date()
   declare appointmentDate: DateTime
@@ -125,7 +148,17 @@ export class CatMediaSchema extends BaseModel {
 }
 
 export class CelluleSchema extends BaseModel {
-  static $columns = ['adresse', 'contact', 'createdAt', 'description', 'horaire', 'id', 'name', 'responsableId', 'updatedAt'] as const
+  static $columns = [
+    'adresse',
+    'contact',
+    'createdAt',
+    'description',
+    'horaire',
+    'id',
+    'name',
+    'responsableId',
+    'updatedAt',
+  ] as const
   $columns = CelluleSchema.$columns
   @column()
   declare adresse: string
@@ -148,7 +181,16 @@ export class CelluleSchema extends BaseModel {
 }
 
 export class DonSchema extends BaseModel {
-  static $columns = ['amount', 'catDonId', 'createdAt', 'date', 'donateur', 'id', 'status', 'updatedAt'] as const
+  static $columns = [
+    'amount',
+    'catDonId',
+    'createdAt',
+    'date',
+    'donateur',
+    'id',
+    'status',
+    'updatedAt',
+  ] as const
   $columns = DonSchema.$columns
   @column()
   declare amount: string
@@ -188,7 +230,23 @@ export class DonHistorySchema extends BaseModel {
 }
 
 export class EventSchema extends BaseModel {
-  static $columns = ['catEventId', 'content', 'createdAt', 'date', 'dateFin', 'description', 'endTime', 'id', 'name', 'place', 'slug', 'startTime', 'status', 'updatedAt', 'urlImg'] as const
+  static $columns = [
+    'catEventId',
+    'content',
+    'createdAt',
+    'date',
+    'dateFin',
+    'description',
+    'endTime',
+    'id',
+    'name',
+    'place',
+    'slug',
+    'startTime',
+    'status',
+    'updatedAt',
+    'urlImg',
+  ] as const
   $columns = EventSchema.$columns
   @column()
   declare catEventId: number
@@ -223,7 +281,15 @@ export class EventSchema extends BaseModel {
 }
 
 export class ExchangeRateSchema extends BaseModel {
-  static $columns = ['createdAt', 'date', 'deviseCible', 'deviseSource', 'id', 'taux', 'updatedAt'] as const
+  static $columns = [
+    'createdAt',
+    'date',
+    'deviseCible',
+    'deviseSource',
+    'id',
+    'taux',
+    'updatedAt',
+  ] as const
   $columns = ExchangeRateSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
@@ -257,7 +323,21 @@ export class FinanceCategorySchema extends BaseModel {
 }
 
 export class FinanceOperationSchema extends BaseModel {
-  static $columns = ['createdAt', 'createdBy', 'date', 'description', 'devise', 'financeCategoryId', 'id', 'montant', 'moyenPaiement', 'tauxCdfUsd', 'tauxEurUsd', 'type', 'updatedAt'] as const
+  static $columns = [
+    'createdAt',
+    'createdBy',
+    'date',
+    'description',
+    'devise',
+    'financeCategoryId',
+    'id',
+    'montant',
+    'moyenPaiement',
+    'tauxCdfUsd',
+    'tauxEurUsd',
+    'type',
+    'updatedAt',
+  ] as const
   $columns = FinanceOperationSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
@@ -288,7 +368,15 @@ export class FinanceOperationSchema extends BaseModel {
 }
 
 export class FinanceOperationsHistorySchema extends BaseModel {
-  static $columns = ['action', 'changedAt', 'changedBy', 'id', 'newValues', 'oldValues', 'operationId'] as const
+  static $columns = [
+    'action',
+    'changedAt',
+    'changedBy',
+    'id',
+    'newValues',
+    'oldValues',
+    'operationId',
+  ] as const
   $columns = FinanceOperationsHistorySchema.$columns
   @column()
   declare action: string
@@ -307,7 +395,16 @@ export class FinanceOperationsHistorySchema extends BaseModel {
 }
 
 export class GalerySchema extends BaseModel {
-  static $columns = ['catGaleryId', 'coverImg', 'createdAt', 'id', 'imgNber', 'title', 'updatedAt', 'urlImg'] as const
+  static $columns = [
+    'catGaleryId',
+    'coverImg',
+    'createdAt',
+    'id',
+    'imgNber',
+    'title',
+    'updatedAt',
+    'urlImg',
+  ] as const
   $columns = GalerySchema.$columns
   @column()
   declare catGaleryId: number
@@ -366,7 +463,19 @@ export class ImageSchema extends BaseModel {
 }
 
 export class MediaSchema extends BaseModel {
-  static $columns = ['catMediaId', 'createdAt', 'date', 'duration', 'file', 'format', 'id', 'orateur', 'title', 'updatedAt', 'urlFile'] as const
+  static $columns = [
+    'catMediaId',
+    'createdAt',
+    'date',
+    'duration',
+    'file',
+    'format',
+    'id',
+    'orateur',
+    'title',
+    'updatedAt',
+    'urlFile',
+  ] as const
   $columns = MediaSchema.$columns
   @column()
   declare catMediaId: number
@@ -393,7 +502,22 @@ export class MediaSchema extends BaseModel {
 }
 
 export class MemberSchema extends BaseModel {
-  static $columns = ['coverImg', 'createdAt', 'dateIntegration', 'email', 'firstname', 'gender', 'id', 'lastname', 'ministryId', 'phone', 'statut', 'typeMember', 'updatedAt', 'userId'] as const
+  static $columns = [
+    'coverImg',
+    'createdAt',
+    'dateIntegration',
+    'email',
+    'firstname',
+    'gender',
+    'id',
+    'lastname',
+    'ministryId',
+    'phone',
+    'statut',
+    'typeMember',
+    'updatedAt',
+    'userId',
+  ] as const
   $columns = MemberSchema.$columns
   @column()
   declare coverImg: string | null
@@ -426,7 +550,19 @@ export class MemberSchema extends BaseModel {
 }
 
 export class MinistrySchema extends BaseModel {
-  static $columns = ['badgeColor', 'content', 'coverImg', 'createdAt', 'description', 'id', 'name', 'slug', 'tag', 'updatedAt', 'urlImg'] as const
+  static $columns = [
+    'badgeColor',
+    'content',
+    'coverImg',
+    'createdAt',
+    'description',
+    'id',
+    'name',
+    'slug',
+    'tag',
+    'updatedAt',
+    'urlImg',
+  ] as const
   $columns = MinistrySchema.$columns
   @column()
   declare badgeColor: string | null
@@ -453,7 +589,29 @@ export class MinistrySchema extends BaseModel {
 }
 
 export class NewcomerSchema extends BaseModel {
-  static $columns = ['address', 'baptized', 'city', 'comeBack', 'createdAt', 'date', 'email', 'firstname', 'gender', 'heardAbout', 'id', 'joinCell', 'lastname', 'maritalStatus', 'phone', 'profession', 'receiveJesus', 'serve', 'spiritualFollowup', 'suggestions', 'updatedAt'] as const
+  static $columns = [
+    'address',
+    'baptized',
+    'city',
+    'comeBack',
+    'createdAt',
+    'date',
+    'email',
+    'firstname',
+    'gender',
+    'heardAbout',
+    'id',
+    'joinCell',
+    'lastname',
+    'maritalStatus',
+    'phone',
+    'profession',
+    'receiveJesus',
+    'serve',
+    'spiritualFollowup',
+    'suggestions',
+    'updatedAt',
+  ] as const
   $columns = NewcomerSchema.$columns
   @column()
   declare address: string | null
@@ -500,7 +658,15 @@ export class NewcomerSchema extends BaseModel {
 }
 
 export class NewsletterSchema extends BaseModel {
-  static $columns = ['confirmedAt', 'createdAt', 'email', 'id', 'status', 'token', 'updatedAt'] as const
+  static $columns = [
+    'confirmedAt',
+    'createdAt',
+    'email',
+    'id',
+    'status',
+    'token',
+    'updatedAt',
+  ] as const
   $columns = NewsletterSchema.$columns
   @column.dateTime()
   declare confirmedAt: DateTime | null
@@ -519,7 +685,19 @@ export class NewsletterSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'emailVerifiedAt', 'firstname', 'fullName', 'id', 'lastname', 'password', 'role', 'status', 'updatedAt'] as const
+  static $columns = [
+    'createdAt',
+    'email',
+    'emailVerifiedAt',
+    'firstname',
+    'fullName',
+    'id',
+    'lastname',
+    'password',
+    'role',
+    'status',
+    'updatedAt',
+  ] as const
   $columns = UserSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

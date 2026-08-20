@@ -166,7 +166,7 @@ jobs:
       - name: Verification du Build et du Manifest
         run: |
           test -f build/bin/server.js && echo "✅ server.js présent" || (echo "❌ server.js manquant" && exit 1)
-          
+
           # Copie de sécurité du manifest dans le build pour AdonisJS & Inertia
           mkdir -p build/public/assets/.vite
           MANIFEST=$(find build/public -name "manifest.json" | head -n 1)

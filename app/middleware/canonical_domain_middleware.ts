@@ -11,12 +11,7 @@ export default class CanonicalDomainMiddleware {
     const hostHeader = (ctx.request.header('host') || '').split(':')[0].toLowerCase()
 
     // Liste des hôtes autorisés
-    const allowedHosts = [
-      'philamdt.church',
-      'www.philamdt.church',
-      'localhost',
-      '127.0.0.1',
-    ]
+    const allowedHosts = ['philamdt.church', 'www.philamdt.church', 'localhost', '127.0.0.1']
 
     // En production, si la requête provient d'un domaine pirate / non autorisé, rejet immédiat
     if (env.get('NODE_ENV') === 'production' && hostHeader && !allowedHosts.includes(hostHeader)) {

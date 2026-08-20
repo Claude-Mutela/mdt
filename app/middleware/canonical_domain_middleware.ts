@@ -5,7 +5,11 @@ import env from '#start/env'
 export default class CanonicalDomainMiddleware {
   async handle(ctx: HttpContext, next: NextFn) {
     const rawAppUrl = env.get('APP_URL') || 'https://philamdt.church'
-    const appUrl = rawAppUrl.replace(/\/+$/, '')
+    const appUrl =
+      (rawAppUrl.includes('localhost') || rawAppUrl.includes('127.0.0.1')) &&
+      env.get('NODE_ENV') === 'production'
+        ? 'https://philamdt.church'
+        : rawAppUrl.replace(/\/+$/, '')
 
     // Extraction de l'hôte de la requête (sans le port)
     const hostHeader = (ctx.request.header('host') || '').split(':')[0].toLowerCase()

@@ -19,17 +19,19 @@
     <meta name="author" content="Phila MDT" />
     <meta name="robots" content="index, follow" />
 
-    <!-- Canonical URL (Défense contre l'usurpation SEO) -->
-    <link rel="canonical" href="{{ canonicalUrl || 'https://philamdt.church' }}" />
-
+    @assign(publicBaseUrl = (appUrl && !appUrl.includes('127.0.0.1') && !appUrl.includes('localhost')) ? appUrl.replace(/\/+$/, '') : 'https://philamdt.church')
+    @assign(canonicalUrlClean = (canonicalUrl && !canonicalUrl.includes('127.0.0.1') && !canonicalUrl.includes('localhost')) ? canonicalUrl : publicBaseUrl)
     @assign(ogTitle = page?.props?.event?.title ? page.props.event.title + ' — Phila Maison de Témoignages' : 'Phila Maison de Témoignages')
     @assign(ogDescription = page?.props?.event?.description ? page.props.event.description.slice(0, 200) : 'Découvrez Phila Maison de Témoignages (MDT), notre agenda des cultes, ministères, événements et partagez la communion chrétienne.')
-    @assign(ogImage = page?.props?.event?.image ? (page.props.event.image.startsWith('http') ? page.props.event.image : (appUrl || 'https://philamdt.church') + (page.props.event.image.startsWith('/') ? '' : '/') + page.props.event.image) : (appUrl || 'https://philamdt.church') + '/mdt-banner.jpg')
+    @assign(ogImage = page?.props?.event?.image ? (page.props.event.image.startsWith('http') ? page.props.event.image : publicBaseUrl + (page.props.event.image.startsWith('/') ? '' : '/') + page.props.event.image) : publicBaseUrl + '/mdt-banner.jpg')
+
+    <!-- Canonical URL (Défense contre l'usurpation SEO) -->
+    <link rel="canonical" href="{{ canonicalUrlClean }}" />
 
     <!-- Open Graph / Facebook / WhatsApp (Détection dynamique Événement vs Pages statiques) -->
     <meta property="og:type" content="{{ page?.props?.event ? 'article' : 'website' }}" />
     <meta property="og:site_name" content="Phila Maison de Témoignages" />
-    <meta property="og:url" content="{{ canonicalUrl || 'https://philamdt.church' }}" />
+    <meta property="og:url" content="{{ canonicalUrlClean }}" />
     <meta property="og:title" content="{{ ogTitle }}" />
     <meta property="og:description" content="{{ ogDescription }}" />
     <meta property="og:image" content="{{ ogImage }}" />
@@ -41,7 +43,7 @@
 
     <!-- Twitter Card (Grand Format) -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="{{ canonicalUrl || 'https://philamdt.church' }}" />
+    <meta name="twitter:url" content="{{ canonicalUrlClean }}" />
     <meta name="twitter:title" content="{{ ogTitle }}" />
     <meta name="twitter:description" content="{{ ogDescription }}" />
     <meta name="twitter:image" content="{{ ogImage }}" />

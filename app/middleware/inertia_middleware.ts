@@ -26,7 +26,11 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
       .map((code) => errorsBag[code])[0]
 
     const rawAppUrl = env.get('APP_URL') || 'https://philamdt.church'
-    const appUrl = rawAppUrl.replace(/\/+$/, '')
+    const appUrl =
+      (rawAppUrl.includes('localhost') || rawAppUrl.includes('127.0.0.1')) &&
+      env.get('NODE_ENV') === 'production'
+        ? 'https://philamdt.church'
+        : rawAppUrl.replace(/\/+$/, '')
     const pathname = (ctx.request?.url()?.split('?')[0] || '/').replace(/\/+$/, '') || '/'
     const canonicalUrl = `${appUrl}${pathname === '/' ? '' : pathname}`
 

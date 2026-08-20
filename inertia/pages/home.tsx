@@ -415,7 +415,7 @@ const Home: FC<{
               <source src="/mardi-malakisi-ministeres.mp4" type="video/mp4" />
             </video>
           )}
-          <div className="absolute inset-0 bg-black/60"></div>
+          <div className="absolute inset-0 bg-black/35"></div>
         </div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <h1 className="text-4xl md:text-6xl font-serif font-bold mb-6 tracking-tight leading-tight">

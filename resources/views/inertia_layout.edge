@@ -22,31 +22,29 @@
     <!-- Canonical URL (Défense contre l'usurpation SEO) -->
     <link rel="canonical" href="{{ canonicalUrl || 'https://philamdt.church' }}" />
 
-    <!-- Open Graph / Facebook / WhatsApp (Bannière Grand Format) -->
-    <meta property="og:type" content="website" />
+    @assign(ogTitle = page?.props?.event?.title ? page.props.event.title + ' — Phila Maison de Témoignages' : 'Phila Maison de Témoignages')
+    @assign(ogDescription = page?.props?.event?.description ? page.props.event.description.slice(0, 200) : 'Découvrez Phila Maison de Témoignages (MDT), notre agenda des cultes, ministères, événements et partagez la communion chrétienne.')
+    @assign(ogImage = page?.props?.event?.image ? (page.props.event.image.startsWith('http') ? page.props.event.image : (appUrl || 'https://philamdt.church') + (page.props.event.image.startsWith('/') ? '' : '/') + page.props.event.image) : (appUrl || 'https://philamdt.church') + '/mdt-banner.jpg')
+
+    <!-- Open Graph / Facebook / WhatsApp (Détection dynamique Événement vs Pages statiques) -->
+    <meta property="og:type" content="{{ page?.props?.event ? 'article' : 'website' }}" />
     <meta property="og:site_name" content="Phila Maison de Témoignages" />
     <meta property="og:url" content="{{ canonicalUrl || 'https://philamdt.church' }}" />
-    <meta property="og:title" content="Phila Maison de Témoignages" />
-    <meta
-      property="og:description"
-      content="Découvrez Phila Maison de Témoignages (MDT), notre agenda des cultes, ministères, événements et partagez la communion chrétienne."
-    />
-    <meta property="og:image" content="{{ appUrl || 'https://philamdt.church' }}/og-banner.jpg" />
-    <meta property="og:image:secure_url" content="{{ appUrl || 'https://philamdt.church' }}/og-banner.jpg" />
-    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:title" content="{{ ogTitle }}" />
+    <meta property="og:description" content="{{ ogDescription }}" />
+    <meta property="og:image" content="{{ ogImage }}" />
+    <meta property="og:image:secure_url" content="{{ ogImage }}" />
+    <meta property="og:image:type" content="{{ ogImage.endsWith('.png') ? 'image/png' : 'image/jpeg' }}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Phila Maison de Témoignages" />
+    <meta property="og:image:alt" content="{{ ogTitle }}" />
 
-    <!-- Twitter -->
+    <!-- Twitter Card (Grand Format) -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="{{ canonicalUrl || 'https://philamdt.church' }}" />
-    <meta name="twitter:title" content="Phila Maison de Témoignages" />
-    <meta
-      name="twitter:description"
-      content="Découvrez Phila Maison de Témoignages (MDT), notre agenda des cultes, ministères, événements et partagez la communion chrétienne."
-    />
-    <meta name="twitter:image" content="{{ appUrl || 'https://philamdt.church' }}/og-banner.jpg" />
+    <meta name="twitter:title" content="{{ ogTitle }}" />
+    <meta name="twitter:description" content="{{ ogDescription }}" />
+    <meta name="twitter:image" content="{{ ogImage }}" />
     <meta name="google-site-verification" content="FG2c9f-hkl06D6yfIYglb0fY-QAemupfGc6LXnfFEMY" />
 
     <!-- Données structurées Schema.org (JSON-LD) -->
@@ -57,8 +55,8 @@
         "name": "Phila Maison de Témoignages",
         "alternateName": ["Phila MDT", "MDT Church"],
         "url": "https://philamdt.church",
-        "logo": "https://philamdt.church/og-logo.jpg",
-        "image": "https://philamdt.church/og-banner.jpg",
+        "logo": "https://philamdt.church/logo.jpg",
+        "image": "https://philamdt.church/mdt-banner.jpg",
         "description": "Phila Maison de Témoignages (MDT) est une église dynamique, un lieu où Dieu transforme des vies en témoignages vivants."
       }
     </script>

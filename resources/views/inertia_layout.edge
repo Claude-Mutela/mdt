@@ -19,26 +19,44 @@
     <meta name="author" content="Phila MDT" />
     <meta name="robots" content="index, follow" />
 
+    <!-- Canonical URL (Défense contre l'usurpation SEO) -->
+    <link rel="canonical" href="{{ canonicalUrl || 'https://philamdt.church' }}" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.philamdt.church/" />
+    <meta property="og:site_name" content="Phila Maison de Témoignages" />
+    <meta property="og:url" content="{{ canonicalUrl || 'https://philamdt.church' }}" />
     <meta property="og:title" content="Phila Maison de Témoignages" />
     <meta
       property="og:description"
       content="Découvrez Phila Maison de Témoignages (MDT), notre agenda des cultes, ministères, événements et partagez la communion chrétienne."
     />
-    <meta property="og:image" content="https://www.philamdt.church/mdt-banner.jpg" />
+    <meta property="og:image" content="{{ appUrl || 'https://philamdt.church' }}/mdt-banner.jpg" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://www.philamdt.church/" />
+    <meta property="twitter:url" content="{{ canonicalUrl || 'https://philamdt.church' }}" />
     <meta property="twitter:title" content="Phila Maison de Témoignages" />
     <meta
       property="twitter:description"
       content="Découvrez Phila Maison de Témoignages (MDT), notre agenda des cultes, ministères, événements et partagez la communion chrétienne."
     />
-    <meta property="twitter:image" content="https://www.philamdt.church/mdt-banner.jpg" />
+    <meta property="twitter:image" content="{{ appUrl || 'https://philamdt.church' }}/mdt-banner.jpg" />
     <meta name="google-site-verification" content="FG2c9f-hkl06D6yfIYglb0fY-QAemupfGc6LXnfFEMY" />
+
+    <!-- Données structurées Schema.org (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Church",
+        "name": "Phila Maison de Témoignages",
+        "alternateName": ["Phila MDT", "MDT Church"],
+        "url": "https://philamdt.church",
+        "logo": "https://philamdt.church/logo.jpg",
+        "image": "https://philamdt.church/mdt-banner.jpg",
+        "description": "Phila Maison de Témoignages (MDT) est une église dynamique, un lieu où Dieu transforme des vies en témoignages vivants."
+      }
+    </script>
 
     <!-- Préconnexion Google Fonts (optimisation chargement typographie) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

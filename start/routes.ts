@@ -20,6 +20,10 @@ router
 router
   .get('/allContent', [() => import('#controllers/media_controller'), 'allContent'])
   .as('allContent')
+/* ── Redirections legacy 301 (SEO) ────────────────────────────── */
+router.get('/we-offer.html', ({ response }) => response.redirect().status(301).toPath('/ministries'))
+router.get('/we-offer', ({ response }) => response.redirect().status(301).toPath('/ministries'))
+
 router
   .get('/ministries', [() => import('#controllers/ministries_controller'), 'index'])
   .as('ministries')

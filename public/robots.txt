@@ -1,4 +1,4 @@
-﻿# Phila Maison de Temoignages - robots.txt
+# Phila Maison de Temoignages - robots.txt
 User-agent: *
 Allow: /
 
@@ -8,5 +8,5 @@ Disallow: /login
 Disallow: /logout
 
 # Sitemap
-Sitemap: https://www.philamdt.church/sitemap.xml
+Sitemap: https://philamdt.church/sitemap.xml
 

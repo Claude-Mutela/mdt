@@ -11,7 +11,10 @@ export default class AdminMediasController {
     const search = request.input('search', '')
     const catId = request.input('catId', 'all')
 
-    const query = Media.query().preload('catMedia').orderBy('created_at', 'desc')
+    const query = Media.query()
+      .preload('catMedia')
+      .orderBy('date', 'desc')
+      .orderBy('created_at', 'desc')
 
     if (catId && catId !== 'all') {
       query.where('cat_media_id', catId)

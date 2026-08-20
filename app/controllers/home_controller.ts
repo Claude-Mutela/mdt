@@ -17,6 +17,7 @@ export default class HomeController {
       .whereHas('catMedia', (query) => {
         query.where('name', 'CULTE DOMINICAL')
       })
+      .orderBy('date', 'desc')
       .orderBy('createdAt', 'desc')
       .first()
 

@@ -11,7 +11,11 @@ const mapFormatToType = (format: string) => {
 export default class MediaController {
   public async index({ inertia }: HttpContext) {
     const [latestMedias, latestImages] = await Promise.all([
-      Media.query().orderBy('createdAt', 'desc').limit(3).preload('catMedia'),
+      Media.query()
+        .orderBy('date', 'desc')
+        .orderBy('createdAt', 'desc')
+        .limit(3)
+        .preload('catMedia'),
       Image.query().orderBy('createdAt', 'desc').limit(3).preload('galery'),
     ])
 
@@ -36,7 +40,10 @@ export default class MediaController {
   }
 
   public async allContent({ inertia }: HttpContext) {
-    const allMedias = await Media.query().orderBy('createdAt', 'desc').preload('catMedia')
+    const allMedias = await Media.query()
+      .orderBy('date', 'desc')
+      .orderBy('createdAt', 'desc')
+      .preload('catMedia')
 
     return inertia.render('allContent', {
       items: allMedias.map((m) => ({

@@ -614,7 +614,12 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                       type="date"
                       value={mediaForm.data.date}
                       onChange={(e) => mediaForm.setData('date', e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors animate-none"
+                      onClick={(e) => {
+                        try {
+                          (e.target as HTMLInputElement).showPicker?.()
+                        } catch {}
+                      }}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors animate-none cursor-pointer [color-scheme:dark]"
                     />
                     {mediaForm.errors.date && (
                       <p className="text-red-400 text-xs mt-1">{mediaForm.errors.date}</p>

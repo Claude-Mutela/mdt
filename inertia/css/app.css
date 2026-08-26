@@ -167,3 +167,27 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ── Style des champs date / time en mode sombre & icônes calendrier ── */
+input[type='date'],
+input[type='time'],
+input[type='datetime-local'] {
+  color-scheme: dark;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator,
+input[type='datetime-local']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.8;
+  filter: brightness(1.2);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator:hover,
+input[type='time']::-webkit-calendar-picker-indicator:hover,
+input[type='datetime-local']::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+

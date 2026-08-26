@@ -101,6 +101,7 @@ export default function AdminGalerie({
   // File preview references
   const fileInputRef = useRef<HTMLInputElement>(null)
   const coverInputRef = useRef<HTMLInputElement>(null)
+  const photoDateInputRef = useRef<HTMLInputElement>(null)
   const [previewUrl, setPreviewUrl] = useState<string>('')
 
   // Inertia Forms
@@ -924,14 +925,36 @@ export default function AdminGalerie({
                   <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 block">
                     Date de prise (Optionnel)
                   </label>
-                  <input
-                    type="date"
-                    value={photoForm.data.date}
-                    onChange={(e) => photoForm.setData('date', e.target.value)}
-                    className={`w-full bg-slate-950 border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors ${
-                      photoForm.errors.date ? 'border-red-400' : 'border-slate-800'
-                    }`}
-                  />
+                  <div className="relative flex items-center group">
+                    <input
+                      ref={photoDateInputRef}
+                      type="date"
+                      value={photoForm.data.date}
+                      onChange={(e) => photoForm.setData('date', e.target.value)}
+                      onClick={(e) => {
+                        try {
+                          (e.target as HTMLInputElement).showPicker?.()
+                        } catch {}
+                      }}
+                      className={`w-full bg-slate-950 border rounded-xl pl-4 pr-11 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors cursor-pointer [color-scheme:dark] ${
+                        photoForm.errors.date ? 'border-red-400' : 'border-slate-800'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        try {
+                          photoDateInputRef.current?.showPicker?.()
+                        } catch {
+                          photoDateInputRef.current?.focus()
+                        }
+                      }}
+                      className="absolute right-3 p-1 text-slate-400 hover:text-primary transition-colors rounded-lg hover:bg-slate-800/60"
+                      title="Ouvrir le calendrier"
+                    >
+                      <Calendar size={18} />
+                    </button>
+                  </div>
                   {photoForm.errors.date && (
                     <p className="text-red-400 text-xs mt-1 font-semibold">
                       {photoForm.errors.date}

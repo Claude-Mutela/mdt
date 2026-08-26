@@ -526,8 +526,13 @@ export default function AdminEvenements({
                       type="date"
                       value={eventForm.data.date}
                       onChange={(e) => eventForm.setData('date', e.target.value)}
+                      onClick={(e) => {
+                        try {
+                          (e.target as HTMLInputElement).showPicker?.()
+                        } catch {}
+                      }}
                       required
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors cursor-pointer [color-scheme:dark]"
                     />
                     {eventForm.errors.date && (
                       <p className="text-red-400 text-xs mt-1">{eventForm.errors.date}</p>
@@ -543,8 +548,13 @@ export default function AdminEvenements({
                       type="date"
                       value={eventForm.data.dateFin}
                       onChange={(e) => eventForm.setData('dateFin', e.target.value)}
+                      onClick={(e) => {
+                        try {
+                          (e.target as HTMLInputElement).showPicker?.()
+                        } catch {}
+                      }}
                       required
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors cursor-pointer [color-scheme:dark]"
                     />
                     {eventForm.errors.dateFin && (
                       <p className="text-red-400 text-xs mt-1">{eventForm.errors.dateFin}</p>

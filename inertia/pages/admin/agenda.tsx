@@ -378,7 +378,12 @@ export default function AdminAgenda({
                       required
                       value={form.data.day}
                       onChange={(e) => form.setData('day', e.target.value)}
-                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors"
+                      onClick={(e) => {
+                        try {
+                          (e.target as HTMLInputElement).showPicker?.()
+                        } catch {}
+                      }}
+                      className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors cursor-pointer [color-scheme:dark]"
                     />
                     {form.errors.day && (
                       <p className="text-red-400 text-[10px] mt-1">{form.errors.day}</p>

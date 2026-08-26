@@ -539,7 +539,12 @@ export default function AdminNewcomers({ newcomers, availableYears, filters }: P
                         type="date"
                         value={form.data.date}
                         onChange={(e) => form.setData('date', e.target.value)}
-                        className="w-full mt-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-primary"
+                        onClick={(e) => {
+                          try {
+                            (e.target as HTMLInputElement).showPicker?.()
+                          } catch {}
+                        }}
+                        className="w-full mt-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-primary cursor-pointer [color-scheme:dark]"
                       />
                       {form.errors.date && (
                         <p className="text-red-400 text-[10px] mt-1">{form.errors.date}</p>

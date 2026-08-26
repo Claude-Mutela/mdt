@@ -380,7 +380,7 @@ export default function AdminAgenda({
                       onChange={(e) => form.setData('day', e.target.value)}
                       onClick={(e) => {
                         try {
-                          (e.target as HTMLInputElement).showPicker?.()
+                          ;(e.target as HTMLInputElement).showPicker?.()
                         } catch {}
                       }}
                       className="w-full mt-1 px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition-colors cursor-pointer [color-scheme:dark]"

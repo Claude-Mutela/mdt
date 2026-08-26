@@ -933,7 +933,7 @@ export default function AdminGalerie({
                       onChange={(e) => photoForm.setData('date', e.target.value)}
                       onClick={(e) => {
                         try {
-                          (e.target as HTMLInputElement).showPicker?.()
+                          ;(e.target as HTMLInputElement).showPicker?.()
                         } catch {}
                       }}
                       className={`w-full bg-slate-950 border rounded-xl pl-4 pr-11 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors cursor-pointer [color-scheme:dark] ${

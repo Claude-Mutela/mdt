@@ -43,7 +43,9 @@ export default class CreateAdmin extends BaseCommand {
       user.role = this.role
       user.emailVerifiedAt = DateTime.now()
       await user.save()
-      this.logger.success(`User ${this.email} already existed and was updated successfully! (Role: ${this.role}, Status: ${this.status})`)
+      this.logger.success(
+        `User ${this.email} already existed and was updated successfully! (Role: ${this.role}, Status: ${this.status})`
+      )
     } else {
       user = await User.create({
         fullName: this.name,
@@ -55,7 +57,9 @@ export default class CreateAdmin extends BaseCommand {
         role: this.role,
         emailVerifiedAt: DateTime.now(),
       })
-      this.logger.success(`User ${this.email} created successfully! (Role: ${this.role}, Status: ${this.status})`)
+      this.logger.success(
+        `User ${this.email} created successfully! (Role: ${this.role}, Status: ${this.status})`
+      )
     }
   }
 }

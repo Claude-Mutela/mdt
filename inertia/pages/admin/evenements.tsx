@@ -528,7 +528,7 @@ export default function AdminEvenements({
                       onChange={(e) => eventForm.setData('date', e.target.value)}
                       onClick={(e) => {
                         try {
-                          (e.target as HTMLInputElement).showPicker?.()
+                          ;(e.target as HTMLInputElement).showPicker?.()
                         } catch {}
                       }}
                       required
@@ -550,7 +550,7 @@ export default function AdminEvenements({
                       onChange={(e) => eventForm.setData('dateFin', e.target.value)}
                       onClick={(e) => {
                         try {
-                          (e.target as HTMLInputElement).showPicker?.()
+                          ;(e.target as HTMLInputElement).showPicker?.()
                         } catch {}
                       }}
                       required

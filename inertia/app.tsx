@@ -2,6 +2,7 @@ import './css/app.css'
 import { ReactElement } from 'react'
 import { client } from './client'
 import Layout from '~/layouts/default'
+import SplashLoader from '~/components/SplashLoader'
 import { Data } from '@generated/data'
 import { createRoot } from 'react-dom/client'
 import { createInertiaApp } from '@inertiajs/react'
@@ -23,11 +24,11 @@ createInertiaApp({
   setup({ el, App, props }) {
     createRoot(el).render(
       <TuyauProvider client={client}>
+        <SplashLoader />
         <App {...props} />
       </TuyauProvider>
     )
   },
-  progress: {
-    color: '#4B5563',
-  },
+  progress: false,
 })
+

@@ -223,33 +223,68 @@ export default class AdminGaleriesController {
     const payload = await request.validateUsing(createImageValidator)
 
     try {
-      const image = new Image()
-      image.fill({
-        title: payload.title || null,
-        galeryId: payload.galeryId,
-        date: payload.date ? DateTime.fromJSDate(payload.date) : null,
-      })
+      const rawFiles = request.files('files')
+      const rawSingle = request.file('file')
+      const allFiles = (
+        rawFiles && rawFiles.length > 0 ? rawFiles : rawSingle ? [rawSingle] : []
+      ).filter((f) => f && f.tmpPath)
 
-      const file = request.file('file')
-      if (file && file.tmpPath) {
-        const url = await CloudinaryService.upload(file.tmpPath, 'gallery_photos')
-        image.url = url
-      } else {
-        session.flash('error', "L'image est obligatoire.")
+      if (allFiles.length === 0) {
+        session.flash('error', 'Veuillez sélectionner au moins une image.')
         return response.redirect().back()
       }
 
-      await image.save()
+      // Check format and size
+      for (const f of allFiles) {
+        const ext = (f.extname || '').toLowerCase()
+        if (!['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
+          session.flash(
+            'error',
+            `Format de fichier non pris en charge pour "${f.clientName}". Utilisez JPG, PNG ou WebP.`
+          )
+          return response.redirect().back()
+        }
+        if (f.size > 30 * 1024 * 1024) {
+          session.flash('error', `L'image "${f.clientName}" dépasse la taille maximale de 30 Mo.`)
+          return response.redirect().back()
+        }
+      }
 
-      // Increment img_nber
+      let successCount = 0
+      for (const file of allFiles) {
+        if (file.tmpPath) {
+          const url = await CloudinaryService.upload(file.tmpPath, 'gallery_photos')
+          const image = new Image()
+          image.fill({
+            title: payload.title || null,
+            galeryId: payload.galeryId,
+            date: payload.date ? DateTime.fromJSDate(payload.date) : null,
+            url,
+          })
+          await image.save()
+          successCount++
+        }
+      }
+
+      if (successCount === 0) {
+        session.flash('error', "Aucune image n'a pu être téléversée.")
+        return response.redirect().back()
+      }
+
+      // Increment imgNber in Galery
       const gallery = await Galery.findOrFail(payload.galeryId)
-      gallery.imgNber = gallery.imgNber + 1
+      gallery.imgNber = gallery.imgNber + successCount
       await gallery.save()
 
-      session.flash('success', 'Photo ajoutée avec succès.')
+      session.flash(
+        'success',
+        successCount > 1
+          ? `${successCount} photos ajoutées avec succès.`
+          : 'Photo ajoutée avec succès.'
+      )
     } catch (error) {
       console.error(error)
-      session.flash('error', "Erreur lors de l'ajout de la photo.")
+      session.flash('error', "Erreur lors de l'ajout des photos.")
     }
 
     return response.redirect().back()

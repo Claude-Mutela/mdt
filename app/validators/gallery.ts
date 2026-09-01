@@ -47,10 +47,13 @@ updateGalleryValidator.messagesProvider = new SimpleMessagesProvider(messages)
 
 export const createImageValidator = vine.compile(
   vine.object({
-    title: vine.string().trim().minLength(3).maxLength(300).optional(),
+    title: vine.string().trim().maxLength(300).optional(),
     galeryId: vine.number(),
     date: vine.date().optional(),
-    file: vine.file({ size: '30mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }),
+    file: vine.file({ size: '30mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }).optional(),
+    files: vine
+      .array(vine.file({ size: '30mb', extnames: ['jpg', 'png', 'jpeg', 'webp'] }))
+      .optional(),
   })
 )
 createImageValidator.messagesProvider = new SimpleMessagesProvider(messages)

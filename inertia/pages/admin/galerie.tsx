@@ -16,6 +16,8 @@ import {
   Calendar,
   Pencil,
   Eye,
+  Images,
+  Loader2,
 } from 'lucide-react'
 
 interface CatGalery {
@@ -104,6 +106,63 @@ export default function AdminGalerie({
   const photoDateInputRef = useRef<HTMLInputElement>(null)
   const [previewUrl, setPreviewUrl] = useState<string>('')
 
+  // Multi-photos upload state
+  const [selectedPhotoFiles, setSelectedPhotoFiles] = useState<File[]>([])
+  const [photoPreviews, setPhotoPreviews] = useState<
+    { id: string; url: string; name: string; size: string }[]
+  >([])
+  const [isDragging, setIsDragging] = useState(false)
+
+  function formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 o'
+    const k = 1024
+    const sizes = ['o', 'Ko', 'Mo', 'Go']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
+  }
+
+  function handleAddPhotoFiles(newFilesList: FileList | File[]) {
+    const newFiles = Array.from(newFilesList).filter((file) => file.type.startsWith('image/'))
+    if (newFiles.length === 0) return
+
+    setSelectedPhotoFiles((prev) => {
+      const combined = [...prev, ...newFiles]
+      photoForm.setData('files', combined)
+      return combined
+    })
+
+    const newPreviews = newFiles.map((file) => ({
+      id: Math.random().toString(36).substring(2, 9),
+      url: URL.createObjectURL(file),
+      name: file.name,
+      size: formatFileSize(file.size),
+    }))
+
+    setPhotoPreviews((prev) => [...prev, ...newPreviews])
+  }
+
+  function handleRemovePhotoFile(index: number) {
+    const removedPreview = photoPreviews[index]
+    if (removedPreview) {
+      URL.revokeObjectURL(removedPreview.url)
+    }
+
+    setSelectedPhotoFiles((prev) => {
+      const updated = prev.filter((_, i) => i !== index)
+      photoForm.setData('files', updated)
+      return updated
+    })
+
+    setPhotoPreviews((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  function handleClearAllPhotoFiles() {
+    photoPreviews.forEach((p) => URL.revokeObjectURL(p.url))
+    setSelectedPhotoFiles([])
+    setPhotoPreviews([])
+    photoForm.setData('files', [])
+  }
+
   // Inertia Forms
   const albumForm = useForm({
     title: '',
@@ -111,11 +170,18 @@ export default function AdminGalerie({
     file: null as File | null,
   })
 
-  const photoForm = useForm({
+  const photoForm = useForm<{
+    title: string
+    galeryId: number
+    date: string
+    file: File | null
+    files: File[]
+  }>({
     title: '',
     galeryId: allGaleries.length > 0 ? allGaleries[0].id : 0,
     date: '',
-    file: null as File | null,
+    file: null,
+    files: [],
   })
 
   const catForm = useForm({
@@ -162,7 +228,7 @@ export default function AdminGalerie({
     router.get('/admin/galerie', { tab: activeTab, page: 1 })
   }
 
-  // --- File Previews ---
+  // --- File Previews for Album / Single Edit ---
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>, type: 'album' | 'photo') {
     const file = e.target.files?.[0]
     if (file) {
@@ -250,6 +316,7 @@ export default function AdminGalerie({
       photoForm.setData('galeryId', allGaleries[0].id)
     }
     setPreviewUrl('')
+    handleClearAllPhotoFiles()
     setPhotoModalOpen(true)
   }
 
@@ -261,8 +328,10 @@ export default function AdminGalerie({
       galeryId: p.galeryId,
       date: p.date || '',
       file: null,
+      files: [],
     })
     setPreviewUrl(p.url)
+    handleClearAllPhotoFiles()
     setPhotoModalOpen(true)
   }
 
@@ -277,15 +346,22 @@ export default function AdminGalerie({
           setPhotoModalOpen(false)
           setSelectedPhoto(null)
           photoForm.reset()
+          handleClearAllPhotoFiles()
         },
       })
     } else {
       // Create
+      if (selectedPhotoFiles.length === 0) {
+        photoForm.setError('files' as any, 'Veuillez sélectionner au moins une image.')
+        return
+      }
+
       photoForm.post('/admin/galerie/photos', {
         forceFormData: true,
         onSuccess: () => {
           setPhotoModalOpen(false)
           photoForm.reset()
+          handleClearAllPhotoFiles()
         },
       })
     }
@@ -858,189 +934,400 @@ export default function AdminGalerie({
         )}
 
         {/* ── MODAL : CREATE/EDIT PHOTO ────────────────────────── */}
+        {/* ── MODAL : CREATE/EDIT PHOTO (Single & Multi-upload) ── */}
         {photoModalOpen && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div
+              className={`bg-slate-900 border border-slate-700 rounded-3xl w-full shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 ${
+                selectedPhoto ? 'max-w-md' : 'max-w-2xl'
+              }`}
+            >
               <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-800/20">
-                <h3 className="text-white font-black text-sm uppercase tracking-wider">
-                  {selectedPhoto ? 'Modifier la photo' : 'Ajouter des photos'}
-                </h3>
+                <div className="flex items-center gap-2.5">
+                  <div className="p-1.5 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                    <Images size={16} />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-black text-sm uppercase tracking-wider">
+                      {selectedPhoto ? 'Modifier la photo' : 'Ajouter des photos à la galerie'}
+                    </h3>
+                    {!selectedPhoto && (
+                      <p className="text-[10px] text-slate-400 font-semibold">
+                        Sélection multiple disponible · Enregistrement groupé
+                      </p>
+                    )}
+                  </div>
+                </div>
                 <button
-                  onClick={() => setPhotoModalOpen(false)}
+                  onClick={() => {
+                    setPhotoModalOpen(false)
+                    handleClearAllPhotoFiles()
+                  }}
                   className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
                 >
                   <X size={18} />
                 </button>
               </div>
 
-              <form onSubmit={submitPhoto} className="p-6 space-y-4">
-                {/* Title (Optional) */}
-                <div>
-                  <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 block">
-                    Titre / Légende (Optionnel)
-                  </label>
-                  <input
-                    type="text"
-                    value={photoForm.data.title}
-                    onChange={(e) => photoForm.setData('title', e.target.value)}
-                    placeholder="Ex: Vue de l'assemblée"
-                    className={`w-full bg-slate-950 border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors ${
-                      photoForm.errors.title ? 'border-red-400' : 'border-slate-800'
-                    }`}
-                  />
-                  {photoForm.errors.title && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">
-                      {photoForm.errors.title}
-                    </p>
-                  )}
-                </div>
-
-                {/* Album Selection */}
-                <div>
-                  <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 block">
-                    Album d'appartenance
-                  </label>
-                  <select
-                    value={photoForm.data.galeryId}
-                    onChange={(e) => photoForm.setData('galeryId', Number(e.target.value))}
-                    className={`w-full bg-slate-950 border rounded-xl px-4 py-3 text-sm text-slate-350 focus:outline-none focus:border-primary transition-colors ${
-                      photoForm.errors.galeryId ? 'border-red-400' : 'border-slate-800'
-                    }`}
-                  >
-                    {allGaleries.map((g) => (
-                      <option key={g.id} value={g.id}>
-                        {g.title}
-                      </option>
-                    ))}
-                  </select>
-                  {photoForm.errors.galeryId && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">
-                      {photoForm.errors.galeryId}
-                    </p>
-                  )}
-                </div>
-
-                {/* Date Input */}
-                <div>
-                  <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 block">
-                    Date de prise (Optionnel)
-                  </label>
-                  <div className="relative flex items-center group">
+              <form onSubmit={submitPhoto} className="p-6 space-y-5">
+                {/* Form fields Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Title (Optional) */}
+                  <div className="md:col-span-2">
+                    <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 flex items-center justify-between">
+                      <span>Titre / Légende (Optionnel)</span>
+                      {!selectedPhoto && (
+                        <span className="text-[9px] text-slate-400 font-medium lowercase">
+                          (appliqué à toutes les images)
+                        </span>
+                      )}
+                    </label>
                     <input
-                      ref={photoDateInputRef}
-                      type="date"
-                      value={photoForm.data.date}
-                      onChange={(e) => photoForm.setData('date', e.target.value)}
-                      onClick={(e) => {
-                        try {
-                          ;(e.target as HTMLInputElement).showPicker?.()
-                        } catch {}
-                      }}
-                      className={`w-full bg-slate-950 border rounded-xl pl-4 pr-11 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors cursor-pointer [color-scheme:dark] ${
-                        photoForm.errors.date ? 'border-red-400' : 'border-slate-800'
+                      type="text"
+                      value={photoForm.data.title}
+                      onChange={(e) => photoForm.setData('title', e.target.value)}
+                      placeholder="Ex: Culte de louange et d'adoration"
+                      className={`w-full bg-slate-950 border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors ${
+                        photoForm.errors.title ? 'border-red-400' : 'border-slate-800'
                       }`}
                     />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        try {
-                          photoDateInputRef.current?.showPicker?.()
-                        } catch {
-                          photoDateInputRef.current?.focus()
-                        }
-                      }}
-                      className="absolute right-3 p-1 text-slate-400 hover:text-primary transition-colors rounded-lg hover:bg-slate-800/60"
-                      title="Ouvrir le calendrier"
-                    >
-                      <Calendar size={18} />
-                    </button>
+                    {photoForm.errors.title && (
+                      <p className="text-red-400 text-xs mt-1 font-semibold">
+                        {photoForm.errors.title}
+                      </p>
+                    )}
                   </div>
-                  {photoForm.errors.date && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">
-                      {photoForm.errors.date}
-                    </p>
-                  )}
+
+                  {/* Album & Category Selection */}
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 block">
+                      Album de destination
+                    </label>
+                    <select
+                      value={photoForm.data.galeryId}
+                      onChange={(e) => photoForm.setData('galeryId', Number(e.target.value))}
+                      className={`w-full bg-slate-950 border rounded-xl px-4 py-3 text-sm text-slate-350 focus:outline-none focus:border-primary transition-colors ${
+                        photoForm.errors.galeryId ? 'border-red-400' : 'border-slate-800'
+                      }`}
+                    >
+                      {categories.map((cat) => {
+                        const catAlbums = allGaleries.filter((g) => g.catGaleryId === cat.id)
+                        if (catAlbums.length === 0) return null
+                        return (
+                          <optgroup key={cat.id} label={`📁 ${cat.name}`}>
+                            {catAlbums.map((g) => (
+                              <option key={g.id} value={g.id}>
+                                {g.title}
+                              </option>
+                            ))}
+                          </optgroup>
+                        )
+                      })}
+                      {allGaleries
+                        .filter((g) => !categories.some((c) => c.id === g.catGaleryId))
+                        .map((g) => (
+                          <option key={g.id} value={g.id}>
+                            {g.title}
+                          </option>
+                        ))}
+                    </select>
+                    {photoForm.errors.galeryId && (
+                      <p className="text-red-400 text-xs mt-1 font-semibold">
+                        {photoForm.errors.galeryId}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Date Input */}
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 flex items-center justify-between">
+                      <span>Date de prise</span>
+                      {!selectedPhoto && (
+                        <span className="text-[9px] text-slate-400 font-medium lowercase">
+                          (optionnel)
+                        </span>
+                      )}
+                    </label>
+                    <div className="relative flex items-center group">
+                      <input
+                        ref={photoDateInputRef}
+                        type="date"
+                        value={photoForm.data.date}
+                        onChange={(e) => photoForm.setData('date', e.target.value)}
+                        onClick={(e) => {
+                          try {
+                            ;(e.target as HTMLInputElement).showPicker?.()
+                          } catch {}
+                        }}
+                        className={`w-full bg-slate-950 border rounded-xl pl-4 pr-11 py-3 text-sm text-white focus:outline-none focus:border-primary transition-colors cursor-pointer [color-scheme:dark] ${
+                          photoForm.errors.date ? 'border-red-400' : 'border-slate-800'
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          try {
+                            photoDateInputRef.current?.showPicker?.()
+                          } catch {
+                            photoDateInputRef.current?.focus()
+                          }
+                        }}
+                        className="absolute right-3 p-1 text-slate-400 hover:text-primary transition-colors rounded-lg hover:bg-slate-800/60"
+                        title="Ouvrir le calendrier"
+                      >
+                        <Calendar size={18} />
+                      </button>
+                    </div>
+                    {photoForm.errors.date && (
+                      <p className="text-red-400 text-xs mt-1 font-semibold">
+                        {photoForm.errors.date}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                {/* Photo File Upload */}
-                <div>
-                  <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 block">
-                    Sélectionner l'image
-                  </label>
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className={`relative border-2 border-dashed rounded-2xl p-6 cursor-pointer transition-all flex flex-col items-center justify-center gap-2 bg-slate-950/40 hover:bg-slate-950/70 group ${
-                      (photoForm.errors as any).file
-                        ? 'border-red-400'
-                        : 'border-slate-800 hover:border-primary'
-                    }`}
-                  >
-                    {previewUrl ? (
-                      <div className="relative w-full h-40 rounded-xl overflow-hidden shadow-lg border border-slate-800">
-                        {previewUrl.startsWith('blob:') || previewUrl.startsWith('data:') ? (
-                          <img
-                            src={previewUrl}
-                            alt="preview"
-                            className="w-full h-full object-cover"
+                {/* ── Photo File Upload Zone ── */}
+                {selectedPhoto ? (
+                  /* Single File Edit View */
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 block">
+                      Remplacer l'image
+                    </label>
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className={`relative border-2 border-dashed rounded-2xl p-6 cursor-pointer transition-all flex flex-col items-center justify-center gap-2 bg-slate-950/40 hover:bg-slate-950/70 group ${
+                        (photoForm.errors as any).file
+                          ? 'border-red-400'
+                          : 'border-slate-800 hover:border-primary'
+                      }`}
+                    >
+                      {previewUrl ? (
+                        <div className="relative w-full h-44 rounded-xl overflow-hidden shadow-lg border border-slate-800">
+                          {previewUrl.startsWith('blob:') || previewUrl.startsWith('data:') ? (
+                            <img
+                              src={previewUrl}
+                              alt="preview"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <CloudinaryImage
+                              src={previewUrl}
+                              width={400}
+                              height={300}
+                              alt="Photo preview"
+                              className="w-full h-full object-cover"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Upload size={24} className="text-white" />
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload
+                            size={24}
+                            className="text-slate-500 group-hover:text-primary transition-colors"
                           />
-                        ) : (
-                          <CloudinaryImage
-                            src={previewUrl}
-                            width={400}
-                            height={300}
-                            alt="Photo preview"
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Plus size={24} className="text-white" />
+                          <p className="text-slate-400 text-xs font-bold text-center">
+                            Cliquez pour changer la photo
+                          </p>
+                        </>
+                      )}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, 'photo')}
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  /* Multi-file Dropzone & Previews for Create Mode */
+                  <div>
+                    <label className="text-[10px] text-slate-500 font-black uppercase tracking-wider mb-2 flex items-center justify-between">
+                      <span>Sélection des images (Plusieurs fichiers autorisés)</span>
+                      {selectedPhotoFiles.length > 0 && (
+                        <span className="text-[10px] font-bold text-primary">
+                          {selectedPhotoFiles.length} photo
+                          {selectedPhotoFiles.length > 1 ? 's' : ''} prêtes à être enregistrées
+                        </span>
+                      )}
+                    </label>
+
+                    {/* Drag and drop box */}
+                    {selectedPhotoFiles.length === 0 ? (
+                      <div
+                        onDragOver={(e) => {
+                          e.preventDefault()
+                          setIsDragging(true)
+                        }}
+                        onDragLeave={(e) => {
+                          e.preventDefault()
+                          setIsDragging(false)
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault()
+                          setIsDragging(false)
+                          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                            handleAddPhotoFiles(e.dataTransfer.files)
+                          }
+                        }}
+                        onClick={() => fileInputRef.current?.click()}
+                        className={`border-2 border-dashed rounded-2xl p-8 cursor-pointer transition-all flex flex-col items-center justify-center gap-3 text-center ${
+                          isDragging
+                            ? 'border-primary bg-primary/10 scale-[0.99]'
+                            : (photoForm.errors as any).files || (photoForm.errors as any).file
+                              ? 'border-red-400 bg-red-500/5'
+                              : 'border-slate-800 bg-slate-950/40 hover:bg-slate-950/70 hover:border-primary'
+                        }`}
+                      >
+                        <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg">
+                          <Images size={28} />
+                        </div>
+                        <div>
+                          <p className="text-white text-sm font-bold">
+                            Glissez-déposez vos photos ici ou{' '}
+                            <span className="text-primary underline">parcourez</span>
+                          </p>
+                          <p className="text-slate-500 text-xs mt-1">
+                            Vous pouvez sélectionner autant de photos que vous le souhaitez (JPG,
+                            PNG, WebP jusqu'à 30 Mo)
+                          </p>
                         </div>
                       </div>
                     ) : (
-                      <>
-                        <Upload
-                          size={24}
-                          className="text-slate-500 group-hover:text-primary transition-colors"
-                        />
-                        <p className="text-slate-400 text-xs font-bold text-center">
-                          Cliquez pour choisir un cliché
-                        </p>
-                        <span className="text-[9px] text-slate-650 uppercase font-black tracking-widest">
-                          Max 10Mo · JPG, PNG, WEBP
-                        </span>
-                      </>
+                      /* Multi-image preview grid with controls */
+                      <div className="space-y-3 bg-slate-950/50 border border-slate-800 rounded-2xl p-4">
+                        <div className="flex items-center justify-between border-b border-slate-850 pb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="bg-primary/20 text-primary border border-primary/30 text-xs font-black px-2.5 py-1 rounded-lg">
+                              {selectedPhotoFiles.length} photo
+                              {selectedPhotoFiles.length > 1 ? 's' : ''}
+                            </span>
+                            <span className="text-slate-400 text-xs">
+                              Total :{' '}
+                              {formatFileSize(
+                                selectedPhotoFiles.reduce((acc, f) => acc + f.size, 0)
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => fileInputRef.current?.click()}
+                              className="flex items-center gap-1 text-xs font-bold text-primary hover:text-primary-light bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors"
+                            >
+                              <Plus size={14} />
+                              <span>Ajouter d'autres</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleClearAllPhotoFiles}
+                              className="flex items-center gap-1 text-xs font-bold text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition-colors"
+                              title="Tout effacer"
+                            >
+                              <Trash2 size={13} />
+                              <span>Vider</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Thumbnails grid */}
+                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 max-h-60 overflow-y-auto custom-scrollbar pr-1">
+                          {photoPreviews.map((p, idx) => (
+                            <div
+                              key={p.id}
+                              className="group relative aspect-square bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-md"
+                            >
+                              <img
+                                src={p.url}
+                                alt={p.name}
+                                className="w-full h-full object-cover"
+                              />
+                              {/* Overlay info & remove button */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-1.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleRemovePhotoFile(idx)
+                                  }}
+                                  className="self-end bg-red-500 hover:bg-red-600 text-white p-1 rounded-md shadow-md transition-transform active:scale-90"
+                                  title="Retirer cette photo"
+                                >
+                                  <X size={12} />
+                                </button>
+                                <p className="text-[9px] text-white font-medium truncate px-1">
+                                  {p.size}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     )}
+
                     <input
                       ref={fileInputRef}
                       type="file"
+                      multiple
                       accept="image/*"
-                      onChange={(e) => handleFileChange(e, 'photo')}
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          handleAddPhotoFiles(e.target.files)
+                          // reset input value so re-selecting same files triggers change
+                          e.target.value = ''
+                        }
+                      }}
                       className="hidden"
                     />
+
+                    {((photoForm.errors as any).files || (photoForm.errors as any).file) && (
+                      <p className="text-red-400 text-xs mt-1.5 font-semibold">
+                        {(photoForm.errors as any).files || (photoForm.errors as any).file}
+                      </p>
+                    )}
                   </div>
-                  {(photoForm.errors as any).file && (
-                    <p className="text-red-400 text-xs mt-1 font-semibold">
-                      {(photoForm.errors as any).file}
-                    </p>
-                  )}
-                </div>
+                )}
 
                 {/* Footer Buttons */}
-                <div className="flex justify-end gap-3 pt-4 border-t border-slate-800/50 mt-6">
+                <div className="flex justify-between items-center pt-4 border-t border-slate-800/50 mt-6">
                   <button
                     type="button"
-                    onClick={() => setPhotoModalOpen(false)}
+                    onClick={() => {
+                      setPhotoModalOpen(false)
+                      handleClearAllPhotoFiles()
+                    }}
                     className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white border border-slate-855 hover:bg-slate-850 transition-colors"
                   >
                     Annuler
                   </button>
+
                   <button
                     type="submit"
-                    disabled={photoForm.processing}
-                    className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs bg-primary hover:bg-primary-dark text-white font-black transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+                    disabled={
+                      photoForm.processing || (!selectedPhoto && selectedPhotoFiles.length === 0)
+                    }
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl text-xs bg-primary hover:bg-primary-dark text-white font-black transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Check size={14} />
-                    <span>{selectedPhoto ? 'Enregistrer' : 'Ajouter'}</span>
+                    {photoForm.processing ? (
+                      <>
+                        <Loader2 size={15} className="animate-spin" />
+                        <span>Téléversement en cours...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Check size={15} />
+                        <span>
+                          {selectedPhoto
+                            ? 'Enregistrer les modifications'
+                            : selectedPhotoFiles.length > 1
+                              ? `Enregistrer les ${selectedPhotoFiles.length} photos`
+                              : 'Enregistrer la photo'}
+                        </span>
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

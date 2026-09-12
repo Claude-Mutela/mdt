@@ -28,7 +28,9 @@ const Navbar: React.FC = () => {
               <img
                 alt="Logo Phila"
                 className="h-full w-full object-cover"
-                src="/log-phila-mdt.png"
+                src="/log-phila-mdt.webp"
+                width={40}
+                height={40}
               />
             </div>
             <div className="flex flex-col">

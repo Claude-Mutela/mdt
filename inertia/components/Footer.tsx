@@ -83,8 +83,12 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-full overflow-hidden bg-white/5 flex-shrink-0">
                 <img
-                  src="/log-phila-mdt.png"
+                  src="/log-phila-mdt.webp"
                   alt="Phila MDT Logo"
+                  width={48}
+                  height={48}
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -108,6 +112,8 @@ export function Footer() {
               <a
                 href="https://www.facebook.com/share/17vAiAWYwp/?mibextid=wwXIfr"
                 target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook Phila MDT"
                 className="h-10 w-10 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white"
               >
                 <FacebookIcon size={16} />
@@ -115,6 +121,8 @@ export function Footer() {
               <a
                 href="http://www.youtube.com/@phila_maison_de_temoignages"
                 target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube Phila MDT"
                 className="h-10 w-10 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white"
               >
                 <YoutubeIcon size={16} />
@@ -122,6 +130,8 @@ export function Footer() {
               <a
                 href="https://www.instagram.com/phila_maison_de_temoignages?igsh=aWU5Z3hiMGpydjJv"
                 target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram Phila MDT"
                 className="h-10 w-10 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white"
               >
                 <InstagramIcon size={16} />
@@ -129,6 +139,8 @@ export function Footer() {
               <a
                 href="https://www.tiktok.com/@philamdt"
                 target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok Phila MDT"
                 className="h-10 w-10 border border-white/10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white"
               >
                 <TikTokIcon size={16} />

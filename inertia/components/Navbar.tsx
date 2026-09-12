@@ -76,7 +76,11 @@ const Navbar: React.FC = () => {
 
           {/* Mobile toggle */}
           <div className="xl:hidden flex items-center">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-primary p-2">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-primary p-2"
+              aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+            >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>

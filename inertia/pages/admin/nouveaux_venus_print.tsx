@@ -57,7 +57,7 @@ export default function AdminNewcomersPrint({ newcomers, filterTitle, printDate 
         {/* En-tête */}
         <div className="flex items-center justify-between border-b-2 border-slate-200 pb-6 mb-8">
           <div className="flex items-center gap-4">
-            <img src="/log-phila-mdt.png" alt="Logo Phila MDT" className="h-16 object-contain" />
+            <img src="/log-phila-mdt.webp" alt="Logo Phila MDT" className="h-16 object-contain" />
             <div>
               <h1 className="text-2xl font-bold text-slate-800 uppercase tracking-wide">
                 Phila MAISON DE TÉMOIGNAGES

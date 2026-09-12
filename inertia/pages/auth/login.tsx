@@ -89,8 +89,10 @@ export default function Login({ recaptchaSiteKey = '' }: { recaptchaSiteKey?: st
         <div className="text-center mb-10">
           <div className="flex justify-center mb-6">
             <img
-              src="/log-phila-mdt.png"
+              src="/log-phila-mdt.webp"
               alt="Logo Phila MDT"
+              width={80}
+              height={80}
               className="h-20 w-auto object-contain drop-shadow-[0_0_18px_rgba(255,120,0,0.35)] hover:scale-105 transition-transform duration-300"
             />
           </div>

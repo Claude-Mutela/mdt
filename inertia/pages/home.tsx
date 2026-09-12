@@ -281,8 +281,30 @@ const Home: FC<{
     })
   }, [recaptchaSiteKey])
 
+  const [loadRecaptcha, setLoadRecaptcha] = useState(false)
+  const newsletterSectionRef = useRef<HTMLElement>(null)
+
   useEffect(() => {
-    if (newsletterSent || !recaptchaSiteKey) return
+    if (loadRecaptcha) return
+    const el = newsletterSectionRef.current
+    if (!el || !('IntersectionObserver' in window)) {
+      return
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setLoadRecaptcha(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '400px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [loadRecaptcha])
+
+  useEffect(() => {
+    if (!loadRecaptcha || newsletterSent || !recaptchaSiteKey) return
     if (window.grecaptcha) {
       renderNewsletterWidget()
       return
@@ -299,7 +321,7 @@ const Home: FC<{
     return () => {
       delete (window as any).onRecaptchaLoad
     }
-  }, [newsletterSent, recaptchaSiteKey, renderNewsletterWidget])
+  }, [loadRecaptcha, newsletterSent, recaptchaSiteKey, renderNewsletterWidget])
 
   function handleNewsletterSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -373,6 +395,13 @@ const Home: FC<{
                 muted
                 loop
                 playsInline
+                preload="metadata"
+                poster={
+                  getCloudinaryUrl(
+                    activeHero.filePath.replace(/\.[^/.]+$/, '.jpg'),
+                    'so_0,w_854,q_auto,f_auto'
+                  ) || '/mdt-banner.webp'
+                }
                 className="w-full h-full object-cover"
                 key={activeHero.id}
               >
@@ -1042,7 +1071,7 @@ const Home: FC<{
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-12 lg:py-20 px-4">
+      <section ref={newsletterSectionRef} className="py-12 lg:py-20 px-4">
         <div className="max-w-6xl mx-auto rounded-3xl bg-primary text-white p-8 relative overflow-hidden sm:p-12 lg:p-16 lg:py-20 shadow-2xl">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
@@ -1083,6 +1112,7 @@ const Home: FC<{
                     onChange={(e) => setNewsletterEmail(e.target.value)}
                     placeholder="Votre adresse e-mail…"
                     required
+                    onFocus={() => setLoadRecaptcha(true)}
                     className="w-full px-6 py-4 rounded-xl text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all font-medium border-0"
                   />
 

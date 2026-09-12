@@ -28,6 +28,33 @@ export default defineConfig({
     },
   },
 
+  build: {
+    target: 'esnext',
+    cssMinify: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (
+              id.includes('react') ||
+              id.includes('react-dom') ||
+              id.includes('@inertiajs') ||
+              id.includes('@adonisjs/inertia')
+            ) {
+              return 'vendor-framework'
+            }
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons'
+            }
+            if (id.includes('sonner')) {
+              return 'vendor-ui'
+            }
+          }
+        },
+      },
+    },
+  },
+
   server: {
     watch: {
       ignored: ['**/storage/**', '**/tmp/**'],

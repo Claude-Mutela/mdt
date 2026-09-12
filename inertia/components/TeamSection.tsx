@@ -6,21 +6,21 @@ export const teamMembers = [
     name: 'Pasteur Fondateur',
     description:
       "Visionnaire et serviteur du peuple de Dieu, il guide l'église PHILA depuis sa création avec humilité et ferveur.",
-    image: '/about-mdt.jpg',
+    image: '/about-mdt.webp',
   },
   {
     role: 'ANCIENS & COLLABORATEURS',
     name: 'Équipe Pastorale',
     description:
       'Une équipe dédiée qui soutient le ministère, accompagne les membres et veille au bon déroulement des activités.',
-    image: '/aksanti-mungu-mdt.jpeg',
+    image: '/aksanti-mungu-mdt.webp',
   },
   {
     role: 'FEMMES DE VALEUR',
     name: 'Ministère des Femmes',
     description:
       'Des femmes engagées, intercédant pour les familles et servant la communauté avec grâce et détermination.',
-    image: '/merci-mdt.jpeg',
+    image: '/merci-mdt.webp',
   },
 ]
 

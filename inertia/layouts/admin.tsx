@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, usePage } from '@inertiajs/react'
-import toast, { Toaster } from 'react-hot-toast'
+import { toast, Toaster } from 'sonner'
 import SettingsModal from '../components/SettingsModal'
 import {
   LayoutDashboard,
@@ -313,6 +313,7 @@ export default function AdminLayout({ children, title = 'Dashboard' }: AdminLayo
         <main className="flex-1 overflow-y-auto bg-slate-950 p-6">{children}</main>
       </div>
       <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} user={user} />
+      <Toaster richColors position="top-right" />
     </div>
   )
 }

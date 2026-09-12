@@ -400,6 +400,9 @@ const Home: FC<{
                   src={getCloudinaryUrl(activeHero.filePath, 'w_640,q_auto,f_auto')}
                   alt={activeHero.name}
                   className="w-full h-full object-cover"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                 />
               </picture>
             )
@@ -409,7 +412,8 @@ const Home: FC<{
               muted
               loop
               playsInline
-              poster="/mdt-banner.jpg"
+              preload="metadata"
+              poster="/mdt-banner.webp"
               className="w-full h-full object-cover"
             >
               <source src="/mardi-malakisi-ministeres.mp4" type="video/mp4" />
@@ -451,8 +455,10 @@ const Home: FC<{
             <div className="absolute -inset-4 bg-primary/5 rounded-3xl rotate-3" />
             <img
               className="relative w-full aspect-[4/3] object-cover rounded-2xl shadow-2xl"
-              src="/about-mdt -church.JPG"
+              src="/about-mdt-church.webp"
               alt="Community"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           <div className="space-y-6">
@@ -879,8 +885,10 @@ const Home: FC<{
           {/* Right – Club 365 Image */}
           <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group">
             <img
-              src="/club.JPG"
+              src="/club.webp"
               alt="Club 365 - Lecture intégrale de la Bible"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-75"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
@@ -976,8 +984,10 @@ const Home: FC<{
           {/* Left – Image */}
           <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group order-2 lg:order-1">
             <img
-              src="/hospitalite-mdt.jpeg"
+              src="/hospitalite-mdt.webp"
               alt="Cellules de maison"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />

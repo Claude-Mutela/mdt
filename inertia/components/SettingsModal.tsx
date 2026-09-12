@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X, Check, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 
 interface User {
   id: number

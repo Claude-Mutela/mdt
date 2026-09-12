@@ -104,8 +104,10 @@ export default function About() {
                     {/* Image Header */}
                     <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
                       <img
-                        src="/rolland&viviane.png"
+                        src="/rolland&viviane.webp"
                         alt="Couple Roland et Viviane Dalo"
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                       {/* Badge de génération */}
@@ -192,8 +194,10 @@ export default function About() {
                     {/* Image Header */}
                     <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
                       <img
-                        src="/athoms&nadege.png"
+                        src="/athoms&nadege.webp"
                         alt="Couple Athoms et Nadège Mbuma"
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                       {/* Badge de génération */}

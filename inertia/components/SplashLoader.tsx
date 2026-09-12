@@ -64,8 +64,10 @@ export const SplashLoader: React.FC = () => {
           {/* Cercle blanc avec bordure */}
           <div className="relative h-24 w-24 md:h-28 md:md:w-28 rounded-full bg-white p-2 shadow-xl border border-primary/20 flex items-center justify-center overflow-hidden">
             <img
-              src="/log-phila-mdt.png"
+              src="/log-phila-mdt.webp"
               alt="Phila MDT"
+              width={112}
+              height={112}
               className="h-full w-full object-contain animate-bounce [animation-duration:2.5s]"
             />
           </div>

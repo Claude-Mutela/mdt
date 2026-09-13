@@ -131,7 +131,7 @@ function getYoutubeEmbedUrl(url: string): string {
 
 function getYoutubeThumbnail(url: string): string {
   const id = getYoutubeVideoId(url)
-  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : ''
+  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : ''
 }
 function getCloudinaryUrl(url: string, transformations: string): string {
   if (!url) return ''
@@ -192,6 +192,11 @@ const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
               alt={title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover/play:scale-105"
               loading="lazy"
+              decoding="async"
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+              width="480"
+              height="360"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-slate-900 to-slate-800" />
@@ -286,9 +291,18 @@ const Home: FC<{
   const newsletterSectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    // Diffère le chargement lourd du flux vidéo pour laisser le poster d'image s'afficher immédiatement en LCP
-    const timer = setTimeout(() => setVideoReady(true), 600)
-    return () => clearTimeout(timer)
+    // Active la vidéo en arrière-plan sur tous les appareils (mobile et desktop)
+    // dès que le navigateur a terminé le premier rendu de la page
+    const loadVideo = () => setVideoReady(true)
+    if (typeof window !== 'undefined') {
+      if ('requestIdleCallback' in window) {
+        const id = (window as any).requestIdleCallback(loadVideo, { timeout: 1200 })
+        return () => (window as any).cancelIdleCallback(id)
+      } else {
+        const timer = setTimeout(loadVideo, 800)
+        return () => clearTimeout(timer)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -402,7 +416,7 @@ const Home: FC<{
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
                 poster={
                   getCloudinaryUrl(
                     activeHero.filePath.replace(/\.[^/.]+$/, '.jpg'),
@@ -452,7 +466,7 @@ const Home: FC<{
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="none"
               poster="/mdt-banner.webp"
               className="w-full h-full object-cover"
             >

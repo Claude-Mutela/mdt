@@ -6,8 +6,13 @@ export default function HeroAbout() {
     <header className="relative">
       <div className="relative h-[400px] md:h-[500px] lg:h-[560px] flex items-center justify-center text-center text-white overflow-hidden">
         <img
-          src="/about-mdt.jpg"
+          src="/about-mdt.webp"
           alt="PHILA banner"
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          width={960}
+          height={400}
           className="absolute inset-0 w-full h-full object-cover transform scale-100 md:scale-105 lg:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-[#7a3218]/35 to-[#5b2010]/75" />

@@ -6,7 +6,7 @@ import { Eye, Globe, Heart, ArrowRight, ExternalLink } from 'lucide-react'
 const pastoralCouple = {
   nom: 'Blonsky & Lydia Mbala',
   role: 'Couple Pastoral',
-  photo: '/couple_blonsky_mbala.jpeg',
+  photo: '/couple-blonsky-mbala.webp',
 }
 
 const faqs = [
@@ -50,6 +50,7 @@ export default function About() {
           name="description"
           content="Découvrez l'histoire, la vision, la mission et les valeurs fondamentales de la Phila Maison de Témoignages (MDT)."
         />
+        <link rel="preload" as="image" href="/about-mdt.webp" type="image/webp" fetchPriority="high" />
       </Head>
       <main>
         <HeroAbout />
@@ -71,8 +72,12 @@ export default function About() {
 
             <div className="relative">
               <img
-                src="/about-mdt-church.JPG"
+                src="/a-propos-mdt.webp"
                 alt="celebration puissant"
+                loading="lazy"
+                decoding="async"
+                width={600}
+                height={400}
                 className="w-full h-80 object-cover rounded-2xl shadow-lg"
               />
             </div>
@@ -104,10 +109,12 @@ export default function About() {
                     {/* Image Header */}
                     <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
                       <img
-                        src="/rolland&viviane.webp"
+                        src="/rolland-viviane.webp"
                         alt="Couple Roland et Viviane Dalo"
                         loading="lazy"
                         decoding="async"
+                        width={480}
+                        height={500}
                         className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                       {/* Badge de génération */}
@@ -194,10 +201,12 @@ export default function About() {
                     {/* Image Header */}
                     <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
                       <img
-                        src="/athoms&nadege.webp"
+                        src="/athoms-nadege.webp"
                         alt="Couple Athoms et Nadège Mbuma"
                         loading="lazy"
                         decoding="async"
+                        width={480}
+                        height={500}
                         className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                       {/* Badge de génération */}
@@ -284,8 +293,12 @@ export default function About() {
                     {/* Image Header */}
                     <div className="relative h-72 w-full overflow-hidden bg-slate-100 shrink-0">
                       <img
-                        src="/Couple_Bonsky_mbala.jpeg"
+                        src="/couple-blonsky-mbala.webp"
                         alt="Couple Blonsky et Lydia Mbala"
+                        loading="lazy"
+                        decoding="async"
+                        width={480}
+                        height={500}
                         className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                       />
                       {/* Badge de génération */}
@@ -438,6 +451,10 @@ export default function About() {
                 <img
                   src={pastoralCouple.photo}
                   alt={pastoralCouple.nom}
+                  loading="lazy"
+                  decoding="async"
+                  width={480}
+                  height={600}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>

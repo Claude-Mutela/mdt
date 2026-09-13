@@ -103,7 +103,7 @@ export function Footer() {
               <p className="italic text-sm leading-relaxed font-serif">
                 "Car là où deux ou trois sont assemblés en mon nom, je suis au milieu d'eux."
               </p>
-              <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 - MATTHIEU 18:20
               </p>
             </div>

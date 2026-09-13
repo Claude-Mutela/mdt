@@ -27,6 +27,12 @@ const staticServerConfig = defineConfig({
    * Policy for files starting with a dot.
    */
   dotFiles: 'ignore',
+
+  /**
+   * Set long-term cache headers for production performance
+   */
+  maxAge: '30d',
+  immutable: true,
 })
 
 export default staticServerConfig

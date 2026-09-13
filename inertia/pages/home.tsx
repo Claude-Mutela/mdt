@@ -131,7 +131,7 @@ function getYoutubeEmbedUrl(url: string): string {
 
 function getYoutubeThumbnail(url: string): string {
   const id = getYoutubeVideoId(url)
-  return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : ''
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : ''
 }
 function getCloudinaryUrl(url: string, transformations: string): string {
   if (!url) return ''
@@ -183,7 +183,7 @@ const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
           type="button"
           onClick={() => setPlaying(true)}
           className="absolute inset-0 w-full h-full group/play focus:outline-none"
-          aria-label={`Lire la vidéo : ${title}`}
+          aria-label={`Regarder sur YouTube : ${title}`}
         >
           {/* Vignette */}
           {thumbnail ? (
@@ -282,7 +282,14 @@ const Home: FC<{
   }, [recaptchaSiteKey])
 
   const [loadRecaptcha, setLoadRecaptcha] = useState(false)
+  const [videoReady, setVideoReady] = useState(false)
   const newsletterSectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    // Diffère le chargement lourd du flux vidéo pour laisser le poster d'image s'afficher immédiatement en LCP
+    const timer = setTimeout(() => setVideoReady(true), 600)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     if (loadRecaptcha) return
@@ -405,15 +412,19 @@ const Home: FC<{
                 className="w-full h-full object-cover"
                 key={activeHero.id}
               >
-                <source
-                  src={getCloudinaryUrl(activeHero.filePath, 'w_1280,q_auto,f_auto')}
-                  media="(min-width: 1024px)"
-                />
-                <source
-                  src={getCloudinaryUrl(activeHero.filePath, 'w_854,q_auto,f_auto')}
-                  media="(min-width: 640px)"
-                />
-                <source src={getCloudinaryUrl(activeHero.filePath, 'w_480,q_auto,f_auto')} />
+                {videoReady && (
+                  <>
+                    <source
+                      src={getCloudinaryUrl(activeHero.filePath, 'w_1280,q_auto,f_auto')}
+                      media="(min-width: 1024px)"
+                    />
+                    <source
+                      src={getCloudinaryUrl(activeHero.filePath, 'w_854,q_auto,f_auto')}
+                      media="(min-width: 640px)"
+                    />
+                    <source src={getCloudinaryUrl(activeHero.filePath, 'w_480,q_auto,f_auto')} />
+                  </>
+                )}
               </video>
             ) : (
               <picture className="w-full h-full">
@@ -445,7 +456,7 @@ const Home: FC<{
               poster="/mdt-banner.webp"
               className="w-full h-full object-cover"
             >
-              <source src="/mardi-malakisi-ministeres.mp4" type="video/mp4" />
+              {videoReady && <source src="/mardi-malakisi-ministeres.mp4" type="video/mp4" />}
             </video>
           )}
           <div className="absolute inset-0 bg-black/35"></div>
@@ -1122,7 +1133,6 @@ const Home: FC<{
                       <div
                         ref={newsletterRecaptchaRef}
                         id="newsletter-recaptcha-widget"
-                        aria-label="Vérification anti-robot reCAPTCHA"
                         /* Le widget Google fait ~300px de large ; on le laisse s'adapter naturellement */
                         className="overflow-hidden rounded-xl"
                       />

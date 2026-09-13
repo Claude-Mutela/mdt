@@ -496,9 +496,11 @@ const Home: FC<{
             <img
               className="relative w-full aspect-[4/3] object-cover rounded-2xl shadow-2xl"
               src="/about-mdt-church.webp"
-              alt="Community"
+              alt="Communauté de l'église Phila MDT"
               loading="lazy"
               decoding="async"
+              width="800"
+              height="600"
             />
           </div>
           <div className="space-y-6">
@@ -929,6 +931,8 @@ const Home: FC<{
               alt="Club 365 - Lecture intégrale de la Bible"
               loading="lazy"
               decoding="async"
+              width="600"
+              height="520"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-75"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
@@ -1025,9 +1029,11 @@ const Home: FC<{
           <div className="relative h-[420px] lg:h-[520px] rounded-3xl overflow-hidden shadow-2xl group order-2 lg:order-1">
             <img
               src="/hospitalite-mdt.webp"
-              alt="Cellules de maison"
+              alt="Cellules de maison - Phila MDT"
               loading="lazy"
               decoding="async"
+              width="600"
+              height="520"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />

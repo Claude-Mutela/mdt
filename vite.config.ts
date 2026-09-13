@@ -35,13 +35,14 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // React core — chargé sur toutes les pages
-          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
-            return 'vendor-react'
-          }
-          // Inertia runtime
-          if (id.includes('node_modules/@inertiajs/') || id.includes('node_modules/@inertiajs')) {
-            return 'vendor-inertia'
+          // React + Inertia dans le même chunk — Inertia dépend de React,
+          // les séparer cause un race condition (createContext undefined)
+          if (
+            id.includes('node_modules/react/') ||
+            id.includes('node_modules/react-dom/') ||
+            id.includes('node_modules/@inertiajs/')
+          ) {
+            return 'vendor-framework'
           }
           // Icônes lucide (tree-shakeable mais souvent large)
           if (id.includes('node_modules/lucide-react')) {

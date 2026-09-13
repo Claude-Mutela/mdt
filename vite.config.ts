@@ -32,6 +32,11 @@ export default defineConfig({
     target: 'esnext',
     cssMinify: true,
     chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        experimentalMinChunkSize: 10000,
+      },
+    },
   },
 
   server: {

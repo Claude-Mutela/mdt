@@ -32,29 +32,6 @@ export default defineConfig({
     target: 'esnext',
     cssMinify: true,
     chunkSizeWarningLimit: 600,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          // React + Inertia dans le même chunk — Inertia dépend de React,
-          // les séparer cause un race condition (createContext undefined)
-          if (
-            id.includes('node_modules/react/') ||
-            id.includes('node_modules/react-dom/') ||
-            id.includes('node_modules/@inertiajs/')
-          ) {
-            return 'vendor-framework'
-          }
-          // Icônes lucide (tree-shakeable mais souvent large)
-          if (id.includes('node_modules/lucide-react')) {
-            return 'vendor-icons'
-          }
-          // Reste node_modules → vendor générique
-          if (id.includes('node_modules/')) {
-            return 'vendor-misc'
-          }
-        },
-      },
-    },
   },
 
   server: {

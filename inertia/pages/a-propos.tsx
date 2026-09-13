@@ -50,7 +50,6 @@ export default function About() {
           name="description"
           content="Découvrez l'histoire, la vision, la mission et les valeurs fondamentales de la Phila Maison de Témoignages (MDT)."
         />
-        <link rel="preload" as="image" href="/about-mdt.webp" type="image/webp" fetchPriority="high" />
       </Head>
       <main>
         <HeroAbout />
@@ -360,7 +359,7 @@ export default function About() {
                     <Eye size={28} />
                   </div>
                   <h3 className="text-2xl font-black font-serif mb-4">Notre Vision</h3>
-                  <p className="text-white/85 leading-relaxed">
+                  <p className="text-white font-medium leading-relaxed">
                     Voir des vies brisées transformées en témoignages vivants par la puissance de
                     Dieu, et que ces témoignages deviennent une lumière pour Kinshasa, la RDC et les
                     nations.

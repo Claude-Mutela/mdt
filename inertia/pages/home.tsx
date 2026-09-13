@@ -404,7 +404,6 @@ const Home: FC<{
           name="description"
           content="Bienvenue à la Phila Maison de Témoignages (MDT), un lieu où Dieu transforme des vies en temoiganges vivants. Rejoignez-nous pour nos cultes, nos enseignements et partagez notre communion fraternelle."
         />
-        <link rel="preload" as="image" href="/mdt-banner.webp" type="image/webp" fetchPriority="high" />
       </Head>
 
       {/* Hero Section */}

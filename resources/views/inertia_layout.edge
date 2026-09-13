@@ -72,8 +72,16 @@
     <link rel="dns-prefetch" href="https://www.gstatic.com" />
     <link rel="dns-prefetch" href="https://i.ytimg.com" />
     <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
-    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+    <!-- Preload conditionnel LCP par page (serveur) -->
+    @if(page?.component === 'home')
+      @if(page?.props?.activeHero?.type === 'image')
+        <link rel="preload" as="image" href="/mdt-banner.webp" type="image/webp" fetchpriority="high" />
+      @endif
+    @elseif(page?.component === 'a-propos')
+      <link rel="preload" as="image" href="/about-mdt.webp" type="image/webp" fetchpriority="high" />
+    @endif
 
+    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
 
     <link
       rel="stylesheet"

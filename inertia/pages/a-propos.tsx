@@ -146,7 +146,7 @@ export default function About() {
                         href="https://eglisecmp.com/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="Visiter le site officiel du Centre Missionnaire Philadelphie"
+                        aria-label="Visiter le site officiel de Phila Maison de Témoignages"
                         className="inline-flex items-center gap-2 text-sm font-black text-primary hover:text-primary-dark transition-colors"
                       >
                         <span>Visiter le site</span>

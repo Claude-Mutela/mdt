@@ -20,47 +20,12 @@ interface GalleryImage {
   date: string
 }
 
-function isYoutubeUrl(url: string): boolean {
-  if (!url) return false
-  return url.includes('youtube.com') || url.includes('youtu.be')
-}
-
-function getYoutubeVideoId(url: string): string | null {
-  if (!url) return null
-  const watchMatch = url.match(/[?&]v=([^&#]+)/)
-  const shortMatch = url.match(/youtu\.be\/([^?&#]+)/)
-  if (watchMatch) return watchMatch[1]
-  if (shortMatch) return shortMatch[1]
-  return null
-}
-
-function getYoutubeEmbedUrl(url: string): string {
-  const id = getYoutubeVideoId(url)
-  return id ? `https://www.youtube-nocookie.com/embed/${id}` : url
-}
-
-function getYoutubeThumbnailUrl(url: string): string {
-  const id = getYoutubeVideoId(url)
-  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : ''
-}
-
-function getVideoPlayUrl(thumbnail: string, url: string): string {
-  if (isYoutubeUrl(thumbnail)) return thumbnail
-  return url
-}
-
-function getThumbnail(thumbnail: string, url: string): string {
-  if (isYoutubeUrl(thumbnail)) {
-    return getYoutubeThumbnailUrl(thumbnail)
-  }
-  if (thumbnail && thumbnail.trim() !== '' && !isYoutubeUrl(thumbnail)) {
-    return thumbnail
-  }
-  if (isYoutubeUrl(url)) {
-    return getYoutubeThumbnailUrl(url)
-  }
-  return '/mdt-banner.jpg'
-}
+import {
+  isYoutubeUrl,
+  getYoutubeEmbedUrl,
+  getVideoPlayUrl,
+  getVideoThumbnail,
+} from '~/utils/youtube'
 
 const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
   videos = [],
@@ -223,9 +188,10 @@ const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
               {isYoutubeUrl(activeVideo) ? (
                 <iframe
                   className="w-full h-full"
-                  src={`${getYoutubeEmbedUrl(activeVideo)}?autoplay=1`}
+                  src={getYoutubeEmbedUrl(activeVideo, true)}
                   title="Lecture vidéo"
                   frameBorder="0"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                 />
@@ -244,7 +210,7 @@ const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
 }
 
 const VideoCard = ({ thumbnail, duration, title, category, date, speaker, url, onPlay }: any) => {
-  const displayThumbnail = getThumbnail(thumbnail, url)
+  const displayThumbnail = getVideoThumbnail(thumbnail, url)
   return (
     <article onClick={onPlay} className="group cursor-pointer space-y-4">
       <div className="relative aspect-video rounded-2xl overflow-hidden shadow-md border border-slate-200 bg-slate-100">

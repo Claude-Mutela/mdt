@@ -13,47 +13,12 @@ import { Head } from '@inertiajs/react'
 import { getOptimizedCloudinaryUrl } from '~/utils/cloudinary'
 import type { MediaItem, MediaType } from '../../types'
 
-function isYoutubeUrl(url: string): boolean {
-  if (!url) return false
-  return url.includes('youtube.com') || url.includes('youtu.be')
-}
-
-function getYoutubeVideoId(url: string): string | null {
-  if (!url) return null
-  const watchMatch = url.match(/[?&]v=([^&#]+)/)
-  const shortMatch = url.match(/youtu\.be\/([^?&#]+)/)
-  if (watchMatch) return watchMatch[1]
-  if (shortMatch) return shortMatch[1]
-  return null
-}
-
-function getYoutubeEmbedUrl(url: string): string {
-  const id = getYoutubeVideoId(url)
-  return id ? `https://www.youtube-nocookie.com/embed/${id}` : url
-}
-
-function getYoutubeThumbnailUrl(url: string): string {
-  const id = getYoutubeVideoId(url)
-  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : ''
-}
-
-function getVideoPlayUrl(thumbnail: string, url: string): string {
-  if (isYoutubeUrl(thumbnail)) return thumbnail
-  return url
-}
-
-function getThumbnail(thumbnail: string, url: string): string {
-  if (isYoutubeUrl(thumbnail)) {
-    return getYoutubeThumbnailUrl(thumbnail)
-  }
-  if (thumbnail && thumbnail.trim() !== '' && !isYoutubeUrl(thumbnail)) {
-    return thumbnail
-  }
-  if (isYoutubeUrl(url)) {
-    return getYoutubeThumbnailUrl(url)
-  }
-  return '/mdt-banner.jpg'
-}
+import {
+  isYoutubeUrl,
+  getYoutubeEmbedUrl,
+  getVideoPlayUrl,
+  getVideoThumbnail,
+} from '~/utils/youtube'
 
 const MediaGridCard: React.FC<{ item: MediaItem; onSelect: (item: MediaItem) => void }> = ({
   item,
@@ -89,7 +54,7 @@ const MediaGridCard: React.FC<{ item: MediaItem; onSelect: (item: MediaItem) => 
     }
   }
 
-  const displayThumbnail = getThumbnail(item.thumbnail, item.url)
+  const displayThumbnail = getVideoThumbnail(item.thumbnail, item.url)
 
   return (
     <article
@@ -306,9 +271,10 @@ const AllContent: React.FC<{ items?: MediaItem[] }> = ({ items = [] }) => {
                   {isYoutubeUrl(selectedItem.url) ? (
                     <iframe
                       className="w-full h-full"
-                      src={`${getYoutubeEmbedUrl(selectedItem.url)}?autoplay=1`}
+                      src={getYoutubeEmbedUrl(selectedItem.url, true)}
                       title={selectedItem.title}
                       frameBorder="0"
+                      referrerPolicy="strict-origin-when-cross-origin"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
                     />

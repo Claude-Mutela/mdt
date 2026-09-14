@@ -74,17 +74,11 @@ const formatLabels: Record<FormatMedia, string> = {
   texte: 'Document',
 }
 
-function getYoutubeId(url: string | null): string | null {
-  if (!url) return null
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
-  const match = url.match(regExp)
-  return match && match[2].length === 11 ? match[2] : null
-}
-
-function getYoutubeThumbnail(url: string | null): string | null {
-  const id = getYoutubeId(url)
-  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null
-}
+import {
+  getYoutubeVideoId as getYoutubeId,
+  getYoutubeThumbnailUrl as getYoutubeThumbnail,
+  getYoutubeEmbedUrl,
+} from '~/utils/youtube'
 
 export default function AdminMedias({ medias, categories, meta, filters }: AdminMediasProps) {
   const [modal, setModal] = useState<'add' | 'edit' | 'delete' | 'category' | null>(null)
@@ -877,9 +871,10 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                 getYoutubeId(playingMedia.urlFile) ? (
                   // YouTube Video Player
                   <iframe
-                    src={`https://www.youtube.com/embed/${getYoutubeId(playingMedia.urlFile)}?autoplay=1`}
+                    src={getYoutubeEmbedUrl(playingMedia.urlFile, true)}
                     title={playingMedia.title}
                     frameBorder="0"
+                    referrerPolicy="strict-origin-when-cross-origin"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                     className="w-full h-full"

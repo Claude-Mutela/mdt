@@ -112,27 +112,13 @@ function formatDuration(seconds: number | null): string {
   return `${s}s`
 }
 
-function isYoutubeUrl(url: string): boolean {
-  return url.includes('youtube.com') || url.includes('youtu.be')
-}
+import {
+  isYoutubeUrl,
+  getYoutubeVideoId,
+  getYoutubeEmbedUrl,
+  getYoutubeThumbnailUrl,
+} from '~/utils/youtube'
 
-function getYoutubeVideoId(url: string): string | null {
-  const watchMatch = url.match(/[?&]v=([^&#]+)/)
-  const shortMatch = url.match(/youtu\.be\/([^?&#]+)/)
-  if (watchMatch) return watchMatch[1]
-  if (shortMatch) return shortMatch[1]
-  return null
-}
-
-function getYoutubeEmbedUrl(url: string): string {
-  const id = getYoutubeVideoId(url)
-  return id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1` : url
-}
-
-function getYoutubeThumbnail(url: string): string {
-  const id = getYoutubeVideoId(url)
-  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : ''
-}
 function getCloudinaryUrl(url: string, transformations: string): string {
   if (!url) return ''
   if (!url.includes('cloudinary.com')) return url
@@ -164,8 +150,8 @@ const DAYS_FR: Record<string, string> = {
  * ────────────────────────────────────────────────────────────────────── */
 const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
   const [playing, setPlaying] = useState(false)
-  const thumbnail = getYoutubeThumbnail(url)
-  const embedSrc = getYoutubeEmbedUrl(url)
+  const thumbnail = getYoutubeThumbnailUrl(url)
+  const embedSrc = getYoutubeEmbedUrl(url, true)
 
   return (
     <div className="aspect-video relative bg-black">
@@ -175,6 +161,7 @@ const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
           src={embedSrc}
           title={title}
           frameBorder="0"
+          referrerPolicy="strict-origin-when-cross-origin"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
         />

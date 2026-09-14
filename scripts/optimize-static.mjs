@@ -45,7 +45,9 @@ async function run() {
     )
   }
 
-  console.log(`\n🎉 Gain total d'espace économisé : ${(totalSaved / (1024 * 1024)).toFixed(2)} Mo !`)
+  console.log(
+    `\n🎉 Gain total d'espace économisé : ${(totalSaved / (1024 * 1024)).toFixed(2)} Mo !`
+  )
 }
 
 run().catch((err) => {

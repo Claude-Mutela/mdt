@@ -60,7 +60,7 @@ export const SplashLoader: React.FC = () => {
         {/* Anneau extérieur animé */}
         <div className="relative flex items-center justify-center">
           <div className="absolute -inset-2.5 rounded-full bg-gradient-to-r from-primary via-amber-500 to-primary opacity-40 blur-sm animate-spin [animation-duration:4s]" />
-          
+
           {/* Cercle blanc avec bordure */}
           <div className="relative h-24 w-24 md:h-28 md:md:w-28 rounded-full bg-white p-2 shadow-xl border border-primary/20 flex items-center justify-center overflow-hidden">
             <img

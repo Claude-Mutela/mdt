@@ -5,9 +5,7 @@
 export function isYoutubeUrl(url: string | null | undefined): boolean {
   if (!url) return false
   return (
-    url.includes('youtube.com') ||
-    url.includes('youtu.be') ||
-    url.includes('youtube-nocookie.com')
+    url.includes('youtube.com') || url.includes('youtu.be') || url.includes('youtube-nocookie.com')
   )
 }
 

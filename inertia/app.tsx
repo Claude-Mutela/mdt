@@ -31,4 +31,3 @@ createInertiaApp({
   },
   progress: false,
 })
-

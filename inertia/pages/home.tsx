@@ -1,6 +1,7 @@
 import { FC, useEffect, useRef, useState, useCallback } from 'react'
 import { Head, Link, router } from '@inertiajs/react'
 import { ArrowRight, Calendar, Clock, MapPin, Mail, Play } from 'lucide-react'
+import { isYoutubeUrl, getYoutubeEmbedUrl, getYoutubeThumbnailUrl } from '~/utils/youtube'
 
 /* ── Types globaux reCAPTCHA ─────────────────────────────────────── */
 declare global {
@@ -111,13 +112,6 @@ function formatDuration(seconds: number | null): string {
   if (m > 0) return `${m}min${s > 0 ? s.toString().padStart(2, '0') + 's' : ''}`
   return `${s}s`
 }
-
-import {
-  isYoutubeUrl,
-  getYoutubeVideoId,
-  getYoutubeEmbedUrl,
-  getYoutubeThumbnailUrl,
-} from '~/utils/youtube'
 
 function getCloudinaryUrl(url: string, transformations: string): string {
   if (!url) return ''

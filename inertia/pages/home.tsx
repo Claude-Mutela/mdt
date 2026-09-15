@@ -383,7 +383,7 @@ const Home: FC<{
       <Head title="Phila Maison de Témoignages">
         <meta
           name="description"
-          content="Bienvenue à la Phila Maison de Témoignages (MDT), un lieu où Dieu transforme des vies en temoiganges vivants. Rejoignez-nous pour nos cultes, nos enseignements et partagez notre communion fraternelle."
+          content="Bienvenue à Phila Maison de Témoignages (MDT), un lieu où Dieu transforme des vies en témoignages vivants. Rejoignez-nous pour nos cultes, nos enseignements et partagez notre communion fraternelle."
         />
       </Head>
 

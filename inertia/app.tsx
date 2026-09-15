@@ -11,12 +11,20 @@ import { resolvePageComponent } from '@adonisjs/inertia/helpers'
 
 // Suivi des pages vues pour Google Tag Manager / Google Analytics (SPA Inertia)
 router.on('navigate', (event) => {
-  if (typeof window !== 'undefined' && (window as any).dataLayer) {
-    ;(window as any).dataLayer.push({
-      event: 'page_view',
-      page_path: event.detail.page.url,
-      page_title: document.title,
-    })
+  if (typeof window !== 'undefined') {
+    if ((window as any).dataLayer) {
+      ;(window as any).dataLayer.push({
+        event: 'page_view',
+        page_path: event.detail.page.url,
+        page_title: document.title,
+      })
+    }
+    if (typeof (window as any).gtag === 'function') {
+      ;(window as any).gtag('config', 'G-03SQWZVCLH', {
+        page_path: event.detail.page.url,
+        page_title: document.title,
+      })
+    }
   }
 })
 

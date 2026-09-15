@@ -147,10 +147,10 @@ const AllContent: React.FC<{ items?: MediaItem[] }> = ({ items = [] }) => {
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
               <div className="space-y-4">
-                <h1 className="text-4xl md:text-5xl font-black font-serif text-slate-900 leading-tight">
+                <h1 className="text-2xl sm:text-4xl md:text-5xl font-black font-serif text-slate-900 leading-tight">
                   Médiathèque Complète
                 </h1>
-                <p className="text-slate-500 text-lg max-w-xl">
+                <p className="text-slate-500 text-sm sm:text-base md:text-lg max-w-xl">
                   Explorez l'ensemble de nos ressources spirituelles classées par catégorie.
                 </p>
               </div>

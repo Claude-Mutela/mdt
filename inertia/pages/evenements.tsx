@@ -72,10 +72,10 @@ export default function Evenements({ events }: Props) {
             {/* <span className="inline-block bg-primary/20 backdrop-blur-md text-white border border-primary/30 text-xs uppercase tracking-widest px-4 py-2 rounded-full font-bold">
               Agenda de l'Église
             </span> */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-serif text-white leading-tight">
-              Nos Événements &<br /> Rassemblements
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black font-serif text-white leading-tight">
+              Nos Événements & Rassemblements
             </h1>
-            <p className="text-white/80 text-lg max-w-2xl mx-auto">
+            <p className="text-white/80 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
               Retrouvez tous les moments forts de notre communauté. Rejoignez-nous pour grandir
               ensemble.
             </p>

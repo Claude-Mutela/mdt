@@ -22,10 +22,12 @@ const Gallery: React.FC<{ albums?: Album[] }> = ({ albums = [] }) => {
       </Head>
       <div className="min-h-screen bg-white animate-in fade-in duration-700">
         {/* Hero */}
-        <section className="bg-primary text-white py-24 text-center px-4">
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h1 className="text-5xl md:text-6xl font-black font-serif">Galerie Photos</h1>
-            <p className="text-white/80 text-lg md:text-xl font-medium max-w-xl mx-auto leading-relaxed">
+        <section className="bg-primary text-white py-14 md:py-24 text-center px-4">
+          <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black font-serif">
+              Galerie Photos
+            </h1>
+            <p className="text-white/80 text-sm sm:text-base md:text-xl font-medium max-w-xl mx-auto leading-relaxed">
               Parcourez les témoignages visuels de la vie de notre église à travers nos albums.
             </p>
           </div>

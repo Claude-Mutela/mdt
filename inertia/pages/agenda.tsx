@@ -118,10 +118,10 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
             <span className="inline-block bg-white/10 backdrop-blur-md text-white border border-white/20 text-[10px] uppercase tracking-widest px-4 py-2 rounded-full font-bold">
               Programme Hebdomadaire
             </span>
-            <h1 className="text-4xl md:text-6xl font-black font-serif text-white leading-tight">
-              L'Agenda de <br /> Notre Église
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black font-serif text-white leading-tight">
+              L'Agenda de Notre Église
             </h1>
-            <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+            <p className="text-white/80 text-sm sm:text-base md:text-xl max-w-2xl mx-auto">
               Planifiez votre semaine spirituelle et ne manquez aucun rendez-vous avec la présence
               de Dieu.
             </p>

@@ -90,7 +90,7 @@ export default function About() {
               <span className="text-primary font-black uppercase tracking-widest text-xs">
                 Notre Filiation Spirituelle
               </span>
-              <h2 className="text-slate-900 text-3xl md:text-4xl font-black font-serif">
+              <h2 className="text-slate-900 text-2xl sm:text-3xl lg:text-4xl font-black font-serif">
                 D'où vient Phila Maison de Témoignages ?
               </h2>
               <p className="text-slate-500 text-base md:text-lg">
@@ -517,8 +517,10 @@ function FaqSection() {
           <span className="text-primary font-black uppercase tracking-widest text-xs">
             Vos questions
           </span>
-          <h2 className="text-slate-900 text-4xl font-black font-serif">Foire aux questions</h2>
-          <p className="text-slate-500 max-w-xl mx-auto">
+          <h2 className="text-slate-900 text-2xl sm:text-3xl md:text-4xl font-black font-serif">
+            Foire aux questions
+          </h2>
+          <p className="text-slate-500 text-sm sm:text-base max-w-xl mx-auto">
             Trouvez rapidement les réponses aux questions les plus fréquemment posées sur notre
             communauté.
           </p>

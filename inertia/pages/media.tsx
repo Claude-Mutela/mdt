@@ -52,10 +52,10 @@ const Media: React.FC<{ videos?: Video[]; galleryImages?: GalleryImage[] }> = ({
                   Médiathèque
                 </span>
               </div>
-              <h1 className="text-slate-900 text-4xl md:text-6xl font-black leading-tight font-serif">
+              <h1 className="text-slate-900 text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight font-serif">
                 Ressources & Inspirations
               </h1>
-              <p className="text-slate-500 text-lg md:text-xl font-normal leading-relaxed max-w-2xl mt-2">
+              <p className="text-slate-500 text-sm sm:text-base md:text-xl font-normal leading-relaxed max-w-2xl mt-2">
                 Revivez nos cultes, écoutez nos enseignements et découvrez la vie de l'église en
                 images.
               </p>

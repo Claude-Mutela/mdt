@@ -52,7 +52,7 @@ const GalleryContent: React.FC<{ album?: Album }> = ({ album }) => {
               <ArrowLeft size={16} />
               Retour aux albums
             </Link>
-            <h1 className="text-4xl md:text-5xl font-black font-serif">{album.title}</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-black font-serif">{album.title}</h1>
             <p className="text-white/70 mt-2 font-medium">
               {images.length} photo{images.length !== 1 ? 's' : ''}
             </p>

@@ -535,7 +535,7 @@ const Home: FC<{
               <span className="text-primary font-black uppercase tracking-widest text-xs">
                 Message récent
               </span>
-              <h2 className="text-slate-900 text-4xl font-black font-serif">
+              <h2 className="text-slate-900 text-2xl sm:text-3xl md:text-4xl font-black font-serif">
                 Dernière prédication
               </h2>
               <p className="text-slate-500">

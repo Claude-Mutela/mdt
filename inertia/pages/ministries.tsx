@@ -57,10 +57,10 @@ const Activities: React.FC<Props> = ({ ministries = [], responsibles = [] }) => 
             <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-[#7a3218]/35 to-[#5b2010]/75" />
           </div>
           <div className="relative z-10 space-y-4 max-w-2xl">
-            <h1 className="text-white text-4xl md:text-6xl font-black font-serif leading-tight">
+            <h1 className="text-white text-3xl sm:text-4xl md:text-6xl font-black font-serif leading-tight">
               Nos Ministères
             </h1>
-            <p className="text-white/90 text-lg md:text-xl font-medium">
+            <p className="text-white/90 text-sm sm:text-base md:text-xl font-medium">
               Rejoignez-nous pour grandir ensemble dans la foi et vivre la communion fraternelle.
             </p>
           </div>

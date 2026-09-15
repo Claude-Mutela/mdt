@@ -150,11 +150,11 @@ const Contact: React.FC<{ recaptchaSiteKey?: string }> = ({ recaptchaSiteKey = '
       <div className="bg-background-off min-h-screen animate-in fade-in slide-in-from-left-4 duration-700">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-20">
           {/* ── En-tête ── */}
-          <div className="text-center space-y-4 mb-16">
-            <h1 className="text-slate-900 text-4xl md:text-6xl font-black font-serif">
+          <div className="text-center space-y-3 md:space-y-4 mb-10 md:mb-16">
+            <h1 className="text-slate-900 text-3xl sm:text-4xl md:text-6xl font-black font-serif">
               Contactez-nous
             </h1>
-            <p className="text-slate-500 text-lg max-w-2xl mx-auto">
+            <p className="text-slate-500 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
               Nous sommes là pour vous. Que ce soit pour une demande d'information, un témoignage ou
               un sujet de prière, n'hésitez pas à nous écrire.
             </p>

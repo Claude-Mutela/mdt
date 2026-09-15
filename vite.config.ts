@@ -34,7 +34,14 @@ export default defineConfig({
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
-        experimentalMinChunkSize: 10000,
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons'
+            }
+            return 'vendor'
+          }
+        },
       },
     },
   },

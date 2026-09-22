@@ -29,6 +29,17 @@
         var gaScript = document.createElement('script');
         gaScript.async = true;
         gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-03SQWZVCLH';
+        gaScript.onload = function() {
+          // Page View initial : déclenché une seule fois quand gtag.js est prêt.
+          // Le flag __inertiaHasNavigated évite le double Page View si l'utilisateur
+          // a déjà navigué avec Inertia avant la fin du chargement différé.
+          if (!window.__inertiaHasNavigated) {
+            gtag('event', 'page_view', {
+              page_path: window.location.pathname + window.location.search,
+              page_title: document.title,
+            });
+          }
+        };
         document.head.appendChild(gaScript);
       }
 

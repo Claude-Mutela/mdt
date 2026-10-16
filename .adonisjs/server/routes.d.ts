@@ -89,7 +89,6 @@ export type ScannedRoutes = {
     'admin.rendez-vous.print': { paramsTuple?: []; params?: {} }
     'admin.rendez-vous.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.rendez-vous.reschedule': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.rendez-vous.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.nouveaux_venus.print': { paramsTuple?: []; params?: {} }
     'admin.nouveaux_venus': { paramsTuple?: []; params?: {} }
     'admin.newcomers.store': { paramsTuple?: []; params?: {} }
@@ -245,7 +244,6 @@ export type ScannedRoutes = {
     'admin.cellules.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.newsletter.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.members.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'admin.rendez-vous.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.newcomers.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.finances.operations.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'admin.finances.categories.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

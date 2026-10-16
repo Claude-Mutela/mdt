@@ -159,16 +159,22 @@ export default class AdminMediasController {
   // --- Category CRUD Methods ---
 
   public async storeCategory({ request, response, session }: HttpContext) {
-    const payload = await request.validateUsing(catMediaValidator)
-
     try {
+      const payload = await request.validateUsing(catMediaValidator)
+
+      const existing = await CatMedia.query().where('name', payload.name).first()
+      if (existing) {
+        session.flash('error', 'Une catégorie avec ce nom existe déjà.')
+        return response.redirect().back()
+      }
+
       await CatMedia.create({ name: payload.name })
       session.flash('success', 'Catégorie créée avec succès.')
     } catch (error) {
       console.error(error)
       session.flash(
         'error',
-        'Erreur lors de la création de la catégorie (le nom doit être unique).'
+        'Erreur lors de la création de la catégorie (le nom doit être valide et unique).'
       )
     }
 
@@ -176,10 +182,20 @@ export default class AdminMediasController {
   }
 
   public async updateCategory({ params, request, response, session }: HttpContext) {
-    const category = await CatMedia.findOrFail(params.id)
-    const payload = await request.validateUsing(catMediaValidator)
-
     try {
+      const category = await CatMedia.findOrFail(params.id)
+      const payload = await request.validateUsing(catMediaValidator)
+
+      const existing = await CatMedia.query()
+        .where('name', payload.name)
+        .whereNot('id', category.id)
+        .first()
+
+      if (existing) {
+        session.flash('error', 'Une catégorie avec ce nom existe déjà.')
+        return response.redirect().back()
+      }
+
       category.name = payload.name
       await category.save()
       session.flash('success', 'Catégorie mise à jour avec succès.')
@@ -192,17 +208,23 @@ export default class AdminMediasController {
   }
 
   public async destroyCategory({ params, response, session }: HttpContext) {
-    const category = await CatMedia.findOrFail(params.id)
-
     try {
+      const category = await CatMedia.findOrFail(params.id)
+
+      const mediaCount = await Media.query().where('catMediaId', category.id).first()
+      if (mediaCount) {
+        session.flash(
+          'error',
+          'Impossible de supprimer cette catégorie car elle contient des médias associés.'
+        )
+        return response.redirect().back()
+      }
+
       await category.delete()
       session.flash('success', 'Catégorie supprimée avec succès.')
     } catch (error) {
       console.error(error)
-      session.flash(
-        'error',
-        'Impossible de supprimer cette catégorie car elle contient des médias associés.'
-      )
+      session.flash('error', 'Erreur lors de la suppression de la catégorie.')
     }
 
     return response.redirect().back()

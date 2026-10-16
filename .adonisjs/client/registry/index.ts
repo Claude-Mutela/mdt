@@ -516,11 +516,11 @@ const routes = {
     tokens: [{"old":"/admin/rendez-vous/:id/reschedule","type":0,"val":"admin","end":""},{"old":"/admin/rendez-vous/:id/reschedule","type":0,"val":"rendez-vous","end":""},{"old":"/admin/rendez-vous/:id/reschedule","type":1,"val":"id","end":""},{"old":"/admin/rendez-vous/:id/reschedule","type":0,"val":"reschedule","end":""}],
     types: placeholder as Registry['admin.rendez-vous.reschedule']['types'],
   },
-  'admin.rendez-vous.destroy': {
+  'admin_appointments.destroy': {
     methods: ["DELETE"],
     pattern: '/admin/rendez-vous/:id',
     tokens: [{"old":"/admin/rendez-vous/:id","type":0,"val":"admin","end":""},{"old":"/admin/rendez-vous/:id","type":0,"val":"rendez-vous","end":""},{"old":"/admin/rendez-vous/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['admin.rendez-vous.destroy']['types'],
+    types: placeholder as Registry['admin_appointments.destroy']['types'],
   },
   'admin.nouveaux_venus.print': {
     methods: ["GET","HEAD"],

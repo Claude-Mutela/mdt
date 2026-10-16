@@ -125,7 +125,6 @@ export interface ApiDefinition {
       print: typeof routes['admin.rendez-vous.print']
       update: typeof routes['admin.rendez-vous.update']
       reschedule: typeof routes['admin.rendez-vous.reschedule']
-      destroy: typeof routes['admin.rendez-vous.destroy']
     }
     nouveauxVenus: typeof routes['admin.nouveaux_venus'] & {
       print: typeof routes['admin.nouveaux_venus.print']
@@ -151,5 +150,8 @@ export interface ApiDefinition {
       }
     }
     donations: typeof routes['admin.donations']
+  }
+  adminAppointments: {
+    destroy: typeof routes['admin_appointments.destroy']
   }
 }

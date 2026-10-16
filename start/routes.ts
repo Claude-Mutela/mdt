@@ -391,9 +391,12 @@ router
             () => import('#controllers/admin_appointments_controller'),
             'destroy',
           ])
-          .as('admin.rendez-vous.destroy')
       })
-      .use(middleware.role({ allowedRoles: ['superadmin', 'admin', 'pasteur', 'administration'] }))
+      .use(
+        middleware.role({
+          allowedRoles: ['superadmin', 'admin', 'pasteur', 'administration', 'mdtcom'],
+        })
+      )
 
     // Section Nouveaux Venus (nouveaux venus)
     router

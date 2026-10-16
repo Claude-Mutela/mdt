@@ -1027,7 +1027,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_appointments_controller').default['reschedule']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'admin.rendez-vous.destroy': {
+  'admin_appointments.destroy': {
     methods: ["DELETE"]
     pattern: '/admin/rendez-vous/:id'
     types: {

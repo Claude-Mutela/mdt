@@ -231,30 +231,27 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
   function handleSaveCategory(e: React.FormEvent) {
     e.preventDefault()
     if (selectedCat) {
-      router.put(
-        `/admin/medias/categories/${selectedCat.id}`,
-        { name: catForm.data.name },
-        {
-          onSuccess: () => {
-            setSelectedCat(null)
-            catForm.reset()
-          },
-        }
-      )
+      catForm.put(`/admin/medias/categories/${selectedCat.id}`, {
+        onSuccess: () => {
+          setSelectedCat(null)
+          catForm.reset()
+          catForm.clearErrors()
+        },
+      })
     } else {
-      router.post(
-        '/admin/medias/categories',
-        { name: catForm.data.name },
-        {
-          onSuccess: () => catForm.reset(),
-        }
-      )
+      catForm.post('/admin/medias/categories', {
+        onSuccess: () => {
+          catForm.reset()
+          catForm.clearErrors()
+        },
+      })
     }
   }
 
   function startEditCategory(cat: CatMedia) {
     setSelectedCat(cat)
     catForm.setData('name', cat.name)
+    catForm.clearErrors()
   }
 
   function handleDeleteCategory(cat: CatMedia) {
@@ -794,6 +791,7 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                       onClick={() => {
                         setSelectedCat(null)
                         catForm.reset()
+                        catForm.clearErrors()
                       }}
                       className="px-3 rounded-xl border border-slate-800 text-slate-400 hover:text-white transition-colors shrink-0"
                     >
@@ -814,6 +812,7 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                       </span>
                       <div className="flex items-center gap-1">
                         <button
+                          type="button"
                           onClick={() => startEditCategory(cat)}
                           className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
                           title="Modifier"
@@ -821,6 +820,7 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                           <Pencil size={13} />
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleDeleteCategory(cat)}
                           className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                           title="Supprimer"

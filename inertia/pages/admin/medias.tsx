@@ -78,6 +78,7 @@ import {
   getYoutubeVideoId as getYoutubeId,
   getYoutubeThumbnailUrl as getYoutubeThumbnail,
   getYoutubeEmbedUrl,
+  isImageUrl,
 } from '~/utils/youtube'
 
 export default function AdminMedias({ medias, categories, meta, filters }: AdminMediasProps) {
@@ -339,29 +340,41 @@ export default function AdminMedias({ medias, categories, meta, filters }: Admin
                 onClick={() => handlePlayMedia(m)}
                 className="aspect-video bg-slate-950 flex items-center justify-center border-b border-slate-800 relative overflow-hidden shrink-0 cursor-pointer animate-none"
               >
-                {m.file ? (
-                  // Cloudinary media file
-                  m.format === 'video' ? (
-                    <video
-                      src={m.file}
-                      className="w-full h-full object-cover opacity-70 group-hover:opacity-90"
-                      muted
-                      preload="metadata"
-                    />
-                  ) : (
-                    <CloudinaryImage
-                      src={m.file}
-                      width={400}
-                      height={225}
-                      alt={m.title}
-                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                    />
-                  )
-                ) : m.urlFile && getYoutubeThumbnail(m.urlFile) ? (
-                  // YouTube Video Thumbnail cover
-                  <img
-                    src={getYoutubeThumbnail(m.urlFile)!}
+                {m.file && isImageUrl(m.file) ? (
+                  // Image / miniature personnalisée téléversée
+                  <CloudinaryImage
+                    src={m.file}
+                    width={400}
+                    height={225}
                     alt={m.title}
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                  />
+                ) : m.file && m.format === 'video' ? (
+                  <video
+                    src={m.file}
+                    className="w-full h-full object-cover opacity-70 group-hover:opacity-90"
+                    muted
+                    preload="metadata"
+                  />
+                ) : m.file ? (
+                  <CloudinaryImage
+                    src={m.file}
+                    width={400}
+                    height={225}
+                    alt={m.title}
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                  />
+                ) : m.urlFile && getYoutubeThumbnail(m.urlFile) ? (
+                  // YouTube Video Thumbnail cover Full HD
+                  <img
+                    src={getYoutubeThumbnail(m.urlFile, 'maxres')!}
+                    alt={m.title}
+                    onError={(e) => {
+                      const target = e.currentTarget
+                      if (target.src.includes('maxresdefault.jpg')) {
+                        target.src = target.src.replace('maxresdefault.jpg', 'hqdefault.jpg')
+                      }
+                    }}
                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                   />
                 ) : (

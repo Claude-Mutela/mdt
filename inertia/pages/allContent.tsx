@@ -66,6 +66,12 @@ const MediaGridCard: React.FC<{ item: MediaItem; onSelect: (item: MediaItem) => 
           src={getOptimizedCloudinaryUrl(displayThumbnail, 600)}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           alt={item.title}
+          onError={(e) => {
+            const target = e.currentTarget
+            if (target.src.includes('maxresdefault.jpg')) {
+              target.src = target.src.replace('maxresdefault.jpg', 'hqdefault.jpg')
+            }
+          }}
         />
         <div
           className={`absolute top-4 left-4 ${getBadgeColor()} text-white text-[10px] font-black px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg`}

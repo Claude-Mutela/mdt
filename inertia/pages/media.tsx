@@ -218,6 +218,12 @@ const VideoCard = ({ thumbnail, duration, title, category, date, speaker, url, o
           src={displayThumbnail}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           alt={title}
+          onError={(e) => {
+            const target = e.currentTarget
+            if (target.src.includes('maxresdefault.jpg')) {
+              target.src = target.src.replace('maxresdefault.jpg', 'hqdefault.jpg')
+            }
+          }}
         />
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
           <div className="bg-primary/90 text-white p-5 rounded-full shadow-2xl transform group-hover:scale-110 transition-all border border-white/20">

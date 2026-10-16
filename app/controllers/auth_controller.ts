@@ -70,6 +70,7 @@ export default class AuthController {
 
       return response.redirect().toPath('/admin')
     } catch (error) {
+      console.error('[Auth Error]', error)
       session.flash('inputErrorsBag', {
         auth: 'Identifiants invalides.',
       })

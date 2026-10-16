@@ -50,6 +50,7 @@ export default class HomeController {
             orateur: lastPreach.orateur,
             duree: lastPreach.duration,
             url: lastPreach.urlFile,
+            file: lastPreach.file,
             date: lastPreach.date,
           }
         : null,

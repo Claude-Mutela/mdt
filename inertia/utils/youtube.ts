@@ -50,11 +50,41 @@ export function getYoutubeEmbedUrl(
 }
 
 /**
- * Retourne la vignette officielle haute résolution YouTube
+ * Détecte si une URL pointe vers une image (Cloudinary ou extension image courante).
  */
-export function getYoutubeThumbnailUrl(url: string | null | undefined): string {
+export function isImageUrl(url: string | null | undefined): boolean {
+  if (!url || typeof url !== 'string') return false
+  const clean = url.trim().toLowerCase()
+  if (clean.includes('/video/upload/') || clean.includes('/raw/upload/')) return false
+  if (
+    clean.endsWith('.mp4') ||
+    clean.endsWith('.mp3') ||
+    clean.endsWith('.pdf') ||
+    clean.endsWith('.wav') ||
+    clean.endsWith('.webm')
+  ) {
+    return false
+  }
+  if (clean.includes('/image/upload/')) return true
+  if (/\.(jpe?g|png|webp|avif|gif|svg)($|\?)/i.test(clean)) return true
+  return (
+    !isYoutubeUrl(clean) &&
+    (clean.startsWith('http://') || clean.startsWith('https://') || clean.startsWith('/'))
+  )
+}
+
+/**
+ * Retourne la vignette officielle YouTube (par défaut Full HD maxresdefault, avec option hqdefault).
+ */
+export function getYoutubeThumbnailUrl(
+  url: string | null | undefined,
+  quality: 'maxres' | 'hq' = 'maxres'
+): string {
   const id = getYoutubeVideoId(url)
-  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : ''
+  if (!id) return ''
+  return quality === 'maxres'
+    ? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`
+    : `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
 }
 
 /**
@@ -70,21 +100,36 @@ export function getVideoPlayUrl(
 }
 
 /**
- * Retourne la meilleure vignette pour un média (YouTube ou image personnalisée)
+ * Retourne la meilleure vignette pour un média :
+ * 1. Priorité absolue : image téléversée personnalisée (si présente dans thumbnail ou url)
+ * 2. Sinon, vignette officielle YouTube en Full HD (maxresdefault)
+ * 3. Sinon, image de repli par défaut
  */
 export function getVideoThumbnail(
   thumbnail: string | null | undefined,
   url: string | null | undefined,
   fallback: string = '/mdt-banner.jpg'
 ): string {
+  // 1. Priorité à la miniature téléversée personnalisée
+  if (isImageUrl(thumbnail)) return thumbnail!
+  if (isImageUrl(url)) return url!
+
+  // 2. Vignette YouTube Full HD
   if (isYoutubeUrl(thumbnail)) {
-    return getYoutubeThumbnailUrl(thumbnail)
-  }
-  if (thumbnail && thumbnail.trim() !== '' && !isYoutubeUrl(thumbnail)) {
-    return thumbnail
+    return getYoutubeThumbnailUrl(thumbnail, 'maxres')
   }
   if (isYoutubeUrl(url)) {
-    return getYoutubeThumbnailUrl(url)
+    return getYoutubeThumbnailUrl(url, 'maxres')
   }
+
+  // 3. Autre URL non-youtube valide
+  if (thumbnail && thumbnail.trim() !== '' && !thumbnail.startsWith('#')) {
+    return thumbnail
+  }
+  if (url && url.trim() !== '' && !url.startsWith('#')) {
+    return url
+  }
+
   return fallback
 }
+

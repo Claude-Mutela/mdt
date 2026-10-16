@@ -1,7 +1,12 @@
 import { FC, useEffect, useRef, useState, useCallback } from 'react'
 import { Head, Link, router } from '@inertiajs/react'
 import { ArrowRight, Calendar, Clock, MapPin, Mail, Play } from 'lucide-react'
-import { isYoutubeUrl, getYoutubeEmbedUrl, getYoutubeThumbnailUrl } from '~/utils/youtube'
+import {
+  isYoutubeUrl,
+  getYoutubeEmbedUrl,
+  getYoutubeThumbnailUrl,
+  isImageUrl,
+} from '~/utils/youtube'
 
 /* ── Types globaux reCAPTCHA ─────────────────────────────────────── */
 declare global {
@@ -81,6 +86,7 @@ interface LastPreach {
   orateur: string | null
   duree: number | null
   url: string | null
+  file?: string | null
   date: string | null
 }
 
@@ -142,10 +148,31 @@ const DAYS_FR: Record<string, string> = {
  * L'iframe ne se charge que lors du clic, évitant tout appel réseau
  * vers youtube.com / google.com au chargement de la page.
  * ────────────────────────────────────────────────────────────────────── */
-const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
+const YoutubeFacade: FC<{
+  url: string
+  title: string
+  customThumbnail?: string | null
+}> = ({ url, title, customThumbnail }) => {
   const [playing, setPlaying] = useState(false)
-  const thumbnail = getYoutubeThumbnailUrl(url)
+  const defaultThumbnail = getYoutubeThumbnailUrl(url, 'maxres')
+  const [thumbnailSrc, setThumbnailSrc] = useState<string>(() => {
+    return customThumbnail && isImageUrl(customThumbnail) ? customThumbnail : defaultThumbnail
+  })
   const embedSrc = getYoutubeEmbedUrl(url, true)
+
+  useEffect(() => {
+    setThumbnailSrc(
+      customThumbnail && isImageUrl(customThumbnail) ? customThumbnail : defaultThumbnail
+    )
+  }, [customThumbnail, defaultThumbnail])
+
+  const handleImageError = () => {
+    if (thumbnailSrc === customThumbnail) {
+      setThumbnailSrc(defaultThumbnail)
+    } else if (thumbnailSrc.includes('maxresdefault.jpg')) {
+      setThumbnailSrc(getYoutubeThumbnailUrl(url, 'hq'))
+    }
+  }
 
   return (
     <div className="aspect-video relative bg-black">
@@ -167,17 +194,16 @@ const YoutubeFacade: FC<{ url: string; title: string }> = ({ url, title }) => {
           aria-label={`Regarder sur YouTube : ${title}`}
         >
           {/* Vignette */}
-          {thumbnail ? (
+          {thumbnailSrc ? (
             <img
-              src={thumbnail}
+              src={thumbnailSrc}
               alt={title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover/play:scale-105"
               loading="lazy"
               decoding="async"
               crossOrigin="anonymous"
               referrerPolicy="no-referrer"
-              width="480"
-              height="360"
+              onError={handleImageError}
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-slate-900 to-slate-800" />
@@ -556,10 +582,23 @@ const Home: FC<{
               {/* Lecteur média */}
               <div className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black max-w-5xl mx-auto">
                 {lastPreach.url && lastPreach.format === 'video' && isYoutubeUrl(lastPreach.url) ? (
-                  <YoutubeFacade url={lastPreach.url} title={lastPreach.title} />
+                  <YoutubeFacade
+                    url={lastPreach.url}
+                    title={lastPreach.title}
+                    customThumbnail={lastPreach.file}
+                  />
                 ) : lastPreach.url && lastPreach.format === 'video' ? (
                   <div className="aspect-video">
-                    <video controls className="w-full h-full object-cover" preload="metadata">
+                    <video
+                      controls
+                      className="w-full h-full object-cover"
+                      preload="metadata"
+                      poster={
+                        lastPreach.file && isImageUrl(lastPreach.file)
+                          ? lastPreach.file
+                          : undefined
+                      }
+                    >
                       <source src={getCloudinaryUrl(lastPreach.url, 'q_auto,f_auto')} />
                       Votre navigateur ne supporte pas la lecture vidéo.
                     </video>
@@ -945,7 +984,7 @@ const Home: FC<{
               <p className="text-white/90 font-black text-3xl leading-none">365</p>
             </div>
             {/* Bottom card */}
-            <div className="absolute bottom-0 left-0 right-0 p-6">
+            {/* <div className="absolute bottom-0 left-0 right-0 p-6">
               <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-2">
                 <p className="text-primary-light font-black uppercase text-xs tracking-widest">
                   Guide de la lecture annuelle
@@ -957,7 +996,7 @@ const Home: FC<{
                   Formation · Maturité · Connaissance · Transformation
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

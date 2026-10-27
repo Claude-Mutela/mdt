@@ -386,11 +386,10 @@ router
             'reschedule',
           ])
           .as('admin.rendez-vous.reschedule')
-        router
-          .delete('/rendez-vous/:id', [
-            () => import('#controllers/admin_appointments_controller'),
-            'destroy',
-          ])
+        router.delete('/rendez-vous/:id', [
+          () => import('#controllers/admin_appointments_controller'),
+          'destroy',
+        ])
       })
       .use(
         middleware.role({

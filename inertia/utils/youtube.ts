@@ -132,4 +132,3 @@ export function getVideoThumbnail(
 
   return fallback
 }
-

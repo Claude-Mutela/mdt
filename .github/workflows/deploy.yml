@@ -260,6 +260,8 @@ jobs:
             # nvm install l'installe si absent, puis l'active
             nvm install 24.22.1
             nvm use 24.22.1
+            # Les paquets globaux (pm2) sont propres à chaque version de Node sous nvm
+            command -v pm2 >/dev/null || npm install -g pm2
 
             echo "📋 Copie du .env de production..."
             if [ -f "/var/www/philamdt/.env" ]; then

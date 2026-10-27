@@ -10,7 +10,7 @@ Stack technique : **AdonisJS 7 · InertiaJS · React 19 · TypeScript · MySQL �
 
 | Outil   | Version minimale |
 | ------- | ---------------- |
-| Node.js | ≥ 20 LTS         |
+| Node.js | ≥ 24.22.1 LTS    |
 | npm     | ≥ 10             |
 | MySQL   | ≥ 8.0            |
 | Git     | ≥ 2.40           |
@@ -200,9 +200,11 @@ ssh user@<IP_VPS>
 # Mise à jour du système
 sudo apt update && sudo apt upgrade -y
 
-# Installation de Node.js 20 LTS
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
+# Installation de Node.js 24 LTS via nvm (version dans .nvmrc, AdonisJS 7 exige Node >= 24)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.nvm/nvm.sh
+nvm install 24.22.1
+nvm alias default 24.22.1
 
 # Installation de PM2
 sudo npm install -g pm2

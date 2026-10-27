@@ -1,6 +1,14 @@
-import { useState, useMemo } from 'react'
+ import { useState, useMemo } from 'react'
 import { Head, router } from '@inertiajs/react'
-import { Clock, MapPin, ChevronLeft, ChevronRight, RotateCcw, CalendarDays } from 'lucide-react'
+import {
+  Clock,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+  RotateCcw,
+  CalendarDays,
+  Calendar,
+} from 'lucide-react'
 import { DateTime } from 'luxon'
 
 interface AgendaItem {
@@ -18,27 +26,57 @@ interface Props {
   currentWeek: string // "YYYY-Www"
 }
 
-const DAY_NAMES_FR = ['', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
-
-// Color palette cycling through categories
-const CATEGORY_COLORS: Record<string, string> = {}
-const COLOR_PALETTE = [
-  'bg-primary',
-  'bg-blue-500',
-  'bg-orange-600',
-  'bg-purple-600',
-  'bg-pink-500',
-  'bg-green-600',
-  'bg-slate-700',
-  'bg-amber-500',
-]
-let colorIdx = 0
-function getCategoryColor(catName: string): string {
-  if (!CATEGORY_COLORS[catName]) {
-    CATEGORY_COLORS[catName] = COLOR_PALETTE[colorIdx % COLOR_PALETTE.length]
-    colorIdx++
+/** Formatage d'une heure "17:30:00" ou "17:30" en "17h30" */
+function formatHour(timeStr: string | null | undefined): string {
+  if (!timeStr) return ''
+  const [h, m] = timeStr.split(':')
+  if (h !== undefined && m !== undefined) {
+    return `${h.padStart(2, '0')}h${m}`
   }
-  return CATEGORY_COLORS[catName]
+  return timeStr
+}
+
+/** Formatage d'une plage horaire (ex: "17h30 - 19h30") */
+function formatTimeRange(start: string | null | undefined, end: string | null | undefined): string {
+  const fStart = formatHour(start)
+  const fEnd = formatHour(end)
+  if (fStart && fEnd) return `${fStart} - ${fEnd}`
+  if (fStart) return `Dès ${fStart}`
+  if (fEnd) return `Jusqu'à ${fEnd}`
+  return ''
+}
+
+/** Formatage en français du jour (ex: "Mardi 6 octobre") */
+function formatDay(dateStr: string): { fullDate: string; isToday: boolean } {
+  if (!dateStr) return { fullDate: '', isToday: false }
+  const dt = DateTime.fromISO(dateStr).setLocale('fr')
+  const isToday = dt.hasSame(DateTime.now(), 'day')
+  const formatted = dt.toFormat('EEEE d MMMM')
+  const fullDate = formatted.charAt(0).toUpperCase() + formatted.slice(1)
+  return { fullDate, isToday }
+}
+
+/** Styles harmonieux des badges selon la catégorie */
+const CATEGORY_STYLES: Record<string, { badge: string }> = {
+  culte: { badge: 'bg-primary/10 text-primary border-primary/20' },
+  enseignement: { badge: 'bg-blue-500/10 text-blue-600 border-blue-500/20' },
+  priere: { badge: 'bg-purple-500/10 text-purple-600 border-purple-500/20' },
+  jeunesse: { badge: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' },
+  communion: { badge: 'bg-amber-500/10 text-amber-600 border-amber-500/20' },
+  celebration: { badge: 'bg-rose-500/10 text-rose-600 border-rose-500/20' },
+  evangelisation: { badge: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20' },
+}
+
+function getCategoryStyle(name?: string | null): { badge: string } {
+  if (!name) return { badge: 'bg-slate-100 text-slate-600 border-slate-200' }
+  const normalized = name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+  for (const [key, val] of Object.entries(CATEGORY_STYLES)) {
+    if (normalized.includes(key)) return val
+  }
+  return { badge: 'bg-primary/10 text-primary border-primary/20' }
 }
 
 export default function Agenda({ agendas = [], currentWeek }: Props) {
@@ -72,28 +110,14 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
     router.get('/agenda', {}, { preserveScroll: false, replace: true })
   }
 
-  // Group agenda items by ISO day of week (1 = Monday … 7 = Sunday)
-  const groupedDays = useMemo(() => {
-    const map: Map<number, AgendaItem[]> = new Map()
-    for (let d = 1; d <= 7; d++) map.set(d, [])
-
-    for (const item of agendas) {
-      const dt = DateTime.fromISO(item.day)
-      const dow = dt.weekday // 1–7
-      map.get(dow)?.push(item)
-    }
-
-    return Array.from(map.entries()).map(([dow, items]) => {
-      const date = weekStart.plus({ days: dow - 1 })
-      return {
-        dow,
-        dayName: DAY_NAMES_FR[dow],
-        formattedDate: date.toFormat('dd LLLL'),
-        isToday: date.hasSame(DateTime.now(), 'day'),
-        events: items,
-      }
+  // Tri chronologique des rendez-vous par jour puis heure de début
+  const sortedAgendas = useMemo(() => {
+    return [...agendas].sort((a, b) => {
+      const cmpDay = a.day.localeCompare(b.day)
+      if (cmpDay !== 0) return cmpDay
+      return (a.hourStart || '').localeCompare(b.hourStart || '')
     })
-  }, [agendas, weekStart])
+  }, [agendas])
 
   const hasAnyEvent = agendas.length > 0
 
@@ -175,99 +199,101 @@ export default function Agenda({ agendas = [], currentWeek }: Props) {
               </div>
             </div>
 
-            {/* Day rows */}
+            {/* Grid of cards */}
             {!hasAnyEvent ? (
-              <div className="text-center py-20 space-y-4">
-                <CalendarDays size={52} className="mx-auto text-slate-300" />
-                <p className="text-2xl font-black font-serif text-slate-400">
-                  Aucun événement cette semaine
-                </p>
-                <p className="text-slate-400">Essayez une autre semaine ou revenez bientôt.</p>
+              <div className="text-center py-20 px-4 space-y-4 max-w-md mx-auto">
+                <div className="w-20 h-20 rounded-3xl bg-slate-100 flex items-center justify-center mx-auto text-slate-400 shadow-inner">
+                  <CalendarDays size={38} className="text-slate-400" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-black font-serif text-slate-900">
+                    Aucun événement cette semaine
+                  </h3>
+                  <p className="text-slate-500 text-sm leading-relaxed">
+                    Il n'y a pas d'activité planifiée pour cette période. Utilisez les boutons
+                    ci-dessus pour naviguer vers une autre semaine.
+                  </p>
+                </div>
               </div>
             ) : (
-              <div className="space-y-12">
-                {groupedDays.map((dayGroup) => {
-                  if (dayGroup.events.length === 0) return null
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sortedAgendas.map((item) => {
+                  const catName = item.catActivity?.name ?? 'Activité'
+                  const catStyle = getCategoryStyle(catName)
+                  const dateInfo = formatDay(item.day)
+                  const timeRange = formatTimeRange(item.hourStart, item.hourEnd)
+                  const isLive = item.place ? /live|direct/i.test(item.place) : false
+
                   return (
-                    <div
-                      key={dayGroup.dow}
-                      className="grid lg:grid-cols-12 gap-8 items-start group"
+                    <article
+                      key={item.id}
+                      className="group relative bg-white rounded-2xl border border-slate-200/60 hover:border-primary/40 p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-1"
                     >
-                      {/* Day label */}
-                      <div className="lg:col-span-3">
-                        <div
-                          className={`sticky top-28 p-6 rounded-3xl transition-all border ${dayGroup.isToday ? 'bg-primary/5 border-primary/20 ring-4 ring-primary/5' : 'bg-slate-50 border-transparent group-hover:bg-slate-100'}`}
-                        >
-                          <h3 className="text-2xl font-black text-slate-900 font-serif mb-1">
-                            {dayGroup.dayName}
-                          </h3>
-                          <p
-                            className={`text-sm font-bold tracking-tight mb-4 ${dayGroup.isToday ? 'text-primary' : 'text-slate-400'}`}
-                          >
-                            {dayGroup.formattedDate}
-                          </p>
-                          <div className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-widest">
-                            <span
-                              className={`w-2 h-2 rounded-full ${dayGroup.isToday ? 'bg-primary animate-pulse' : 'bg-slate-300'}`}
-                            />
-                            {dayGroup.events.length} Activité{dayGroup.events.length > 1 ? 's' : ''}
+                      {/* Subtle hover gradient glow */}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+
+                      <div className="space-y-4">
+                        {/* Header: Date & Category Badge */}
+                        <div className="flex items-center justify-between gap-3 flex-wrap">
+                          <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
+                            <Calendar size={14} className="text-primary shrink-0" />
+                            <span>{dateInfo.fullDate}</span>
+                            {dateInfo.isToday && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                Aujourd'hui
+                              </span>
+                            )}
                           </div>
+
+                          <span
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-colors shadow-2xs ${catStyle.badge}`}
+                          >
+                            {catName}
+                          </span>
                         </div>
+
+                        {/* Title */}
+                        <h3
+                          className="text-lg md:text-xl font-bold font-serif text-slate-900 group-hover:text-primary transition-colors leading-snug line-clamp-2"
+                          title={item.title}
+                        >
+                          {item.title}
+                        </h3>
                       </div>
 
-                      {/* Events */}
-                      <div className="lg:col-span-9 space-y-6">
-                        {dayGroup.events.map((ev) => {
-                          const catName = ev.catActivity?.name ?? 'Autre'
-                          const color = getCategoryColor(catName)
-                          return (
-                            <div
-                              key={ev.id}
-                              className="p-8 rounded-[32px] border border-slate-100 hover:border-primary/20 bg-white transition-all shadow-sm hover:shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-8 group/card"
-                            >
-                              <div className="flex gap-6 items-start md:items-center">
-                                <div
-                                  className={`w-14 h-14 rounded-2xl ${color} text-white flex items-center justify-center shrink-0 shadow-lg`}
-                                >
-                                  <Clock size={24} />
-                                </div>
-                                <div className="space-y-2">
-                                  <div className="flex items-center gap-3 flex-wrap">
-                                    <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg bg-slate-100 text-slate-500 group-hover/card:bg-primary/10 group-hover/card:text-primary transition-colors">
-                                      {catName}
-                                    </span>
-                                    {dayGroup.isToday && (
-                                      <span className="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase tracking-widest">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
-                                        Aujourd'hui
-                                      </span>
-                                    )}
-                                  </div>
-                                  <h4 className="text-xl md:text-2xl font-black text-slate-900 group-hover/card:text-primary transition-colors">
-                                    {ev.title}
-                                  </h4>
-                                </div>
-                              </div>
-
-                              <div className="flex flex-col md:items-end gap-3 shrink-0">
-                                {(ev.hourStart || ev.hourEnd) && (
-                                  <div className="flex items-center gap-2 text-slate-900 font-black text-lg">
-                                    <Clock size={18} className="text-primary" />
-                                    {[ev.hourStart, ev.hourEnd].filter(Boolean).join(' - ')}
-                                  </div>
-                                )}
-                                {ev.place && (
-                                  <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
-                                    <MapPin size={16} className="text-primary/60" />
-                                    {ev.place}
-                                  </div>
-                                )}
-                              </div>
+                      {/* Footer: Time & Place */}
+                      <div className="pt-4 mt-6 border-t border-slate-100 space-y-2.5">
+                        {timeRange && (
+                          <div className="flex items-center gap-2.5 text-slate-800 text-sm font-semibold">
+                            <div className="w-7 h-7 rounded-lg bg-slate-50 group-hover:bg-primary/10 flex items-center justify-center text-slate-500 group-hover:text-primary transition-colors shrink-0">
+                              <Clock size={14} />
                             </div>
-                          )
-                        })}
+                            <span>{timeRange}</span>
+                          </div>
+                        )}
+
+                        {item.place && (
+                          <div className="flex items-center justify-between gap-2 text-slate-500 text-xs font-medium">
+                            <div className="flex items-center gap-2.5 truncate">
+                              <div className="w-7 h-7 rounded-lg bg-slate-50 group-hover:bg-primary/10 flex items-center justify-center text-slate-500 group-hover:text-primary transition-colors shrink-0">
+                                <MapPin size={14} />
+                              </div>
+                              <span className="truncate" title={item.place}>
+                                {item.place}
+                              </span>
+                            </div>
+
+                            {isLive && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-500/10 text-red-600 border border-red-500/20 shrink-0">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                                LIVE
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    </article>
                   )
                 })}
               </div>

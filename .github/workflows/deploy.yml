@@ -256,7 +256,10 @@ jobs:
             set -e
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm use 24.15.0
+            # Node 24.22.1 : correctifs de sécurité d'octobre 2026 (CVE-2026-111497, etc.)
+            # nvm install l'installe si absent, puis l'active
+            nvm install 24.22.1
+            nvm use 24.22.1
 
             echo "📋 Copie du .env de production..."
             if [ -f "/var/www/philamdt/.env" ]; then
@@ -306,6 +309,14 @@ jobs:
 
             pm2 reload ecosystem.config.json --env production || pm2 start ecosystem.config.json --env production
             pm2 save
+
+            # Le démon PM2 garde la version de Node avec laquelle il a été lancé :
+            # on le relance (pm2 update) si la version de Node a changé
+            if [ "$(cat .node-version-deployed 2>/dev/null)" != "$(node -v)" ]; then
+              echo "🔁 Nouvelle version de Node ($(node -v)) : redémarrage du démon PM2..."
+              pm2 update
+              node -v > .node-version-deployed
+            fi
 
             echo "🏥 Health Check en cours..."
             SUCCESS=0
